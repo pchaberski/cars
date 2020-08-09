@@ -25,3 +25,5 @@ pchaberski@legion MINGW64 ~/Google Drive/gdprojects/cars (master)
 $ pip install -r requirements.txt -f https://download.pytorch.org/whl/torch_stable.html
 
 ```
+
+unsync `venv` from GD
