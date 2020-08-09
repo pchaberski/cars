@@ -12,13 +12,16 @@ torchvision==0.7.0
 run:
 
 ```
-pchaberski@legion MINGW64 /c/projects/venvs
-$ python -m venv cars
+pchaberski@legion MINGW64 /
+$ cd "C:\Users\pchaberski\Google Drive\gdprojects\cars"
 
-pchaberski@legion MINGW64 /c/projects/venvs
-$ . ./cars/Scripts/activate
-(cars)
-pchaberski@legion MINGW64 /c/projects/venvs
-$ pip install -r "C:\Users\pchaberski\Google Drive\gdprojects\cars\requirements.txt" -f https://download.pytorch.org/whl/torch_stable.html
+pchaberski@legion MINGW64 ~/Google Drive/gdprojects/cars (master)
+$ python -m venv venv
+
+pchaberski@legion MINGW64 ~/Google Drive/gdprojects/cars (master)
+$ . ./venv/Scripts/activate
+(venv)
+pchaberski@legion MINGW64 ~/Google Drive/gdprojects/cars (master)
+$ pip install -r requirements.txt -f https://download.pytorch.org/whl/torch_stable.html
 
 ```
