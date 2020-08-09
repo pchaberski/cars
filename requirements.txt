@@ -1,0 +1,7 @@
+pandas==1.1.0
+numpy==1.19.1
+mat4py==0.4.3
+torch==1.6.0
+torchvision==0.7.0
+pytorch-lightning==0.8.5
+matplotlib==3.3.0
