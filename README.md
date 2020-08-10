@@ -22,6 +22,9 @@ pchaberski@legion MINGW64 ~/Google Drive/gdprojects/cars (master)
 $ . ./venv/Scripts/activate
 (venv)
 pchaberski@legion MINGW64 ~/Google Drive/gdprojects/cars (master)
+$ pip install --upgrade pip
+(venv)
+pchaberski@legion MINGW64 ~/Google Drive/gdprojects/cars (master)
 $ pip install -r requirements.txt -f https://download.pytorch.org/whl/torch_stable.html
 
 ```
