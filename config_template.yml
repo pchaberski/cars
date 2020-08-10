@@ -1,0 +1,6 @@
+# Train/test dataset and devkit location
+data_path: 'data/stanford'
+
+# Logging settings:
+logglevel: 'INFO'
+logging_dir: 'logs'
