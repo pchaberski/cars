@@ -1,7 +1,8 @@
 .ipynb_checkpoints
 */.ipynb_checkpoints/*
-/data/**
-/venv/**
+__pycache__
+*/__pycache__/*
+/input/**
 /.idea/**
 /logs/**
 config.yml
