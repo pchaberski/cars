@@ -1,4 +1,4 @@
-"""Configuration utilities"""
+"""Configuration utilities."""
 
 
 import yaml

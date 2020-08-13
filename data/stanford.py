@@ -1,4 +1,4 @@
-""" Class for Stanford Cars Dataset """
+"""Class for Stanford Cars Dataset."""
 
 
 class StanfordCarsDataset:

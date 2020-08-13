@@ -1,4 +1,4 @@
-"""Logging utilities"""
+"""Logging utilities."""
 
 
 import logging
@@ -8,10 +8,11 @@ from datetime import datetime
 
 def configure_logger(name, logging_dir, loglevel='INFO'):
     """
+    Configure logger.
 
     :param name: scope name
     :type name: string
-    :param logging_dir: directory where log files are stored
+    :param logging_dir: directory where log files are storedmargirule
     :type logging_dir: string
     :param loglevel: logging level
     :type: string

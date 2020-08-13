@@ -7,3 +7,7 @@ torchvision==0.7.0
 pytorch-lightning==0.8.5
 matplotlib==3.3.0
 jupyterlab==2.2.4
+pylint==2.5.3
+pycodestyle==2.6.0
+pydocstyle==5.0.2
+pytest==6.0.1

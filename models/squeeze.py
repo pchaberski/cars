@@ -1,4 +1,4 @@
-""" Baseline Squeezenet model from PyTorch"""
+""" Baseline Squeezenet model from PyTorch."""
 
 
 class SqueezeNet:
