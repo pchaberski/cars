@@ -1,6 +1,7 @@
 # Train/test dataset and devkit location
-data_path: 'data/stanford'
+stanford_raw_data_path: '<path to the folder containing: car_ims.tgz, cars_annos.mat, car_devkit.tgz>'
+stanford_data_path: 'input/stanford'
 
 # Logging settings:
-logglevel: 'INFO'
+loglevel: 'INFO'
 logging_dir: 'logs'

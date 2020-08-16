@@ -5,5 +5,7 @@ __pycache__
 /input/**
 /.idea/**
 /logs/**
+notebooks/*
+!notebooks/.gitkeep 
 config.yml
 cars_vscws.code-workspace

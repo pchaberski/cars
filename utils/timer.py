@@ -1,5 +1,5 @@
 """
-Timer utility.
+Execution time measurement utility.
 
 Usage:
 - decorate function defintion with `@timer` and allow for **kwargs

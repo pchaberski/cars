@@ -3,12 +3,17 @@
 
 from utils.logger import configure_logger
 from utils.configuration import load_config
+from utils.timer import timer
+
+
+CFG = load_config('config.yml')
+LOGGER = configure_logger(__name__, CFG['logging_dir'], CFG['loglevel'])
 
 
 def main():
     """Perform training."""
-    cfg = load_config('config.yml')
-    logger = configure_logger(__name__, cfg['logging_dir'], cfg['loglevel'])
+
+
 
     logger.info('All done.')
 
