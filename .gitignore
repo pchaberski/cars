@@ -5,6 +5,7 @@ __pycache__
 /input/**
 /.idea/**
 /logs/**
+/.vscode/**
 notebooks/*
 !notebooks/.gitkeep 
 config.yml
