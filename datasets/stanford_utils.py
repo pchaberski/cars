@@ -69,6 +69,7 @@ def prepare_stanford_dataset(raw_data_path, dest_data_path='input/stanford', **k
         'class': np.arange(1, len(mat_labels['class_names']) + 1),
         'class_name': mat_labels['class_names']
     })
+    tar_labels.close()
 
     # Create output data frames
     df_train = pd.DataFrame({
