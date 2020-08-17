@@ -13,8 +13,6 @@ LOGGER = configure_logger(__name__, CFG['logging_dir'], CFG['loglevel'])
 def main():
     """Perform training."""
 
-
-
     logger.info('All done.')
 
 
