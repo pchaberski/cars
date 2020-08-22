@@ -1,7 +1,11 @@
+# Logging settings:
+loglevel: 'INFO'
+logging_dir: 'logs'
+
 # Train/test dataset and devkit location
 stanford_raw_data_path: '<path to the folder containing: car_ims.tgz, cars_annos.mat, car_devkit.tgz>'
 stanford_data_path: 'input/stanford'
 
-# Logging settings:
-loglevel: 'INFO'
-logging_dir: 'logs'
+# Net architecture
+# Possible options: 'sq_10', 'sq_11', 'sqnxt_1', 'sqnxt_1v5', 'sqnxt_2', 'sqnxt_2v5'
+architecture: 'sq_10'

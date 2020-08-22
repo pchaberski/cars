@@ -11,7 +11,7 @@ import os
 class StanfordCarsDataset(Dataset):
     """Class for Stanford Cars Dataset."""
 
-    def __init__(self, data_path, labels_fpath, image_size=(225, 225)):
+    def __init__(self, data_path, labels_fpath, image_size=(256, 256)):
         super().__init__()
         self.data_path = data_path
         self.labels_fpath = labels_fpath
@@ -28,7 +28,10 @@ class StanfordCarsDataset(Dataset):
     def _transform(self, image):
         transf = transforms.Compose([
             transforms.Resize(self.image_size),
-            transforms.ToTensor()
+            transforms.ToTensor(),
+            transforms.Normalize(
+                mean=[0.485, 0.456, 0.406],
+                std=[0.229, 0.224, 0.225])
         ])
 
         return transf(image)

@@ -20,5 +20,7 @@ C:\Users\pchaberski\Google Drive\gdprojects\cars>python -m venv C:\projects\venv
 
 C:\Users\pchaberski\Google Drive\gdprojects\cars>C:\projects\venvs\cars\Scripts\activate.bat
 
-(cars) C:\Users\pchaberski\Google Drive\gdprojects\cars>pip install -r requirements.txt -f https://download.pytorch.org/whl/torch_stable.html
+(cars) C:\Users\pchaberski\Google Drive\gdprojects\cars>pip install -r dev_requirements.txt
+
+(cars) C:\Users\pchaberski\Google Drive\gdprojects\cars>pip install -r prod_requirements.txt -f https://download.pytorch.org/whl/torch_stable.html
 ```
