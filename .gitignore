@@ -3,8 +3,10 @@
 __pycache__
 */__pycache__/*
 /input/**
+/output/**
 /.idea/**
 /logs/**
+/lightning_logs/**
 /.vscode/**
 notebooks/*
 !notebooks/.gitkeep 

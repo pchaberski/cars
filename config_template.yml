@@ -6,6 +6,11 @@ logging_dir: 'logs'
 stanford_raw_data_path: '<path to the folder containing: car_ims.tgz, cars_annos.mat, car_devkit.tgz>'
 stanford_data_path: 'input/stanford'
 
-# Net architecture
-# Possible options: 'sq_10', 'sq_11', 'sqnxt_1', 'sqnxt_1v5', 'sqnxt_2', 'sqnxt_2v5'
-architecture: 'sq_10'
+# Network and training settings
+architecture: 'sq_10'  # Possible options: 'sq_10', 'sq_11', 'sqnxt_1', 'sqnxt_1v5', 'sqnxt_2', 'sqnxt_2v5'
+batch_size: 64
+split_ratios: [0.7, 0.15, 0.15]  # Train/valid/test ratios
+num_epochs: 1
+
+# Output settings
+output_path: 'output'

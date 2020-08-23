@@ -86,7 +86,7 @@ class SqueezeNext(nn.Module):
         output = self.bn2(output)
         output = F.relu(output)
         output = F.avg_pool2d(output, 4)
-        output = torch.flatten(output)
+        output = output.view(output.size(0), -1)
         output = self.linear(output)
         return output
 
