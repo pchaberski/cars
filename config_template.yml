@@ -8,9 +8,10 @@ stanford_data_path: 'input/stanford'
 
 # Network and training settings
 architecture: 'sq_10'  # Possible options: 'sq_10', 'sq_11', 'sqnxt_1', 'sqnxt_1v5', 'sqnxt_2', 'sqnxt_2v5'
-batch_size: 64
+batch_size: 32
 split_ratios: [0.7, 0.15, 0.15]  # Train/valid/test ratios
 num_epochs: 1
+seed: 42
 
 # Output settings
 output_path: 'output'

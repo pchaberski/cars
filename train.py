@@ -19,6 +19,7 @@ CFG = load_config('config.yml')
 LOGGER = configure_logger(__name__, CFG['logging_dir'], CFG['loglevel'])
 OUTPUT_PATH = os.path.join(os.getcwd(), CFG['output_path'])
 
+
 def run_training():
     """Perform training."""
     if CFG['architecture'] == 'sq_10':

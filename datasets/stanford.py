@@ -6,12 +6,13 @@ from torchvision import transforms
 from PIL import Image
 import pandas as pd
 import os
+import torch
 
 
 class StanfordCarsDataset(Dataset):
     """Class for Stanford Cars Dataset."""
 
-    def __init__(self, data_path, labels_fpath, image_size=(256, 256)):
+    def __init__(self, data_path, labels_fpath, image_size=(227, 227)):
         super().__init__()
         self.data_path = data_path
         self.labels_fpath = labels_fpath
@@ -54,5 +55,9 @@ class StanfordCarsDataset(Dataset):
         image_fpath = os.path.join(self.data_path, image_fname)
         image = Image.open(image_fpath).convert('RGB')
         image = self._transform(image)
+        """This returns class indexes from range [0, C-1]
+        as accepted during loss calculation, real class ids are from [1, C]"""
+        label = torch.as_tensor(
+            self.labels[self.labels['image_fname'] == image_fname]['class'].values[0] - 1)
 
-        return image, self.labels[self.labels['image_fname'] == image_fname]['class'].values[0]
+        return image, label

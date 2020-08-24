@@ -9,7 +9,7 @@ from torch.utils.data import DataLoader, random_split
 import os
 import torch
 from torch import nn
-import pytorch_lightning.metrics.sklearns as plm
+from pytorch_lightning.metrics.functional import accuracy
 
 
 CFG = load_config('config.yml')
@@ -43,18 +43,21 @@ class StanfordLightningModule(pl.LightningModule):
         split_sizes[-1] = split_sizes[-1] + (len(data) - sum(split_sizes))
 
         self.data_train, self.data_valid, self.data_test = \
-            random_split(data, split_sizes.tolist())
+            random_split(
+                data, split_sizes.tolist(),
+                generator=torch.Generator().manual_seed(CFG['seed']))
 
     def step(self, batch, batch_idx, loss_type):
         input, labels = batch
 
         preds = self.forward(input)
-        loss = self.loss(preds, labels - 1)  # class numbers starting form 1
+        pred_classes = torch.argmax(preds, dim=1)
+
+        loss = self.loss(preds, labels)
         logs = {loss_type: loss}
 
         # Metrics
-        accuracy = plm.Accuracy(normalize=True)
-        logs['accuacy'] = accuracy(torch.argmax(preds, dim=1), labels - 1)
+        logs['accuracy'] = accuracy(pred_classes, labels)
 
         return {loss_type: loss, 'log': logs}
 
@@ -87,4 +90,4 @@ class StanfordLightningModule(pl.LightningModule):
         return DataLoader(self.data_test, batch_size=self.batch_size)
 
     def configure_optimizers(self):
-        return torch.optim.Adam(self.parameters(), lr=1e-3)
+        return torch.optim.SGD(self.parameters(), lr=1e-2)
