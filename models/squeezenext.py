@@ -13,7 +13,7 @@ import torch.nn.functional as F
 
 class BasicBlock(nn.Module):
     def __init__(self, in_channels, out_channels, stride):
-        super(BasicBlock, self).__init__()
+        super().__init__()
         reduction = 0.5
         if 2 == stride:
             reduction = 1
@@ -51,7 +51,7 @@ class BasicBlock(nn.Module):
 
 class SqueezeNext(nn.Module):
     def __init__(self, width_x, blocks, num_classes):
-        super(SqueezeNext, self).__init__()
+        super().__init__()
         self.in_channels = 64
 
         self.conv1  = nn.Conv2d(3, int(width_x * self.in_channels), 7, 2, 0, bias=True)  # changed based on paper

@@ -15,7 +15,7 @@ class Fire(nn.Module):
 
     def __init__(self, inplanes, squeeze_planes,
                  expand1x1_planes, expand3x3_planes):
-        super(Fire, self).__init__()
+        super().__init__()
         self.inplanes = inplanes
         self.squeeze = nn.Conv2d(inplanes, squeeze_planes, kernel_size=1)
         self.squeeze_activation = nn.ReLU(inplace=True)
@@ -39,7 +39,7 @@ class Fire(nn.Module):
 class SqueezeNet(nn.Module):
 
     def __init__(self, version, num_classes=196):
-        super(SqueezeNet, self).__init__()
+        super().__init__()
         self.num_classes = num_classes
 
         if version == '1_0':
