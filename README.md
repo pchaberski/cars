@@ -1,6 +1,6 @@
 # cars
 
-setting up venv and installing pytorch with pip:
+setting up venv and installing pytorch with pip (on Windows):
 
 requirements.txt:
 

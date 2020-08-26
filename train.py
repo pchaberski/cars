@@ -4,10 +4,7 @@
 from utils.logger import configure_logger
 from utils.configuration import load_config
 from utils.timer import timer
-from models.squeezenet import SqueezeNet_10, SqueezeNet_11
-from models.squeezenext import (
-    SqueezeNext23_10, SqueezeNext23_10_v5,
-    SqueezeNext23_20, SqueezeNext23_20_v5)
+from models.arch_dict import get_architectures_dictionary
 from datasets.stanford import StanfordCarsDataset
 from models.plmodule import StanfordLightningModule
 import os
@@ -22,28 +19,17 @@ OUTPUT_PATH = os.path.join(os.getcwd(), CFG['output_path'])
 
 def run_training():
     """Perform training."""
-    if CFG['architecture'] == 'sq_10':
-        LOGGER.info('Setting architecture to SqueezeNet_10')
-        base_model = SqueezeNet_10(num_classes=196)
-    elif CFG['architecture'] == 'sq_11':
-        LOGGER.info('Setting architecture to SqueezeNet_11')
-        base_model = SqueezeNet_11(num_classes=196)
-    elif CFG['architecture'] == 'sqnxt_1':
-        LOGGER.info('Setting architecture to SqueezeNext23_10')
-        base_model = SqueezeNext23_10(num_classes=196)
-    elif CFG['architecture'] == 'sqnxt_1v5':
-        LOGGER.info('Setting architecture to SqueezeNext23_10_v5')
-        base_model = SqueezeNext23_10_v5(num_classes=196)
-    elif CFG['architecture'] == 'sqnxt_2':
-        LOGGER.info('Setting architecture to SqueezeNext23_20')
-        base_model = SqueezeNext23_20(num_classes=196)
-    elif CFG['architecture'] == 'sqnxt_2v5':
-        LOGGER.info('Setting architecture to SqueezeNext23_20_v5')
-        base_model = SqueezeNext23_20_v5(num_classes=196)
-    else:
-        LOGGER.warn('Invalid architecture; setting to default.')
-        LOGGER.info('Setting architecture to SqueezeNet_10')
-        base_model = SqueezeNet_10(num_classes=196)
+    arch = CFG['architecture']
+    arch_dict = get_architectures_dictionary()
+
+    assert arch in arch_dict.keys(), (
+        f'Architecture name has to be one of:\n'
+        f'{list(arch_dict.keys())}\n'
+        f'Provided architecture: {arch}'
+    )
+
+    LOGGER.info(f'Setting architecture to {arch_dict[arch].__name__}')
+    base_model = arch_dict[arch](num_classes=196)
 
     # Init Lightning Module
     model = StanfordLightningModule(
@@ -76,7 +62,7 @@ def run_training():
         checkpoint_callback=checkpoint_callback
         )
 
-    LOGGER.info(f"Running training with: {CFG['architecture']}")
+    LOGGER.info(f'Running training with: {arch}'')
     trainer.fit(model)
 
     # Test
