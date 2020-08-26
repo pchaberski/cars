@@ -62,7 +62,7 @@ def run_training():
         checkpoint_callback=checkpoint_callback
         )
 
-    LOGGER.info(f'Running training with: {arch}'')
+    LOGGER.info(f'Running training with: {arch})
     trainer.fit(model)
 
     # Test
