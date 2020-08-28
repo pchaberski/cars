@@ -58,6 +58,7 @@ class StanfordCarsDataset(Dataset):
         """This returns class indexes from range [0, C-1]
         as accepted during loss calculation, real class ids are from [1, C]"""
         label = torch.as_tensor(
-            self.labels[self.labels['image_fname'] == image_fname]['class'].values[0] - 1)
+            self.labels[self.labels['image_fname'] == image_fname]['class'].values[0] - 1,
+            dtype=torch.long)
 
         return image, label

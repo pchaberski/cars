@@ -7,14 +7,31 @@ from utils.timer import timer
 from models.arch_dict import get_architectures_dictionary
 from datasets.stanford import StanfordCarsDataset
 from models.plmodule import StanfordLightningModule
-import os
 import torch
 import pytorch_lightning as pl
+import os
+import sys
+import getopt
 
 
 CFG = load_config('config.yml')
 LOGGER = configure_logger(__name__, CFG['logging_dir'], CFG['loglevel'])
 OUTPUT_PATH = os.path.join(os.getcwd(), CFG['output_path'])
+
+
+try:
+    opts, args = getopt.getopt(sys.argv[1:], 'd:')
+    if len(opts) == 0 or len(opts) > 1:
+        DATA_PATH = CFG['stanford_data_path']
+    else:
+        LOGGER.warning('Setting alternative data path')
+        DATA_PATH = opts[0][1]
+except getopt.GetoptError:
+    LOGGER.warning('Argument parsing error! [usage: train.py -d <alternative_data_path>]')
+    LOGGER.warning('Setting default data path')
+    DATA_PATH = CFG['stanford_data_path']
+
+LOGGER.info(f'Data path: {DATA_PATH}')
 
 
 def run_training():
@@ -33,9 +50,9 @@ def run_training():
 
     # Init Lightning Module
     model = StanfordLightningModule(
-        base_model, data_path=CFG['stanford_data_path'],
+        base_model, data_path=DATA_PATH,
         batch_size=CFG['batch_size'], image_size=(227, 227),
-        split_ratios=CFG['split_ratios'])
+        split_ratios=CFG['split_ratios'], seed=CFG['seed'])
 
     # Callbacks
     early_stop_callback = pl.callbacks.early_stopping.EarlyStopping(

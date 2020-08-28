@@ -12,18 +12,16 @@ from torch import nn
 from pytorch_lightning.metrics.functional import accuracy
 
 
-CFG = load_config('config.yml')
-
-
 class StanfordLightningModule(pl.LightningModule):
 
-    def __init__(self, base_model, data_path, batch_size, image_size, split_ratios):
+    def __init__(self, base_model, data_path, batch_size, image_size, split_ratios, seed):
         super().__init__()
         self.base_model = base_model
         self.data_path = data_path
         self.batch_size = batch_size
         self.image_size = image_size
         self.split_ratios = split_ratios
+        self.seed = seed
         self.loss = nn.CrossEntropyLoss()
 
     @pl.core.decorators.auto_move_data
@@ -35,8 +33,8 @@ class StanfordLightningModule(pl.LightningModule):
             'Split ratios has to sum up to 1.'
 
         data = StanfordCarsDataset(
-            data_path=os.path.join(CFG['stanford_data_path'], 'train'),
-            labels_fpath=os.path.join(CFG['stanford_data_path'], 'train_labels.csv'),
+            data_path=os.path.join(self.data_path, 'train'),
+            labels_fpath=os.path.join(self.data_path, 'train_labels.csv'),
             image_size=self.image_size)
 
         split_sizes = (len(data) * np.array(self.split_ratios)).astype(np.int)
@@ -45,7 +43,7 @@ class StanfordLightningModule(pl.LightningModule):
         self.data_train, self.data_valid, self.data_test = \
             random_split(
                 data, split_sizes.tolist(),
-                generator=torch.Generator().manual_seed(CFG['seed']))
+                generator=torch.Generator().manual_seed(self.seed))
 
     def step(self, batch, batch_idx, loss_type):
         input, labels = batch
@@ -90,4 +88,4 @@ class StanfordLightningModule(pl.LightningModule):
         return DataLoader(self.data_test, batch_size=self.batch_size)
 
     def configure_optimizers(self):
-        return torch.optim.SGD(self.parameters(), lr=1e-2)
+        return torch.optim.SGD(self.parameters(), lr=1e-3)
