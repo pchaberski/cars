@@ -1,5 +1,6 @@
 """Architectures dictionary."""
 
+
 from models.squeezenet import SqueezeNet_10, SqueezeNet_11
 from models.squeezenext import (
     SqueezeNext23_10, SqueezeNext23_10_v5,

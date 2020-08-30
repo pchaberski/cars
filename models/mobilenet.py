@@ -56,11 +56,11 @@ class InvertedResidual(nn.Module):
         ])
         self.conv = nn.Sequential(*layers)
 
-    def forward(self, x):
+    def forward(self, input):
         if self.use_res_connect:
-            return x + self.conv(x)
+            return input + self.conv(input)
         else:
-            return self.conv(x)
+            return self.conv(input)
 
 
 class MobileNet_v2(nn.Module):
@@ -71,17 +71,6 @@ class MobileNet_v2(nn.Module):
                  round_nearest=8,
                  block=None,
                  norm_layer=None):
-        """
-        MobileNet V2 main class
-        Args:
-            num_classes (int): Number of classes
-            width_mult (float): Width multiplier - adjusts number of channels in each layer by this amount
-            inverted_residual_setting: Network structure
-            round_nearest (int): Round the number of channels in each layer to be a multiple of this number
-            Set to 1 to turn off rounding
-            block: Module specifying inverted residual building block for mobilenet
-            norm_layer: Module specifying the normalization layer to use
-        """
         super().__init__()
 
         if block is None:
@@ -105,34 +94,29 @@ class MobileNet_v2(nn.Module):
                 [6, 320, 1, 1],
             ]
 
-        # only check the first element, assuming user knows t,c,n,s are required
         if len(inverted_residual_setting) == 0 or len(inverted_residual_setting[0]) != 4:
-            raise ValueError("inverted_residual_setting should be non-empty "
-                             "or a 4-element list, got {}".format(inverted_residual_setting))
+            raise ValueError(
+                f'`inverted_residual_setting` should be non-empty\n'
+                f'or a 4-element list, got {inverted_residual_setting}'
+            )
 
-        # building first layer
         input_channel = _make_divisible(input_channel * width_mult, round_nearest)
         self.last_channel = _make_divisible(last_channel * max(1.0, width_mult), round_nearest)
         features = [ConvBNReLU(3, input_channel, stride=2, norm_layer=norm_layer)]
-        # building inverted residual blocks
         for t, c, n, s in inverted_residual_setting:
             output_channel = _make_divisible(c * width_mult, round_nearest)
             for i in range(n):
                 stride = s if i == 0 else 1
                 features.append(block(input_channel, output_channel, stride, expand_ratio=t, norm_layer=norm_layer))
                 input_channel = output_channel
-        # building last several layers
         features.append(ConvBNReLU(input_channel, self.last_channel, kernel_size=1, norm_layer=norm_layer))
-        # make it nn.Sequential
         self.features = nn.Sequential(*features)
 
-        # building classifier
         self.classifier = nn.Sequential(
             nn.Dropout(0.2),
             nn.Linear(self.last_channel, num_classes),
         )
 
-        # weight initialization
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
                 nn.init.kaiming_normal_(m.weight, mode='fan_out')
@@ -145,14 +129,8 @@ class MobileNet_v2(nn.Module):
                 nn.init.normal_(m.weight, 0, 0.01)
                 nn.init.zeros_(m.bias)
 
-    def _forward_impl(self, x):
-        # This exists since TorchScript doesn't support inheritance, so the superclass method
-        # (this one) needs to have a name other than `forward` that can be accessed in a subclass
-        x = self.features(x)
-        # Cannot use "squeeze" as batch-size can be 1 => must use reshape with x.shape[0]
-        x = nn.functional.adaptive_avg_pool2d(x, 1).reshape(x.shape[0], -1)
-        x = self.classifier(x)
-        return x
-
-    def forward(self, x):
-        return self._forward_impl(x)
+    def forward(self, input):
+        output = self.features(input)
+        output = nn.functional.adaptive_avg_pool2d(output, 1).reshape(output.shape[0], -1)
+        output = self.classifier(output)
+        return output

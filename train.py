@@ -48,11 +48,21 @@ def run_training():
     LOGGER.info(f'Setting architecture to {arch_dict[arch].__name__}')
     base_model = arch_dict[arch](num_classes=196)
 
+    optim = CFG['optimizer']
+    assert optim in ['adam', 'sgd'], (
+        f'Optimizer has to be one of: `adam`, `sgd`'
+        f'Provided architecture: {optim}'
+    )
+
+    LOGGER.info(f'Set optimizer to: {optim}')
+
     # Init Lightning Module
     model = StanfordLightningModule(
         base_model, data_path=DATA_PATH,
         batch_size=CFG['batch_size'], image_size=(227, 227),
-        split_ratios=CFG['split_ratios'], seed=CFG['seed'])
+        split_ratios=CFG['split_ratios'], 
+        optimizer=optim, learning_rate=CFG['learning_rate'],
+        seed=CFG['seed'])
 
     # Callbacks
     early_stop_callback = pl.callbacks.early_stopping.EarlyStopping(
@@ -77,7 +87,7 @@ def run_training():
         max_epochs=CFG['num_epochs'], gpus=1,
         early_stop_callback=early_stop_callback,
         checkpoint_callback=checkpoint_callback
-        )
+    )
 
     LOGGER.info(f'Running training with: {arch}')
     trainer.fit(model)

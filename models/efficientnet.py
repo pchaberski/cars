@@ -28,8 +28,8 @@ class Swish(nn.Module):
     def __init__(self, *args, **kwargs):
         super().__init__()
 
-    def forward(self, x):
-        return x * torch.sigmoid(x)
+    def forward(self, input):
+        return input * torch.sigmoid(input)
 
 
 class ConvBNReLU(nn.Sequential):
@@ -60,8 +60,8 @@ class SqueezeExcitation(nn.Module):
             nn.Sigmoid(),
         )
 
-    def forward(self, x):
-        return x * self.se(x)
+    def forward(self, input):
+        return input * self.se(input)
 
 class MBConvBlock(nn.Module):
 
@@ -109,11 +109,11 @@ class MBConvBlock(nn.Module):
         binary_tensor = random_tensor.floor()
         return x.div(keep_prob) * binary_tensor
 
-    def forward(self, x):
+    def forward(self, input):
         if self.use_residual:
-            return x + self._drop_connect(self.conv(x))
+            return input + self._drop_connect(self.conv(input))
         else:
-            return self.conv(x)
+            return self.conv(input)
 
 
 def _make_divisible(value, divisor=8):
@@ -172,7 +172,6 @@ class EfficientNet(nn.Module):
             nn.Linear(last_channels, num_classes),
         )
 
-        # weight initialization
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
                 nn.init.kaiming_normal_(m.weight, mode='fan_out')
@@ -188,11 +187,11 @@ class EfficientNet(nn.Module):
                 if m.bias is not None:
                     nn.init.zeros_(m.bias)
 
-    def forward(self, x):
-        x = self.features(x)
-        x = x.mean([2, 3])
-        x = self.classifier(x)
-        return x
+    def forward(self, input):
+        output = self.features(input)
+        output = output.mean([2, 3])
+        output = self.classifier(output)
+        return output
 
 
 def EfficientNet_b0(**kwargs):

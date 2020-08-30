@@ -10,23 +10,29 @@ import os
 import torch
 from torch import nn
 from pytorch_lightning.metrics.functional import accuracy
+from torch.optim import SGD, Adam
 
 
 class StanfordLightningModule(pl.LightningModule):
 
-    def __init__(self, base_model, data_path, batch_size, image_size, split_ratios, seed):
+    def __init__(
+        self, base_model, data_path, batch_size, image_size,
+        split_ratios, optimizer, learning_rate, seed
+    ):
         super().__init__()
         self.base_model = base_model
         self.data_path = data_path
         self.batch_size = batch_size
         self.image_size = image_size
         self.split_ratios = split_ratios
-        self.seed = seed
         self.loss = nn.CrossEntropyLoss()
+        self.learning_rate = float(learning_rate)
+        self.optimizer = Adam if optimizer == 'adam' else SGD
+        self.seed = seed
 
     @pl.core.decorators.auto_move_data
     def forward(self, input):
-        return self.base_model.forward(input)
+        return self.base_model(input)
 
     def prepare_data(self):
         assert round(sum(self.split_ratios), 5) == 1., \
@@ -48,7 +54,7 @@ class StanfordLightningModule(pl.LightningModule):
     def step(self, batch, batch_idx, loss_type):
         input, labels = batch
 
-        preds = self.forward(input)
+        preds = self(input)
         pred_classes = torch.argmax(preds, dim=1)
 
         loss = self.loss(preds, labels)
@@ -88,4 +94,4 @@ class StanfordLightningModule(pl.LightningModule):
         return DataLoader(self.data_test, batch_size=self.batch_size)
 
     def configure_optimizers(self):
-        return torch.optim.SGD(self.parameters(), lr=1e-3)
+        return self.optimizer(self.parameters(), lr=self.learning_rate)
