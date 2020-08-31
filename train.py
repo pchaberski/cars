@@ -7,6 +7,7 @@ from utils.timer import timer
 from models.arch_dict import get_architectures_dictionary
 from datasets.stanford import StanfordCarsDataset
 from models.plmodule import StanfordLightningModule
+from datetime import datetime
 import torch
 import pytorch_lightning as pl
 import os
@@ -17,6 +18,7 @@ import getopt
 CFG = load_config('config.yml')
 LOGGER = configure_logger(__name__, CFG['logging_dir'], CFG['loglevel'])
 OUTPUT_PATH = os.path.join(os.getcwd(), CFG['output_path'])
+RUN_TIMESTAMP = datetime.now().strftime('%Y%m%d%H%M%S')
 
 
 try:
@@ -79,7 +81,7 @@ def run_training():
         verbose=True,
         monitor='val_loss',
         mode='min',
-        prefix=CFG['architecture'] + '_'
+        prefix=CFG['architecture'] + '_' + RUN_TIMESTAMP + '_'
     )
 
     # Train

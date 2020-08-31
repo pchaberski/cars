@@ -1,12 +1,12 @@
 """Architectures dictionary."""
 
 
-from models.squeezenet import SqueezeNet_10, SqueezeNet_11
-from models.squeezenext import (
+from models.architectures.squeezenet import SqueezeNet_10, SqueezeNet_11
+from models.architectures.squeezenext import (
     SqueezeNext23_10, SqueezeNext23_10_v5,
     SqueezeNext23_20, SqueezeNext23_20_v5)
-from models.mobilenet import MobileNet_v2
-from models.efficientnet import (
+from models.architectures.mobilenet import MobileNet_v2
+from models.architectures.efficientnet import (
     EfficientNet_b0,
     EfficientNet_b1,
     EfficientNet_b2,
