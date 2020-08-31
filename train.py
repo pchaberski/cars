@@ -88,7 +88,8 @@ def run_training():
     trainer = pl.Trainer(
         max_epochs=CFG['num_epochs'], gpus=1,
         early_stop_callback=early_stop_callback,
-        checkpoint_callback=checkpoint_callback
+        checkpoint_callback=checkpoint_callback,
+        fast_dev_run=True
     )
 
     LOGGER.info(f'Running training with: {arch}')

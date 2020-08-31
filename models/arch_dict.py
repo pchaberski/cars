@@ -16,6 +16,18 @@ from models.architectures.efficientnet import (
     EfficientNet_b6,
     EfficientNet_b7
 )
+from models.architectures.ghostnet import GhostNet
+from models.architectures.hardnet import (
+    HarDNet_39, HarDNet_39dw,
+    HarDNet_68, HarDNet_68dw,
+    HarDNet_85, HarDNet_85dw
+)
+from models.architectures.shufflenet import (
+    ShuffleNet_v2_x05,
+    ShuffleNet_v2_x10,
+    ShuffleNet_v2_x15,
+    ShuffleNet_v2_x20
+)
 
 
 def get_architectures_dictionary():
@@ -34,7 +46,18 @@ def get_architectures_dictionary():
         'eff_b4': EfficientNet_b4,
         'eff_b5': EfficientNet_b5,
         'eff_b6': EfficientNet_b6,
-        'eff_b7': EfficientNet_b7
+        'eff_b7': EfficientNet_b7,
+        'ghost': GhostNet,
+        'hard_39': HarDNet_39,
+        'hard_39dw': HarDNet_39dw,
+        'hard_68': HarDNet_68,
+        'hard_68dw': HarDNet_68dw,
+        'hard_85': HarDNet_85,
+        'hard_85dw': HarDNet_85dw,
+        'shuff_v2_x05': ShuffleNet_v2_x05,
+        'shuff_v2_x10': ShuffleNet_v2_x10,
+        'shuff_v2_x15': ShuffleNet_v2_x15,
+        'shuff_v2_x20': ShuffleNet_v2_x20
     }
 
     return arch_dict
