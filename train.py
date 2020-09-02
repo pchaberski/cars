@@ -5,8 +5,8 @@ from utils.logger import configure_logger
 from utils.configuration import load_config
 from utils.timer import timer
 from models.arch_dict import get_architectures_dictionary
-from datasets.stanford import StanfordCarsDataset
-from models.plmodule import StanfordLightningModule
+from datasets.stanford_data_module import StanfordCarsDataModule
+from models.net_module import NetModule
 from datetime import datetime
 import torch
 import pytorch_lightning as pl
@@ -58,13 +58,16 @@ def run_training():
 
     LOGGER.info(f'Set optimizer to: {optim}')
 
-    # Init Lightning Module
-    model = StanfordLightningModule(
-        base_model, data_path=DATA_PATH,
+    # Init Stanford Cars Dataset Lightning Module
+    data_module = StanfordCarsDataModule(
+        data_path=DATA_PATH,
         batch_size=CFG['batch_size'], image_size=(227, 227),
-        split_ratios=CFG['split_ratios'], 
-        optimizer=optim, learning_rate=CFG['learning_rate'],
-        seed=CFG['seed'])
+        split_ratios=CFG['split_ratios'], seed=CFG['seed']
+    )
+
+    # Init modeling Lightning Module
+    model = NetModule(
+        base_model, optimizer=optim, learning_rate=CFG['learning_rate'])
 
     # Callbacks
     early_stop_callback = pl.callbacks.early_stopping.EarlyStopping(
@@ -86,17 +89,18 @@ def run_training():
 
     # Train
     trainer = pl.Trainer(
-        max_epochs=CFG['num_epochs'], gpus=1,
+        max_epochs=CFG['num_epochs'],
+        gpus=1,
         early_stop_callback=early_stop_callback,
         checkpoint_callback=checkpoint_callback,
-        fast_dev_run=True
+        fast_dev_run=False
     )
 
     LOGGER.info(f'Running training with: {arch}')
-    trainer.fit(model)
+    trainer.fit(model, data_module)
 
     # Test
-    trainer.test(model)
+    trainer.test(model, datamodule=data_module)
 
     LOGGER.info('All done.')
 

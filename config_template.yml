@@ -9,7 +9,7 @@ stanford_data_path: 'input/stanford'
 # Network and training settings
 architecture: 'sq_10'  # Possible options in `models.arch_dict`
 batch_size: 32
-split_ratios: [0.7, 0.15, 0.15]  # Train/valid/test ratios
+split_ratios: [0.8, 0.2]  # Train/valid ratios
 num_epochs: 1
 seed: 42
 
