@@ -24,6 +24,13 @@ RUN_TIMESTAMP = datetime.now().strftime('%Y%m%d%H%M%S')
 
 
 try:
+    import google.colab
+    RUNTIME = 'colab'
+except:
+    RUNTIME = 'local'
+
+
+try:
     opts, args = getopt.getopt(sys.argv[1:], 'd:')
     if len(opts) == 0 or len(opts) > 1:
         DATA_PATH = CFG['stanford_data_path']
@@ -91,6 +98,7 @@ def run_training():
     # Neptune logger
     if CFG['log_to_neptune']:
         neptune_parameters = {
+            'runtime': RUNTIME,
             'architecture': arch_dict[arch].__name__,
             'num_params': sum(p.numel() for p in base_model.parameters() if p.requires_grad),
             'batch_size': CFG['batch_size'],
