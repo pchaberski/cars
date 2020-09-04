@@ -116,8 +116,7 @@ def run_training():
         gpus=1,
         early_stop_callback=early_stop_callback,
         checkpoint_callback=checkpoint_callback,
-        logger=neptune_logger,
-        fast_dev_run=True
+        logger=neptune_logger
     )
 
     LOGGER.info(f'Running training with: {arch}')
