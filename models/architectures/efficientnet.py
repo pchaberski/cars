@@ -137,8 +137,9 @@ def _round_repeats(repeats, depth_mult):
 
 class EfficientNet(nn.Module):
 
-    def __init__(self, width_mult=1.0, depth_mult=1.0, dropout_rate=0.2, num_classes=1000):
+    def __init__(self, num_classes, width_mult=1.0, depth_mult=1.0, dropout_rate=0.2):
         super().__init__()
+        self.num_classes = num_classes
 
         settings = [
             # t, c, n, s, k
@@ -169,7 +170,7 @@ class EfficientNet(nn.Module):
         self.features = nn.Sequential(*features)
         self.classifier = nn.Sequential(
             nn.Dropout(dropout_rate),
-            nn.Linear(last_channels, num_classes),
+            nn.Linear(last_channels, self.num_classes),
         )
 
         for m in self.modules():
@@ -194,57 +195,57 @@ class EfficientNet(nn.Module):
         return output
 
 
-def EfficientNet_b0(**kwargs):
+def EfficientNet_b0(num_classes, **kwargs):
     width_mult, depth_mult, _, dropout_rate = params['efficientnet_b0']
-    model = EfficientNet(width_mult, depth_mult, dropout_rate, **kwargs)
+    model = EfficientNet(num_classes, width_mult, depth_mult, dropout_rate, **kwargs)
 
     return model
 
 
-def EfficientNet_b1(**kwargs):
+def EfficientNet_b1(num_classes, **kwargs):
     width_mult, depth_mult, _, dropout_rate = params['efficientnet_b1']
-    model = EfficientNet(width_mult, depth_mult, dropout_rate, **kwargs)
+    model = EfficientNet(num_classes, width_mult, depth_mult, dropout_rate, **kwargs)
 
     return model
 
 
-def EfficientNet_b2(**kwargs):
+def EfficientNet_b2(num_classes, **kwargs):
     width_mult, depth_mult, _, dropout_rate = params['efficientnet_b2']
-    model = EfficientNet(width_mult, depth_mult, dropout_rate, **kwargs)
+    model = EfficientNet(num_classes, width_mult, depth_mult, dropout_rate, **kwargs)
 
     return model
 
 
-def EfficientNet_b3(**kwargs):
+def EfficientNet_b3(num_classes, **kwargs):
     width_mult, depth_mult, _, dropout_rate = params['efficientnet_b3']
-    model = EfficientNet(width_mult, depth_mult, dropout_rate, **kwargs)
+    model = EfficientNet(num_classes, width_mult, depth_mult, dropout_rate, **kwargs)
 
     return model
 
 
-def EfficientNet_b4(**kwargs):
+def EfficientNet_b4(num_classes, **kwargs):
     width_mult, depth_mult, _, dropout_rate = params['efficientnet_b4']
-    model = EfficientNet(width_mult, depth_mult, dropout_rate, **kwargs)
+    model = EfficientNet(num_classes, width_mult, depth_mult, dropout_rate, **kwargs)
 
     return model
 
 
-def EfficientNet_b5(**kwargs):
+def EfficientNet_b5(num_classes, **kwargs):
     width_mult, depth_mult, _, dropout_rate = params['efficientnet_b5']
-    model = EfficientNet(width_mult, depth_mult, dropout_rate, **kwargs)
+    model = EfficientNet(num_classes, width_mult, depth_mult, dropout_rate, **kwargs)
 
     return model
 
 
-def EfficientNet_b6(**kwargs):
+def EfficientNet_b6(num_classes, **kwargs):
     width_mult, depth_mult, _, dropout_rate = params['efficientnet_b6']
-    model = EfficientNet(width_mult, depth_mult, dropout_rate, **kwargs)
+    model = EfficientNet(num_classes, width_mult, depth_mult, dropout_rate, **kwargs)
 
     return model
 
 
-def EfficientNet_b7(**kwargs):
+def EfficientNet_b7(num_classes, **kwargs):
     width_mult, depth_mult, _, dropout_rate = params['efficientnet_b7']
-    model = EfficientNet(width_mult, depth_mult, dropout_rate, **kwargs)
+    model = EfficientNet(num_classes, width_mult, depth_mult, dropout_rate, **kwargs)
 
     return model

@@ -65,13 +65,14 @@ class InvertedResidual(nn.Module):
 
 class MobileNet_v2(nn.Module):
     def __init__(self,
-                 num_classes=1000,
+                 num_classes,
                  width_mult=1.0,
                  inverted_residual_setting=None,
                  round_nearest=8,
                  block=None,
                  norm_layer=None):
         super().__init__()
+        self.num_classes = num_classes
 
         if block is None:
             block = InvertedResidual
@@ -114,7 +115,7 @@ class MobileNet_v2(nn.Module):
 
         self.classifier = nn.Sequential(
             nn.Dropout(0.2),
-            nn.Linear(self.last_channel, num_classes),
+            nn.Linear(self.last_channel, self.num_classes),
         )
 
         for m in self.modules():

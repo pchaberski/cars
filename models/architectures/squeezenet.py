@@ -102,9 +102,9 @@ class SqueezeNet(nn.Module):
         return output
 
 
-def SqueezeNet_10(num_classes=196):
+def SqueezeNet_10(num_classes):
     return SqueezeNet(version='1_0', num_classes=num_classes)
 
 
-def SqueezeNet_11(num_classes=196):
+def SqueezeNet_11(num_classes):
     return SqueezeNet(version='1_1', num_classes=num_classes)

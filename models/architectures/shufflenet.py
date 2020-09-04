@@ -76,8 +76,9 @@ class InvertedResidual(nn.Module):
 
 
 class ShuffleNetV2(nn.Module):
-    def __init__(self, stages_repeats, stages_out_channels, num_classes=1000, inverted_residual=InvertedResidual):
-        super(ShuffleNetV2, self).__init__()
+    def __init__(self, num_classes, stages_repeats, stages_out_channels, inverted_residual=InvertedResidual):
+        super().__init__()
+        self.num_classes = num_classes
 
         if len(stages_repeats) != 3:
             raise ValueError('expected stages_repeats as list of 3 positive ints')
@@ -112,7 +113,7 @@ class ShuffleNetV2(nn.Module):
             nn.ReLU(inplace=True),
         )
 
-        self.fc = nn.Linear(output_channels, num_classes)
+        self.fc = nn.Linear(output_channels, self.num_classes)
 
     def forward(self, input):
         output = self.conv1(input)
@@ -126,17 +127,17 @@ class ShuffleNetV2(nn.Module):
         return output
 
 
-def ShuffleNet_v2_x05(*args, **kwargs):
-    return ShuffleNetV2([4, 8, 4], [24, 48, 96, 192, 1024], **kwargs)
+def ShuffleNet_v2_x05(num_classes, *args, **kwargs):
+    return ShuffleNetV2(num_classes, [4, 8, 4], [24, 48, 96, 192, 1024], **kwargs)
 
 
-def ShuffleNet_v2_x10(*args, **kwargs):
-    return ShuffleNetV2([4, 8, 4], [24, 116, 232, 464, 1024], **kwargs)
+def ShuffleNet_v2_x10(num_classes, *args, **kwargs):
+    return ShuffleNetV2(num_classes, [4, 8, 4], [24, 116, 232, 464, 1024], **kwargs)
 
 
-def ShuffleNet_v2_x15(*args, **kwargs):
-    return ShuffleNetV2([4, 8, 4], [24, 176, 352, 704, 1024], **kwargs)
+def ShuffleNet_v2_x15(num_classes, *args, **kwargs):
+    return ShuffleNetV2(num_classes, [4, 8, 4], [24, 176, 352, 704, 1024], **kwargs)
 
 
-def ShuffleNet_v2_x20(*args, **kwargs):
-    return ShuffleNetV2([4, 8, 4], [24, 244, 488, 976, 2048], **kwargs)
+def ShuffleNet_v2_x20(num_classes, *args, **kwargs):
+    return ShuffleNetV2(num_classes, [4, 8, 4], [24, 244, 488, 976, 2048], **kwargs)

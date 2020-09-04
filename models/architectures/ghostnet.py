@@ -109,8 +109,10 @@ class GhostBottleneck(nn.Module):
 
 
 class GhostNet(nn.Module):
-    def __init__(self, num_classes=1000, width_mult=1.):
-        super(GhostNet, self).__init__()
+    def __init__(self, num_classes, width_mult=1.):
+        super().__init__()
+        self.num_classes = num_classes
+
         # setting of inverted residual blocks
         self.cfgs = [
             # k, t, c, SE, s
@@ -166,7 +168,7 @@ class GhostNet(nn.Module):
             nn.BatchNorm1d(output_channel),
             nn.ReLU(inplace=True),
             nn.Dropout(0.2),
-            nn.Linear(output_channel, num_classes),
+            nn.Linear(output_channel, self.num_classes),
         )
 
         self._initialize_weights()
