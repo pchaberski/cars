@@ -5,8 +5,8 @@ from utils.configuration import load_config
 import pytorch_lightning as pl
 import torch
 from torch import nn
-# from pytorch_lightning.metrics.functional import accuracy
 from torch.optim import SGD, Adam
+from pytorch_lightning.metrics.functional import accuracy
 
 
 class NetModule(pl.LightningModule):
@@ -21,35 +21,47 @@ class NetModule(pl.LightningModule):
     def forward(self, input):
         return self.base_model(input)
 
-    def step(self, batch, batch_idx, loss_type):
+    def training_step(self, batch, batch_idx):
         input, labels = batch
-
-        preds = self(input)
-        pred_classes = torch.argmax(preds, dim=1)
-
+        preds = self.forward(input)
         loss = self.loss(preds, labels)
-        logs = {loss_type: loss}
+        acc = accuracy(preds, labels)
 
-        return {loss_type: loss, 'log': logs}
+        result = pl.TrainResult(loss)
+        result.log_dict({
+            'train_loss': loss,
+            'train_acc': acc
+        })
 
-    def training_step(self, batch_train, batch_idx):
-        return self.step(batch_train, batch_idx, 'loss')
+        return result
 
-    def validation_step(self, batch_valid, batch_idx):
-        return self.step(batch_valid, batch_idx, 'val_loss')
+    def validation_step(self, batch, batch_idx):
+        input, labels = batch
+        preds = self.forward(input)
+        loss = self.loss(preds, labels)
+        acc = accuracy(preds, labels)
 
-    def test_step(self, batch_test, batch_idx):
-        return self.step(batch_test, batch_idx, 'test_loss')
+        result = pl.EvalResult(checkpoint_on=loss)
+        result.log_dict({
+            'valid_loss': loss,
+            'valid_acc': acc
+        })
 
-    def validation_epoch_end(self, outputs):
-        avg_loss = torch.stack([output['val_loss'] for output in outputs]).mean()
-        tensorboard_logs = {'val_loss': avg_loss}
-        return {'avg_val_loss': avg_loss, 'log': tensorboard_logs}
+        return result
 
-    def test_epoch_end(self, outputs):
-        avg_loss = torch.stack([output['test_loss'] for output in outputs]).mean()
-        tensorboard_logs = {'test_loss': avg_loss}
-        return {'avg_test_loss': avg_loss, 'log': tensorboard_logs}
+    def test_step(self, batch, batch_idx):
+        input, labels = batch
+        preds = self.forward(input)
+        loss = self.loss(preds, labels)
+        acc = accuracy(preds, labels, num_classes=self.base_model.num_classes)
+
+        result = pl.EvalResult(checkpoint_on=loss)
+        result.log_dict({
+            'test_loss': loss,
+            'test_acc': acc
+        })
+
+        return result
 
     def configure_optimizers(self):
         return self.optimizer(self.parameters(), lr=self.learning_rate)

@@ -6,3 +6,5 @@ mat4py==0.4.3
 pytorch-lightning==0.9
 torch==1.6.0
 torchvision==0.7.0
+neptune-client==0.4.119
+psutil==5.7.2

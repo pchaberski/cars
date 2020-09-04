@@ -1,6 +1,10 @@
 # Logging settings:
-loglevel: 'INFO'
+loglevel: 'INFO'6
 logging_dir: 'logs'
+log_to_neptune: False
+neptune_username: '<neptune.ai username>'
+neptune_project_name: '<neptune.ai project_name>'
+neptune_api_token: '<neptune.ai API token>'
 
 # Train/test dataset and devkit location
 stanford_raw_data_path: '<path to the folder containing: car_ims.tgz, cars_annos.mat, car_devkit.tgz>'
@@ -10,7 +14,7 @@ stanford_data_path: 'input/stanford'
 architecture: 'sq_10'  # Possible options in `models.arch_dict`
 batch_size: 32
 split_ratios: [0.8, 0.2]  # Train/valid ratios
-num_epochs: 1
+num_epochs: 3
 seed: 42
 
 # Optimizer settings

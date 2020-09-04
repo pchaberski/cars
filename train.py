@@ -13,6 +13,8 @@ import pytorch_lightning as pl
 import os
 import sys
 import getopt
+import neptune
+from pytorch_lightning.loggers import NeptuneLogger
 
 
 CFG = load_config('config.yml')
@@ -77,7 +79,6 @@ def run_training():
         verbose=False,
         mode='min'
     )
-
     checkpoint_callback = pl.callbacks.ModelCheckpoint(
         filepath=OUTPUT_PATH,
         save_top_k=1,
@@ -87,12 +88,35 @@ def run_training():
         prefix=CFG['architecture'] + '_' + RUN_TIMESTAMP + '_'
     )
 
+    # Neptune logger
+    if CFG['log_to_neptune']:
+        neptune_parameters = {
+            'architecture': arch_dict[arch].__name__,
+            'num_params': sum(p.numel() for p in base_model.parameters() if p.requires_grad),
+            'batch_size': CFG['batch_size'],
+            'train_valid_split': CFG['split_ratios'],
+            'max_num_epochs': CFG['num_epochs'],
+            'optimizer': CFG['optimizer'],
+            'learning_rate': CFG['learning_rate'],
+            'random_seed': CFG['seed']
+        }
+
+        neptune_logger = NeptuneLogger(
+            api_key=CFG['neptune_api_token'],
+            project_name='pchaberski/cars',
+            experiment_name=CFG['architecture'] + '_' + RUN_TIMESTAMP,
+            params=neptune_parameters
+        )
+    else:
+        neptune_logger = None
+
     # Train
     trainer = pl.Trainer(
         max_epochs=CFG['num_epochs'],
         gpus=1,
         early_stop_callback=early_stop_callback,
         checkpoint_callback=checkpoint_callback,
+        logger=neptune_logger,
         fast_dev_run=False
     )
 
