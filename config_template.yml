@@ -1,5 +1,5 @@
 # Logging settings:
-loglevel: 'INFO'6
+loglevel: 'INFO'
 logging_dir: 'logs'
 log_to_neptune: False
 neptune_username: '<neptune.ai username>'
@@ -23,10 +23,10 @@ normalization_params_grayscale:  # Applied when 'convert_to_grayscale==True'
 
 # Network and training settings
 architecture: 'sq_10'  # Possible options in 'models.arch_dict'
-batch_size: 32
+batch_size: 16
 validate_on_test: False
 split_ratios: [0.8, 0.2]  # Train/valid ratios - if `validate_on_test==False`
-num_epochs: 3
+num_epochs: 100
 
 # Optimizer settings
 optimizer: 'adam'  # possible choices: 'adam', 'sgd'
