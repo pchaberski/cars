@@ -1,8 +1,13 @@
 # cars
 
-setting up venv and installing pytorch with pip (on Windows):
+TODO: a proper README
 
-requirements.txt:
+Experiment tracking:
+https://ui.neptune.ai/pchaberski/cars/experiments?viewId=139ea15a-c997-4779-8abb-c2b937db28d6
+
+Setting up venv and installing PyTorch with pip (on Windows):
+
+prod_requirements.txt:
 
 ```
 ...
@@ -19,8 +24,6 @@ C:\Users\pchaberski>cd C:\Users\pchaberski\Google Drive\gdprojects\cars
 C:\Users\pchaberski\Google Drive\gdprojects\cars>python -m venv C:\projects\venvs\cars
 
 C:\Users\pchaberski\Google Drive\gdprojects\cars>C:\projects\venvs\cars\Scripts\activate.bat
-
-(cars) C:\Users\pchaberski\Google Drive\gdprojects\cars>pip install -r dev_requirements.txt
 
 (cars) C:\Users\pchaberski\Google Drive\gdprojects\cars>pip install -r prod_requirements.txt -f https://download.pytorch.org/whl/torch_stable.html
 ```

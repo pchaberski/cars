@@ -64,7 +64,7 @@ def run_training():
     optim = CFG['optimizer']
     assert optim in ['adam', 'sgd'], (
         f'Optimizer has to be one of: `adam`, `sgd`'
-        f'Provided architecture: {optim}'
+        f'Provided optimizer: {optim}'
     )
 
     LOGGER.info(f'Setting optimizer to: {optim}')
