@@ -109,9 +109,10 @@ class GhostBottleneck(nn.Module):
 
 
 class GhostNet(nn.Module):
-    def __init__(self, num_classes, width_mult=1.):
+    def __init__(self, num_classes, img_channels, width_mult=1.):
         super().__init__()
         self.num_classes = num_classes
+        self.img_channels = img_channels
 
         # setting of inverted residual blocks
         self.cfgs = [
@@ -137,7 +138,7 @@ class GhostNet(nn.Module):
         # building first layer
         output_channel = _make_divisible(16 * width_mult, 4)
         layers = [nn.Sequential(
-            nn.Conv2d(3, output_channel, 3, 2, 1, bias=False),
+            nn.Conv2d(self.img_channels, output_channel, 3, 2, 1, bias=False),
             nn.BatchNorm2d(output_channel),
             nn.ReLU(inplace=True)
         )]

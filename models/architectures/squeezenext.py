@@ -50,13 +50,14 @@ class BasicBlock(nn.Module):
 
 
 class SqueezeNext(nn.Module):
-    def __init__(self, num_classes, width_x, blocks):
+    def __init__(self, num_classes, img_channels, width_x, blocks):
         super().__init__()
         self.num_classes = num_classes
+        self.img_channels = img_channels
 
         self.in_channels = 64
 
-        self.conv1  = nn.Conv2d(3, int(width_x * self.in_channels), 7, 2, 0, bias=True)  # changed based on paper
+        self.conv1  = nn.Conv2d(img_channels, int(width_x * self.in_channels), 7, 2, 0, bias=True)  # changed based on paper
         self.maxpool = nn.MaxPool2d(2)
         self.bn1    = nn.BatchNorm2d(int(width_x * self.in_channels))
         self.stage1 = self._make_layer(blocks[0], width_x, 32, 1)
@@ -93,17 +94,17 @@ class SqueezeNext(nn.Module):
         return output
 
 
-def SqueezeNext23_10(num_classes):
-    return SqueezeNext(num_classes, 1.0, [6, 6, 8, 1])
+def SqueezeNext23_10(num_classes, img_channels):
+    return SqueezeNext(num_classes, img_channels, 1.0, [6, 6, 8, 1])
 
 
-def SqueezeNext23_10_v5(num_classes):
-    return SqueezeNext(num_classes, 1.0, [2, 4, 14, 1])
+def SqueezeNext23_10_v5(num_classes, img_channels):
+    return SqueezeNext(num_classes, img_channels, 1.0, [2, 4, 14, 1])
 
 
-def SqueezeNext23_20(num_classes):
-    return SqueezeNext(num_classes, 2.0, [6, 6, 8, 1])
+def SqueezeNext23_20(num_classes, img_channels):
+    return SqueezeNext(num_classes, img_channels, 2.0, [6, 6, 8, 1])
 
 
-def SqueezeNext23_20_v5(num_classes):
-    return SqueezeNext(num_classes, 2.0, [2, 4, 14, 1])
+def SqueezeNext23_20_v5(num_classes, img_channels):
+    return SqueezeNext(num_classes, img_channels, 2.0, [2, 4, 14, 1])

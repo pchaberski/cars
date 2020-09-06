@@ -64,15 +64,19 @@ class InvertedResidual(nn.Module):
 
 
 class MobileNet_v2(nn.Module):
-    def __init__(self,
-                 num_classes,
-                 width_mult=1.0,
-                 inverted_residual_setting=None,
-                 round_nearest=8,
-                 block=None,
-                 norm_layer=None):
+    def __init__(
+        self,
+        num_classes,
+        img_channels,
+        width_mult=1.0,
+        inverted_residual_setting=None,
+        round_nearest=8,
+        block=None,
+        norm_layer=None
+    ):
         super().__init__()
         self.num_classes = num_classes
+        self.img_channels = img_channels
 
         if block is None:
             block = InvertedResidual
@@ -103,7 +107,7 @@ class MobileNet_v2(nn.Module):
 
         input_channel = _make_divisible(input_channel * width_mult, round_nearest)
         self.last_channel = _make_divisible(last_channel * max(1.0, width_mult), round_nearest)
-        features = [ConvBNReLU(3, input_channel, stride=2, norm_layer=norm_layer)]
+        features = [ConvBNReLU(self.img_channels, input_channel, stride=2, norm_layer=norm_layer)]
         for t, c, n, s in inverted_residual_setting:
             output_channel = _make_divisible(c * width_mult, round_nearest)
             for i in range(n):
@@ -134,4 +138,5 @@ class MobileNet_v2(nn.Module):
         output = self.features(input)
         output = nn.functional.adaptive_avg_pool2d(output, 1).reshape(output.shape[0], -1)
         output = self.classifier(output)
+        
         return output

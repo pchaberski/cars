@@ -138,9 +138,12 @@ class HarDBlock(nn.Module):
 
 
 class HarDNet(nn.Module):
-    def __init__(self, num_classes, arch=85, depth_wise=False):
+    def __init__(self, num_classes, img_channels, arch=85, depth_wise=False):
         super().__init__()
         self.num_classes = num_classes
+        self.img_channels = img_channels
+
+
         second_kernel = 3
         max_pool = True
         grmul = 1.7
@@ -180,7 +183,7 @@ class HarDNet(nn.Module):
 
         # First Layer: Standard Conv3x3, Stride=2
         self.base.append(
-            ConvLayer(in_channels=3, out_channels=first_ch[0], kernel=3,
+            ConvLayer(in_channels=self.img_channels, out_channels=first_ch[0], kernel=3,
             stride=2, bias=False))
 
         # Second Layer
@@ -226,25 +229,25 @@ class HarDNet(nn.Module):
         return x
 
 
-def HarDNet_39(num_classes):
-    return HarDNet(num_classes, arch=39, depth_wise=False)
+def HarDNet_39(num_classes, img_channels):
+    return HarDNet(num_classes, img_channels, arch=39, depth_wise=False)
 
 
-def HarDNet_39dw(num_classes):
-    return HarDNet(num_classes, arch=39, depth_wise=True)
+def HarDNet_39dw(num_classes, img_channels):
+    return HarDNet(num_classes, img_channels, arch=39, depth_wise=True)
 
 
-def HarDNet_68(num_classes):
-    return HarDNet(num_classes, arch=68, depth_wise=False)
+def HarDNet_68(num_classes, img_channels):
+    return HarDNet(num_classes, img_channels, arch=68, depth_wise=False)
 
 
-def HarDNet_68dw(num_classes):
-    return HarDNet(num_classes, arch=68, depth_wise=True)
+def HarDNet_68dw(num_classes, img_channels):
+    return HarDNet(num_classes, img_channels, arch=68, depth_wise=True)
 
 
-def HarDNet_85(num_classes):
-    return HarDNet(num_classes, arch=85, depth_wise=False)
+def HarDNet_85(num_classes, img_channels):
+    return HarDNet(num_classes, img_channels, arch=85, depth_wise=False)
 
 
-def HarDNet_85dw(num_classes):
-    return HarDNet(num_classes, arch=85, depth_wise=True)
+def HarDNet_85dw(num_classes, img_channels):
+    return HarDNet(num_classes, img_channels, arch=85, depth_wise=True)

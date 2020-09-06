@@ -26,7 +26,7 @@ class NetModule(pl.LightningModule):
         input, labels = batch
         preds = self.forward(input)
         loss = self.loss(preds, labels)
-        acc = accuracy(preds, labels)
+        acc = accuracy(preds, labels, num_classes=self.base_model.num_classes)
 
         result = pl.TrainResult(loss)
         result.log_dict({

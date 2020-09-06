@@ -76,9 +76,17 @@ class InvertedResidual(nn.Module):
 
 
 class ShuffleNetV2(nn.Module):
-    def __init__(self, num_classes, stages_repeats, stages_out_channels, inverted_residual=InvertedResidual):
+    def __init__(
+        self,
+        num_classes,
+        img_channels,
+        stages_repeats,
+        stages_out_channels,
+        inverted_residual=InvertedResidual
+    ):
         super().__init__()
         self.num_classes = num_classes
+        self.img_channels = img_channels
 
         if len(stages_repeats) != 3:
             raise ValueError('expected stages_repeats as list of 3 positive ints')
@@ -86,7 +94,7 @@ class ShuffleNetV2(nn.Module):
             raise ValueError('expected stages_out_channels as list of 5 positive ints')
         self._stage_out_channels = stages_out_channels
 
-        input_channels = 3
+        input_channels = self.img_channels
         output_channels = self._stage_out_channels[0]
         self.conv1 = nn.Sequential(
             nn.Conv2d(input_channels, output_channels, 3, 2, 1, bias=False),
@@ -127,17 +135,17 @@ class ShuffleNetV2(nn.Module):
         return output
 
 
-def ShuffleNet_v2_x05(num_classes, *args, **kwargs):
-    return ShuffleNetV2(num_classes, [4, 8, 4], [24, 48, 96, 192, 1024], **kwargs)
+def ShuffleNet_v2_x05(num_classes, img_channels, *args, **kwargs):
+    return ShuffleNetV2(num_classes, img_channels, [4, 8, 4], [24, 48, 96, 192, 1024], **kwargs)
 
 
-def ShuffleNet_v2_x10(num_classes, *args, **kwargs):
-    return ShuffleNetV2(num_classes, [4, 8, 4], [24, 116, 232, 464, 1024], **kwargs)
+def ShuffleNet_v2_x10(num_classes, img_channels, *args, **kwargs):
+    return ShuffleNetV2(num_classes, img_channels, [4, 8, 4], [24, 116, 232, 464, 1024], **kwargs)
 
 
-def ShuffleNet_v2_x15(num_classes, *args, **kwargs):
-    return ShuffleNetV2(num_classes, [4, 8, 4], [24, 176, 352, 704, 1024], **kwargs)
+def ShuffleNet_v2_x15(num_classes, img_channels, *args, **kwargs):
+    return ShuffleNetV2(num_classes, img_channels, [4, 8, 4], [24, 176, 352, 704, 1024], **kwargs)
 
 
-def ShuffleNet_v2_x20(num_classes, *args, **kwargs):
-    return ShuffleNetV2(num_classes, [4, 8, 4], [24, 244, 488, 976, 2048], **kwargs)
+def ShuffleNet_v2_x20(num_classes, img_channels, *args, **kwargs):
+    return ShuffleNetV2(num_classes, img_channels, [4, 8, 4], [24, 244, 488, 976, 2048], **kwargs)

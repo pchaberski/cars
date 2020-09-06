@@ -44,6 +44,8 @@ except getopt.GetoptError:
 
 LOGGER.info(f'Data path: {DATA_PATH}')
 
+IMG_CHANNELS = 1 if CFG['convert_to_grayscale'] else 3
+
 
 def run_training():
     """Perform training."""
@@ -57,7 +59,7 @@ def run_training():
     )
 
     LOGGER.info(f'Setting architecture to {arch_dict[arch].__name__}')
-    base_model = arch_dict[arch](num_classes=196)
+    base_model = arch_dict[arch](num_classes=196, img_channels=IMG_CHANNELS)
 
     optim = CFG['optimizer']
     assert optim in ['adam', 'sgd'], (
@@ -65,14 +67,17 @@ def run_training():
         f'Provided architecture: {optim}'
     )
 
-    LOGGER.info(f'Set optimizer to: {optim}')
+    LOGGER.info(f'Setting optimizer to: {optim}')
 
     # Init Stanford Cars Dataset Lightning Module
     data_module = StanfordCarsDataModule(
         data_path=DATA_PATH,
-        batch_size=CFG['batch_size'], image_size=(227, 227),
+        batch_size=CFG['batch_size'],
         validate_on_test=CFG['validate_on_test'], split_ratios=CFG['split_ratios'],
-        seed=CFG['seed']
+        convert_to_grayscale=CFG['convert_to_grayscale'],
+        normalize=CFG['normalize'],
+        normalization_params=CFG['normalization_params_grayscale'] if CFG['convert_to_grayscale'] else CFG['normalization_params_rgb'],
+        image_size=CFG['image_size'], seed=CFG['seed']
     )
 
     # Init modeling Lightning Module
@@ -104,6 +109,10 @@ def run_training():
             'runtime': RUNTIME,
             'architecture': arch_dict[arch].__name__,
             'num_params': sum(p.numel() for p in base_model.parameters() if p.requires_grad),
+            'grayscale': CFG['convert_to_grayscale'],
+            'normalize': CFG['normalize'],
+            'norm_params_rgb': CFG['normalization_params_rgb'] if CFG['normalize'] and not CFG['convert_to_grayscale'] else None,
+            'norm_params_gray': CFG['normalization_params_grayscale'] if CFG['normalize'] and CFG['convert_to_grayscale'] else None,
             'batch_size': CFG['batch_size'],
             'validate_on_test': CFG['validate_on_test'],
             'train_valid_split': CFG['split_ratios'] if not CFG['validate_on_test'] else None,

@@ -41,13 +41,14 @@ class Fire(nn.Module):
 
 class SqueezeNet(nn.Module):
 
-    def __init__(self, version, num_classes=196):
+    def __init__(self, num_classes, img_channels, version):
         super().__init__()
         self.num_classes = num_classes
+        self.img_channels = img_channels
 
         if version == '1_0':
             self.features = nn.Sequential(
-                nn.Conv2d(3, 96, kernel_size=7, stride=2),
+                nn.Conv2d(self.img_channels, 96, kernel_size=7, stride=2),
                 nn.ReLU(inplace=True),
                 nn.MaxPool2d(kernel_size=3, stride=2, ceil_mode=True),
                 Fire(96, 16, 64, 64),
@@ -63,7 +64,7 @@ class SqueezeNet(nn.Module):
             )
         elif version == '1_1':
             self.features = nn.Sequential(
-                nn.Conv2d(3, 64, kernel_size=3, stride=2),
+                nn.Conv2d(self.img_channels, 64, kernel_size=3, stride=2),
                 nn.ReLU(inplace=True),
                 nn.MaxPool2d(kernel_size=3, stride=2, ceil_mode=True),
                 Fire(64, 16, 64, 64),
@@ -102,9 +103,9 @@ class SqueezeNet(nn.Module):
         return output
 
 
-def SqueezeNet_10(num_classes):
-    return SqueezeNet(version='1_0', num_classes=num_classes)
+def SqueezeNet_10(num_classes, img_channels):
+    return SqueezeNet(num_classes, img_channels, version='1_0')
 
 
-def SqueezeNet_11(num_classes):
-    return SqueezeNet(version='1_1', num_classes=num_classes)
+def SqueezeNet_11(num_classes, img_channels):
+    return SqueezeNet(num_classes, img_channels, version='1_1')

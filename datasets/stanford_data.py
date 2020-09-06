@@ -12,12 +12,19 @@ import torch
 class StanfordCarsDataset(Dataset):
     """Class for Stanford Cars Dataset."""
 
-    def __init__(self, data_path, labels_fpath, image_size=(227, 227)):
+    def __init__(
+        self, data_path, labels_fpath,
+        convert_to_grayscale=False, normalize=False,
+        normalization_params={'mean': None, 'std': None}, image_size=[227, 227]
+    ):
         super().__init__()
         self.data_path = data_path
         self.labels_fpath = labels_fpath
-        self.image_fnames = self._get_image_fnames(data_path)
+        self.convert_to_grayscale = convert_to_grayscale
+        self.normalize = normalize
+        self.normalization_params = normalization_params
         self.image_size = image_size
+        self.image_fnames = self._get_image_fnames(data_path)
         self.labels = self._get_labels(labels_fpath)
 
         assert len(self.image_fnames) == self.labels.shape[0], \
@@ -25,15 +32,28 @@ class StanfordCarsDataset(Dataset):
             f'{len(self.image_fnames)} != {self.labels.shape[0]}'
         assert set(self.image_fnames) == set(self.labels['image_fname'].tolist()), \
             'Image filenames do not match the list in labels data frame.'
+        if self.convert_to_grayscale:
+            assert len(normalization_params['mean']) == len(normalization_params['std']) == 1, \
+                f'`mean` and `std` normalization params has to be of length 1 for grayscale'
+        else:
+            assert len(normalization_params['mean']) == len(normalization_params['std']) == 3, \
+                f'`mean` and `std` normalization params has to be of length 3 for RGB'
 
     def _transform(self, image):
-        transf = transforms.Compose([
-            transforms.Resize(self.image_size),
-            transforms.ToTensor(),
-            transforms.Normalize(
-                mean=[0.485, 0.456, 0.406],
-                std=[0.229, 0.224, 0.225])
-        ])
+        transf_list = [transforms.Resize(self.image_size)]
+
+        if self.convert_to_grayscale:
+            transf_list += [transforms.Grayscale()]
+
+        transf_list += [transforms.ToTensor()]
+
+        if self.normalize:
+            transf_list += [transforms.Normalize(
+                mean=self.normalization_params['mean'],
+                std=self.normalization_params['std']
+            )]
+
+        transf = transforms.Compose(transf_list)
 
         return transf(image)
 
