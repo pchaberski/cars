@@ -11,12 +11,13 @@ from pytorch_lightning.metrics.functional import accuracy
 
 class NetModule(pl.LightningModule):
 
-    def __init__(self, base_model, optimizer, learning_rate):
+    def __init__(self, base_model, optimizer, learning_rate, validate_on_test=False):
         super().__init__()
         self.base_model = base_model
         self.loss = nn.CrossEntropyLoss()
         self.learning_rate = float(learning_rate)
         self.optimizer = Adam if optimizer == 'adam' else SGD
+        self.validate_on_test = validate_on_test
 
     def forward(self, input):
         return self.base_model(input)
@@ -39,7 +40,7 @@ class NetModule(pl.LightningModule):
         input, labels = batch
         preds = self.forward(input)
         loss = self.loss(preds, labels)
-        acc = accuracy(preds, labels)
+        acc = accuracy(preds, labels, num_classes=self.base_model.num_classes)
 
         result = pl.EvalResult(checkpoint_on=loss)
         result.log_dict({
@@ -50,16 +51,19 @@ class NetModule(pl.LightningModule):
         return result
 
     def test_step(self, batch, batch_idx):
-        input, labels = batch
-        preds = self.forward(input)
-        loss = self.loss(preds, labels)
-        acc = accuracy(preds, labels, num_classes=self.base_model.num_classes)
+        if not self.validate_on_test:
+            input, labels = batch
+            preds = self.forward(input)
+            loss = self.loss(preds, labels)
+            acc = accuracy(preds, labels, num_classes=self.base_model.num_classes)
 
-        result = pl.EvalResult(checkpoint_on=loss)
-        result.log_dict({
-            'test_loss': loss,
-            'test_acc': acc
-        })
+            result = pl.EvalResult(checkpoint_on=loss)
+            result.log_dict({
+                'test_loss': loss,
+                'test_acc': acc
+            })
+        else:
+            result = None
 
         return result
 

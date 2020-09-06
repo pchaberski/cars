@@ -12,3 +12,4 @@ notebooks/*
 !notebooks/.gitkeep 
 config.yml
 cars_vscws.code-workspace
+Kopia train_colab.ipynb

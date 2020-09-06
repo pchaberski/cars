@@ -71,12 +71,15 @@ def run_training():
     data_module = StanfordCarsDataModule(
         data_path=DATA_PATH,
         batch_size=CFG['batch_size'], image_size=(227, 227),
-        split_ratios=CFG['split_ratios'], seed=CFG['seed']
+        validate_on_test=CFG['validate_on_test'], split_ratios=CFG['split_ratios'],
+        seed=CFG['seed']
     )
 
     # Init modeling Lightning Module
     model = NetModule(
-        base_model, optimizer=optim, learning_rate=CFG['learning_rate'])
+        base_model, optimizer=optim, learning_rate=CFG['learning_rate'],
+        validate_on_test=CFG['validate_on_test']
+    )
 
     # Callbacks
     early_stop_callback = pl.callbacks.early_stopping.EarlyStopping(
@@ -102,7 +105,8 @@ def run_training():
             'architecture': arch_dict[arch].__name__,
             'num_params': sum(p.numel() for p in base_model.parameters() if p.requires_grad),
             'batch_size': CFG['batch_size'],
-            'train_valid_split': CFG['split_ratios'],
+            'validate_on_test': CFG['validate_on_test'],
+            'train_valid_split': CFG['split_ratios'] if not CFG['validate_on_test'] else None,
             'max_num_epochs': CFG['num_epochs'],
             'optimizer': CFG['optimizer'],
             'learning_rate': CFG['learning_rate'],
@@ -131,7 +135,8 @@ def run_training():
     trainer.fit(model, data_module)
 
     # Test
-    trainer.test(model, datamodule=data_module)
+    if not CFG['validate_on_test']:
+        trainer.test(model, datamodule=data_module)
 
     LOGGER.info('All done.')
 

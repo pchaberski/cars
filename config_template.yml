@@ -13,9 +13,9 @@ stanford_data_path: 'input/stanford'
 # Network and training settings
 architecture: 'sq_10'  # Possible options in `models.arch_dict`
 batch_size: 32
-split_ratios: [0.8, 0.2]  # Train/valid ratios
+validate_on_test: False
+split_ratios: [0.8, 0.2]  # Train/valid ratios - if `validate_on_test==False`
 num_epochs: 3
-seed: 42
 
 # Optimizer settings
 optimizer: 'adam'  # possible choices: 'adam', 'sgd'
@@ -23,3 +23,6 @@ learning_rate: 1e-3
 
 # Output settings
 output_path: 'output'
+
+# Other settings
+seed: 42
