@@ -11,12 +11,18 @@ from pytorch_lightning.metrics.functional import accuracy
 
 class NetModule(pl.LightningModule):
 
-    def __init__(self, base_model, optimizer, learning_rate, validate_on_test=False):
+    def __init__(
+        self, base_model, optimizer, learning_rate, 
+        lr_scheduler=None, lr_scheduler_params=None,
+        validate_on_test=False
+    ):
         super().__init__()
         self.base_model = base_model
         self.loss = nn.CrossEntropyLoss()
         self.learning_rate = float(learning_rate)
         self.optimizer = Adam if optimizer == 'adam' else SGD
+        self.lr_scheduler = lr_scheduler
+        self.lr_scheduler_params = lr_scheduler_params
         self.validate_on_test = validate_on_test
 
     def forward(self, input):
@@ -68,4 +74,10 @@ class NetModule(pl.LightningModule):
         return result
 
     def configure_optimizers(self):
-        return self.optimizer(self.parameters(), lr=self.learning_rate)
+        optimizer = self.optimizer(self.parameters(), lr=self.learning_rate)
+
+        if self.lr_scheduler is None:
+            return optimizer
+        else:
+            scheduler = self.lr_scheduler(optimizer, **self.lr_scheduler_params)
+            return [optimizer], [scheduler]

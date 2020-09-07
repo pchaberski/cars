@@ -15,6 +15,7 @@ import sys
 import getopt
 import neptune
 from pytorch_lightning.loggers import NeptuneLogger
+from importlib import import_module
 
 
 CFG = load_config('config.yml')
@@ -45,6 +46,16 @@ except getopt.GetoptError:
 LOGGER.info(f'Data path: {DATA_PATH}')
 
 IMG_CHANNELS = 1 if CFG['convert_to_grayscale'] else 3
+
+
+try:
+    LR_SCHEDULER = getattr(import_module('torch.optim.lr_scheduler'), CFG['lr_scheduler'])
+except:
+    LR_SCHEDULER = None
+    LOGGER.warning(
+        f"Invalid learning rate scheduler: {CFG['lr_scheduler']}\n"
+        f'Running training without scheduler.'
+    )
 
 
 def run_training():
@@ -119,6 +130,8 @@ def run_training():
             'max_num_epochs': CFG['num_epochs'],
             'optimizer': CFG['optimizer'],
             'learning_rate': CFG['learning_rate'],
+            'lr_scheduler': CFG['lr_scheduler'],
+            'lr_scheduler_params': CFG['lr_scheduler_params'] if CFG['lr_scheduler'] is not None else None,
             'random_seed': CFG['seed']
         }
 
