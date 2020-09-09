@@ -94,6 +94,7 @@ def run_training():
     # Init modeling Lightning Module
     model = NetModule(
         base_model, optimizer=optim, learning_rate=CFG['learning_rate'],
+        lr_scheduler=LR_SCHEDULER, lr_scheduler_params=CFG['lr_scheduler_params'],
         validate_on_test=CFG['validate_on_test']
     )
 
