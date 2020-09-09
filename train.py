@@ -145,12 +145,15 @@ def run_training():
     else:
         neptune_logger = None
 
+    lr_monitor = pl.callbacks.LearningRateLogger(logging_interval='step')
+
     # Train
     trainer = pl.Trainer(
         max_epochs=CFG['num_epochs'],
         gpus=1,
         early_stop_callback=early_stop_callback,
         checkpoint_callback=checkpoint_callback,
+        callbacks=[lr_monitor],
         logger=neptune_logger
     )
 
