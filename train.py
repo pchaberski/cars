@@ -133,7 +133,7 @@ def run_training():
             'optimizer': CFG['optimizer'],
             'learning_rate': CFG['learning_rate'],
             'lr_scheduler': CFG['lr_scheduler'],
-            'lr_scheduler_params': CFG['lr_scheduler_params'] if CFG['lr_scheduler'] is not None else None,
+            'lr_scheduler_params': CFG['lr_scheduler_params'] if LR_SCHEDULER is not None else None,
             'random_seed': CFG['seed']
         }
 
