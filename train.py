@@ -121,6 +121,7 @@ def run_training():
             'runtime': RUNTIME,
             'architecture': arch_dict[arch].__name__,
             'num_params': sum(p.numel() for p in base_model.parameters() if p.requires_grad),
+            'img_size': CFG['image_size'],
             'grayscale': CFG['convert_to_grayscale'],
             'normalize': CFG['normalize'],
             'norm_params_rgb': CFG['normalization_params_rgb'] if CFG['normalize'] and not CFG['convert_to_grayscale'] else None,
