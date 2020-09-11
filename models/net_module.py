@@ -31,28 +31,32 @@ class NetModule(pl.LightningModule):
     def training_step(self, batch, batch_idx):
         input, labels = batch
         preds = self.forward(input)
+        pred_classes = torch.argmax(preds, dim=1)
+
         loss = self.loss(preds, labels)
-        acc = accuracy(preds, labels, num_classes=self.base_model.num_classes)
+        acc = accuracy(pred_classes, labels, num_classes=self.base_model.num_classes)
 
         result = pl.TrainResult(loss)
         result.log_dict({
             'train_loss': loss,
             'train_acc': acc
-        })
+        }, on_step=False, on_epoch=True)
 
         return result
 
     def validation_step(self, batch, batch_idx):
         input, labels = batch
         preds = self.forward(input)
+        pred_classes = torch.argmax(preds, dim=1)
+
         loss = self.loss(preds, labels)
-        acc = accuracy(preds, labels, num_classes=self.base_model.num_classes)
+        acc = accuracy(pred_classes, labels, num_classes=self.base_model.num_classes)
 
         result = pl.EvalResult(checkpoint_on=loss)
         result.log_dict({
             'valid_loss': loss,
             'valid_acc': acc
-        })
+        }, on_step=False, on_epoch=True)
 
         return result
 
@@ -60,14 +64,16 @@ class NetModule(pl.LightningModule):
         if not self.validate_on_test:
             input, labels = batch
             preds = self.forward(input)
+            pred_classes = torch.argmax(preds, dim=1)
+
             loss = self.loss(preds, labels)
-            acc = accuracy(preds, labels, num_classes=self.base_model.num_classes)
+            acc = accuracy(pred_classes, labels, num_classes=self.base_model.num_classes)
 
             result = pl.EvalResult(checkpoint_on=loss)
             result.log_dict({
                 'test_loss': loss,
                 'test_acc': acc
-            })
+            }, on_step=False, on_epoch=True)
         else:
             result = None
 

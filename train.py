@@ -155,7 +155,8 @@ def run_training():
         early_stop_callback=early_stop_callback,
         checkpoint_callback=checkpoint_callback,
         callbacks=[lr_monitor],
-        logger=neptune_logger
+        logger=neptune_logger,
+        num_sanity_val_steps=0
     )
 
     LOGGER.info(f'Running training with: {arch}')
