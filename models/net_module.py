@@ -60,25 +60,6 @@ class NetModule(pl.LightningModule):
 
         return result
 
-    def test_step(self, batch, batch_idx):
-        if not self.validate_on_test:
-            input, labels = batch
-            preds = self.forward(input)
-            pred_classes = torch.argmax(preds, dim=1)
-
-            loss = self.loss(preds, labels)
-            acc = accuracy(pred_classes, labels, num_classes=self.base_model.num_classes)
-
-            result = pl.EvalResult(checkpoint_on=loss)
-            result.log_dict({
-                'test_loss': loss,
-                'test_acc': acc
-            }, on_step=False, on_epoch=True)
-        else:
-            result = None
-
-        return result
-
     def configure_optimizers(self):
         optimizer = self.optimizer(self.parameters(), lr=self.learning_rate)
 

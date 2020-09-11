@@ -14,16 +14,18 @@ class StanfordCarsDataset(Dataset):
 
     def __init__(
         self, data_path, labels_fpath,
-        convert_to_grayscale=False, normalize=False,
-        normalization_params={'mean': None, 'std': None}, image_size=[227, 227]
+        image_size=[227, 227],
+        convert_to_grayscale=False,
+        normalize=False,
+        normalization_params={'mean': None, 'std': None}
     ):
         super().__init__()
         self.data_path = data_path
         self.labels_fpath = labels_fpath
+        self.image_size = image_size
         self.convert_to_grayscale = convert_to_grayscale
         self.normalize = normalize
         self.normalization_params = normalization_params
-        self.image_size = image_size
         self.image_fnames = self._get_image_fnames(data_path)
         self.labels = self._get_labels(labels_fpath)
 

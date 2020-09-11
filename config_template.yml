@@ -24,8 +24,6 @@ normalization_params_grayscale:  # Applied when 'convert_to_grayscale==True'
 # Network and training settings
 architecture: 'sq_10'  # Possible options in 'models.arch_dict'
 batch_size: 16
-validate_on_test: False
-split_ratios: [0.8, 0.2]  # Train/valid ratios - if 'validate_on_test==False'
 num_epochs: 100
 
 # Optimizer settings
@@ -38,6 +36,3 @@ lr_scheduler_params:  # scheduler parameters to be passed as '**dict'
 
 # Output settings
 output_path: 'output'
-
-# Other settings
-seed: 42

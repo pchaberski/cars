@@ -23,13 +23,11 @@ LOGGER = configure_logger(__name__, CFG['logging_dir'], CFG['loglevel'])
 OUTPUT_PATH = os.path.join(os.getcwd(), CFG['output_path'])
 RUN_TIMESTAMP = datetime.now().strftime('%Y%m%d%H%M%S')
 
-
 try:
     import google.colab
     RUNTIME = 'colab'
 except:
     RUNTIME = 'local'
-
 
 try:
     opts, args = getopt.getopt(sys.argv[1:], 'd:')
@@ -46,7 +44,6 @@ except getopt.GetoptError:
 LOGGER.info(f'Data path: {DATA_PATH}')
 
 IMG_CHANNELS = 1 if CFG['convert_to_grayscale'] else 3
-
 
 try:
     LR_SCHEDULER = getattr(import_module('torch.optim.lr_scheduler'), CFG['lr_scheduler'])
@@ -84,18 +81,19 @@ def run_training():
     data_module = StanfordCarsDataModule(
         data_path=DATA_PATH,
         batch_size=CFG['batch_size'],
-        validate_on_test=CFG['validate_on_test'], split_ratios=CFG['split_ratios'],
+        image_size=CFG['image_size'],
         convert_to_grayscale=CFG['convert_to_grayscale'],
         normalize=CFG['normalize'],
         normalization_params=CFG['normalization_params_grayscale'] if CFG['convert_to_grayscale'] else CFG['normalization_params_rgb'],
-        image_size=CFG['image_size'], seed=CFG['seed']
     )
 
     # Init modeling Lightning Module
     model = NetModule(
-        base_model, optimizer=optim, learning_rate=CFG['learning_rate'],
-        lr_scheduler=LR_SCHEDULER, lr_scheduler_params=CFG['lr_scheduler_params'],
-        validate_on_test=CFG['validate_on_test']
+        base_model,
+        optimizer=optim,
+        learning_rate=CFG['learning_rate'],
+        lr_scheduler=LR_SCHEDULER,
+        lr_scheduler_params=CFG['lr_scheduler_params']
     )
 
     # Callbacks
@@ -127,14 +125,11 @@ def run_training():
             'norm_params_rgb': CFG['normalization_params_rgb'] if CFG['normalize'] and not CFG['convert_to_grayscale'] else None,
             'norm_params_gray': CFG['normalization_params_grayscale'] if CFG['normalize'] and CFG['convert_to_grayscale'] else None,
             'batch_size': CFG['batch_size'],
-            'validate_on_test': CFG['validate_on_test'],
-            'train_valid_split': CFG['split_ratios'] if not CFG['validate_on_test'] else None,
             'max_num_epochs': CFG['num_epochs'],
             'optimizer': CFG['optimizer'],
             'learning_rate': CFG['learning_rate'],
             'lr_scheduler': CFG['lr_scheduler'],
-            'lr_scheduler_params': CFG['lr_scheduler_params'] if LR_SCHEDULER is not None else None,
-            'random_seed': CFG['seed']
+            'lr_scheduler_params': CFG['lr_scheduler_params'] if LR_SCHEDULER is not None else None
         }
 
         neptune_logger = NeptuneLogger(
@@ -146,7 +141,7 @@ def run_training():
     else:
         neptune_logger = None
 
-    lr_monitor = pl.callbacks.LearningRateLogger(logging_interval='step')
+    lr_monitor = pl.callbacks.LearningRateLogger(logging_interval='epoch')
 
     # Train
     trainer = pl.Trainer(
