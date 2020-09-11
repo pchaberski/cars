@@ -10,7 +10,7 @@ neptune_api_token: '<neptune.ai API token>'
 stanford_raw_data_path: '<path to the folder containing: car_ims.tgz, cars_annos.mat, car_devkit.tgz>'
 stanford_data_path: 'input/stanford'
 
-# Preprocessinng settings
+# General data preprocessinng settings
 image_size: [227, 227]
 convert_to_grayscale: False
 normalize: True  
@@ -21,6 +21,22 @@ normalization_params_grayscale:  # Applied when 'convert_to_grayscale==True'
   mean: [0.5]
   std: [0.5]
 
+# Training data augmentation settings
+augment_images: True
+image_augmentations:  # to be applied consecutively
+  RandomHorizontalFlip:  # has to be a valid transformation from 'torchvision.transforms'
+    p: 0.5  # transformation parameters to be passed as '**dict'
+  RandomAffine:
+    degrees: 25
+    translate: [0.1, 0.1]
+    scale: [0.9, 1.1]
+    shear: 8
+augment_tensors: True
+tensor_augmentations:  # to be applied consecutively
+  RandomErasing:
+    p: 0.5
+    scale: [0.02, 0.25]
+
 # Network and training settings
 architecture: 'sq_10'  # Possible options in 'models.arch_dict'
 batch_size: 16
@@ -29,10 +45,10 @@ num_epochs: 100
 # Optimizer settings
 optimizer: 'adam'  # possible choices: 'adam', 'sgd'
 learning_rate: 0.001
-lr_scheduler: None  # None or valid lr_scheduler name from 'torch.optim'
+lr_scheduler: MultiStepLR  # None or valid lr_scheduler name from 'torch.optim'
 lr_scheduler_params:  # scheduler parameters to be passed as '**dict'
+  milestones: [15, 30, 45, 60, 75]
   gamma: 0.1
-  # ...
 
 # Output settings
 output_path: 'output'

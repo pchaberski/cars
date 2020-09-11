@@ -7,6 +7,7 @@ from PIL import Image
 import pandas as pd
 import os
 import torch
+from importlib import import_module
 
 
 class StanfordCarsDataset(Dataset):
@@ -17,7 +18,11 @@ class StanfordCarsDataset(Dataset):
         image_size=[227, 227],
         convert_to_grayscale=False,
         normalize=False,
-        normalization_params={'mean': None, 'std': None}
+        normalization_params={'mean': None, 'std': None},
+        augment_images=False,
+        image_augmentations=None,
+        augment_tensors=False,
+        tensor_augmentations=None
     ):
         super().__init__()
         self.data_path = data_path
@@ -26,6 +31,10 @@ class StanfordCarsDataset(Dataset):
         self.convert_to_grayscale = convert_to_grayscale
         self.normalize = normalize
         self.normalization_params = normalization_params
+        self.augment_images = augment_images
+        self.image_augmentations = image_augmentations
+        self.augment_tensors = augment_tensors
+        self.tensor_augmentations = tensor_augmentations
         self.image_fnames = self._get_image_fnames(data_path)
         self.labels = self._get_labels(labels_fpath)
 
@@ -42,13 +51,25 @@ class StanfordCarsDataset(Dataset):
                 f'`mean` and `std` normalization params has to be of length 3 for RGB'
 
     def _transform(self, image):
+        # Resizing
         transf_list = [transforms.Resize(self.image_size)]
 
+        # Optional grayscale conversion
         if self.convert_to_grayscale:
             transf_list += [transforms.Grayscale()]
 
+        # Optional augmentations on image - training only
+        if self.augment_images:
+            transf_list += self._parse_and_load_transforms(self.image_augmentations)
+
+        # Convert to tensor
         transf_list += [transforms.ToTensor()]
 
+        # Optional augmentations on tensor - training only
+        if self.augment_tensors:
+            transf_list += self._parse_and_load_transforms(self.tensor_augmentations)
+
+        # Optional normalization
         if self.normalize:
             transf_list += [transforms.Normalize(
                 mean=self.normalization_params['mean'],
@@ -68,6 +89,14 @@ class StanfordCarsDataset(Dataset):
         df_labels = pd.read_csv(labels_fpath)[['image_fname', 'class']]
 
         return df_labels
+
+    def _parse_and_load_transforms(self, tranforms_dict):
+        _transf_list = []
+        for k, v in tranforms_dict.items():
+            _transf = getattr(import_module('torchvision.transforms'), k)
+            _transf_list += [_transf(**v)]
+
+        return _transf_list
 
     def __len__(self):
         return len(self.image_fnames)

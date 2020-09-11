@@ -18,6 +18,10 @@ class StanfordCarsDataModule(pl.LightningDataModule):
         image_size=[227, 227],
         convert_to_grayscale=False, normalize=False,
         normalization_params={'mean': None, 'std': None},
+        augment_images=False,
+        image_augmentations=None,
+        augment_tensors=False,
+        tensor_augmentations=None
     ):
         super().__init__()
         self.data_path = data_path
@@ -26,24 +30,36 @@ class StanfordCarsDataModule(pl.LightningDataModule):
         self.convert_to_grayscale = convert_to_grayscale
         self.normalize = normalize
         self.normalization_params = normalization_params
+        self.augment_images = augment_images
+        self.image_augmentations = image_augmentations
+        self.augment_tensors = augment_tensors
+        self.tensor_augmentations = tensor_augmentations
 
-    def setup(self, stage):
+    def setup(self, stage='fit'):
 
         self.data_train = StanfordCarsDataset(
             data_path=os.path.join(self.data_path, 'train'),
             labels_fpath=os.path.join(self.data_path, 'train_labels.csv'),
+            image_size=self.image_size,
             convert_to_grayscale=self.convert_to_grayscale,
             normalize=self.normalize,
             normalization_params=self.normalization_params,
-            image_size=self.image_size)
+            augment_images=self.augment_images,
+            image_augmentations=self.image_augmentations,
+            augment_tensors=self.augment_tensors,
+            tensor_augmentations=self.tensor_augmentations
+        )
 
         self.data_valid = StanfordCarsDataset(
             data_path=os.path.join(self.data_path, 'test'),
             labels_fpath=os.path.join(self.data_path, 'test_labels.csv'),
+            image_size=self.image_size,
             convert_to_grayscale=self.convert_to_grayscale,
             normalize=self.normalize,
             normalization_params=self.normalization_params,
-            image_size=self.image_size)
+            augment_images=False,
+            augment_tensors=False
+        )
 
     def train_dataloader(self):
         loader = DataLoader(self.data_train, batch_size=self.batch_size, num_workers=4, pin_memory=True, shuffle=True)
