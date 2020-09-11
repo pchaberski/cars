@@ -81,17 +81,17 @@ class StanfordCarsDataModule(pl.LightningDataModule):
                     image_size=self.image_size)
 
     def train_dataloader(self):
-        loader = DataLoader(self.data_train, batch_size=self.batch_size, num_workers=4, shuffle=True)
+        loader = DataLoader(self.data_train, batch_size=self.batch_size, num_workers=4, pin_memory=True, shuffle=True)
 
         return loader
 
     def val_dataloader(self):
-        loader = DataLoader(self.data_valid, num_workers=4, batch_size=self.batch_size)
+        loader = DataLoader(self.data_valid, num_workers=4, pin_memory=True, batch_size=self.batch_size)
 
         return loader
 
     def test_dataloader(self):
-        loader = DataLoader(self.data_test, num_workers=4, batch_size=self.batch_size) \
+        loader = DataLoader(self.data_test, num_workers=4, pin_memory=True, batch_size=self.batch_size) \
             if not self.validate_on_test else None
 
         return loader
