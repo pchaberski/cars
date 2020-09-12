@@ -11,13 +11,16 @@ from pytorch_lightning.metrics.functional import accuracy
 class NetModule(pl.LightningModule):
 
     def __init__(
-        self, base_model, optimizer, optimizer_params={'lr': 0.001},
+        self,
+        base_model,
+        loss,
+        optimizer, optimizer_params={'lr': 0.001},
         lr_scheduler=None, lr_scheduler_params=None,
         validate_on_test=False
     ):
         super().__init__()
         self.base_model = base_model
-        self.loss = nn.CrossEntropyLoss()
+        self.loss = loss
         self.optimizer = optimizer
         self.optimizer_params = optimizer_params
         self.lr_scheduler = lr_scheduler

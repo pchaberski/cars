@@ -46,6 +46,21 @@ LOGGER.info(f'Data path: {DATA_PATH}')
 IMG_CHANNELS = 1 if CFG['convert_to_grayscale'] else 3
 
 try:
+    if CFG['loss_function'] == 'LabelSmoothingCrossEntropy':
+        from models.label_smoothing_ce import LabelSmoothingCrossEntropy as _LOSS
+    else:
+        _LOSS = getattr(import_module('torch.nn'), CFG['loss_function']) 
+    LOSS = _LOSS(**CFG['loss_params']) if CFG['loss_params'] is not None else _LOSS()
+except:
+    _LOSS = getattr(import_module('torch.nn'), 'CrossEntropyLoss')
+    LOSS = _LOSS(**CFG['loss_params']) if CFG['loss_params'] is not None else _LOSS()
+    LOGGER.warning(
+        f"Invalid loss function: {CFG['loss_function']}\n"
+        f'Running training with CrossEntropyLoss.'
+    )
+LOGGER.info(f'Setting loss function to {_LOSS.__name__}')
+
+try:
     OPTIMIZER = getattr(import_module('torch.optim'), CFG['optimizer'])
     OPTIMIZER_PARAMS = CFG['optimizer_params']
 except:
@@ -100,6 +115,7 @@ def run_training():
     # Init modeling Lightning Module
     model = NetModule(
         base_model,
+        loss=LOSS,
         optimizer=OPTIMIZER,
         optimizer_params=OPTIMIZER_PARAMS,
         lr_scheduler=LR_SCHEDULER,
@@ -140,6 +156,8 @@ def run_training():
             'tensor_augmentations': CFG['tensor_augmentations'] if CFG['augment_tensors'] else None,
             'batch_size': CFG['batch_size'],
             'max_num_epochs': CFG['num_epochs'],
+            'loss_function': _LOSS.__name__,
+            'loss_params': CFG['loss_params'],
             'optimizer': OPTIMIZER.__name__,
             'learning_rate': OPTIMIZER_PARAMS['lr'],
             'all_optimizer_params': OPTIMIZER_PARAMS,
@@ -169,7 +187,7 @@ def run_training():
         num_sanity_val_steps=0
     )
 
-    LOGGER.info(f'Running training with...')
+    LOGGER.info(f'Running training...')
     trainer.fit(model, data_module)
 
     # Test
