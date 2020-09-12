@@ -155,7 +155,7 @@ def run_training():
     else:
         neptune_logger = None
 
-    lr_monitor = pl.callbacks.LearningRateLogger(logging_interval='epoch')
+    lr_monitor = pl.callbacks.LearningRateLogger()
 
     # Train
     trainer = pl.Trainer(

@@ -43,7 +43,7 @@ batch_size: 16
 num_epochs: 100
 
 # Optimizer settings
-optimizer: Adam  # has to be a valid transformation from 'torchvision.transforms'
+optimizer: Adam  # has to be a valid optimizer from 'torch.optim'
 optimizer_params:
   lr: 0.001
   weight_decay: 0

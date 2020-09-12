@@ -63,7 +63,7 @@ class NetModule(pl.LightningModule):
         optimizer = self.optimizer(self.parameters(), **self.optimizer_params)
 
         if self.lr_scheduler is None:
-            return optimizer
+            return [optimizer]
         else:
             scheduler = self.lr_scheduler(optimizer, **self.lr_scheduler_params)
             return [optimizer], [scheduler]
