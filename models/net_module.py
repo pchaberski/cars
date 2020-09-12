@@ -66,4 +66,9 @@ class NetModule(pl.LightningModule):
             return [optimizer]
         else:
             scheduler = self.lr_scheduler(optimizer, **self.lr_scheduler_params)
+            scheduler = {
+                'scheduler': self.lr_scheduler(optimizer, **self.lr_scheduler_params),
+                'monitor': 'val_checkpoint_on',
+                'name': 'lr'
+            }
             return [optimizer], [scheduler]

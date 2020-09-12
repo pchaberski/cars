@@ -55,6 +55,7 @@ except:
         f"Invalid optimizer: {CFG['optimizer']}\n"
         f'Running training with SGD with lr=0.001.'
     )
+LOGGER.info(f'Setting optimizer to {OPTIMIZER.__name__}')
 
 try:
     LR_SCHEDULER = getattr(import_module('torch.optim.lr_scheduler'), CFG['lr_scheduler'])
@@ -168,7 +169,7 @@ def run_training():
         num_sanity_val_steps=0
     )
 
-    LOGGER.info(f'Running training with: {arch}')
+    LOGGER.info(f'Running training with...')
     trainer.fit(model, data_module)
 
     # Test
