@@ -46,9 +46,22 @@ LOGGER.info(f'Data path: {DATA_PATH}')
 IMG_CHANNELS = 1 if CFG['convert_to_grayscale'] else 3
 
 try:
+    OPTIMIZER = getattr(import_module('torch.optim'), CFG['optimizer'])
+    OPTIMIZER_PARAMS = CFG['optimizer_params']
+except:
+    OPTIMIZER = getattr(import_module('torch.optim'), 'SGD')
+    OPTIMIZER_PARAMS = {'lr': 0.001}
+    LOGGER.warning(
+        f"Invalid optimizer: {CFG['optimizer']}\n"
+        f'Running training with SGD with lr=0.001.'
+    )
+
+try:
     LR_SCHEDULER = getattr(import_module('torch.optim.lr_scheduler'), CFG['lr_scheduler'])
+    LR_SCHEDULER_PARAMS = CFG['lr_scheduler_params']
 except:
     LR_SCHEDULER = None
+    LR_SCHEDULER_PARAMS = None
     LOGGER.warning(
         f"Invalid learning rate scheduler: {CFG['lr_scheduler']}\n"
         f'Running training without scheduler.'
@@ -69,14 +82,6 @@ def run_training():
     LOGGER.info(f'Setting architecture to {arch_dict[arch].__name__}')
     base_model = arch_dict[arch](num_classes=196, img_channels=IMG_CHANNELS)
 
-    optim = CFG['optimizer']
-    assert optim in ['adam', 'sgd'], (
-        f'Optimizer has to be one of: `adam`, `sgd`'
-        f'Provided optimizer: {optim}'
-    )
-
-    LOGGER.info(f'Setting optimizer to: {optim}')
-
     # Init Stanford Cars Dataset Lightning Module
     data_module = StanfordCarsDataModule(
         data_path=DATA_PATH,
@@ -94,10 +99,10 @@ def run_training():
     # Init modeling Lightning Module
     model = NetModule(
         base_model,
-        optimizer=optim,
-        learning_rate=CFG['learning_rate'],
+        optimizer=OPTIMIZER,
+        optimizer_params=OPTIMIZER_PARAMS,
         lr_scheduler=LR_SCHEDULER,
-        lr_scheduler_params=CFG['lr_scheduler_params']
+        lr_scheduler_params=LR_SCHEDULER_PARAMS
     )
 
     # Callbacks
@@ -134,10 +139,11 @@ def run_training():
             'tensor_augmentations': CFG['tensor_augmentations'] if CFG['augment_tensors'] else None,
             'batch_size': CFG['batch_size'],
             'max_num_epochs': CFG['num_epochs'],
-            'optimizer': CFG['optimizer'],
-            'learning_rate': CFG['learning_rate'],
-            'lr_scheduler': CFG['lr_scheduler'],
-            'lr_scheduler_params': CFG['lr_scheduler_params'] if LR_SCHEDULER is not None else None
+            'optimizer': OPTIMIZER.__name__,
+            'learning_rate': OPTIMIZER_PARAMS['lr'],
+            'all_optimizer_params': OPTIMIZER_PARAMS,
+            'lr_scheduler': LR_SCHEDULER.__name__ if LR_SCHEDULER is not None else None,
+            'lr_scheduler_params': LR_SCHEDULER_PARAMS
         }
 
         neptune_logger = NeptuneLogger(

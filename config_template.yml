@@ -43,8 +43,10 @@ batch_size: 16
 num_epochs: 100
 
 # Optimizer settings
-optimizer: 'adam'  # possible choices: 'adam', 'sgd'
-learning_rate: 0.001
+optimizer: Adam  # has to be a valid transformation from 'torchvision.transforms'
+optimizer_params:
+  lr: 0.001
+  weight_decay: 0
 lr_scheduler: MultiStepLR  # None or valid lr_scheduler name from 'torch.optim'
 lr_scheduler_params:  # scheduler parameters to be passed as '**dict'
   milestones: [15, 30, 45, 60, 75]

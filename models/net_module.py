@@ -5,22 +5,21 @@ from utils.configuration import load_config
 import pytorch_lightning as pl
 import torch
 from torch import nn
-from torch.optim import SGD, Adam
 from pytorch_lightning.metrics.functional import accuracy
 
 
 class NetModule(pl.LightningModule):
 
     def __init__(
-        self, base_model, optimizer, learning_rate, 
+        self, base_model, optimizer, optimizer_params={'lr': 0.001},
         lr_scheduler=None, lr_scheduler_params=None,
         validate_on_test=False
     ):
         super().__init__()
         self.base_model = base_model
         self.loss = nn.CrossEntropyLoss()
-        self.learning_rate = float(learning_rate)
-        self.optimizer = Adam if optimizer == 'adam' else SGD
+        self.optimizer = optimizer
+        self.optimizer_params = optimizer_params
         self.lr_scheduler = lr_scheduler
         self.lr_scheduler_params = lr_scheduler_params
         self.validate_on_test = validate_on_test
@@ -61,7 +60,7 @@ class NetModule(pl.LightningModule):
         return result
 
     def configure_optimizers(self):
-        optimizer = self.optimizer(self.parameters(), lr=self.learning_rate)
+        optimizer = self.optimizer(self.parameters(), **self.optimizer_params)
 
         if self.lr_scheduler is None:
             return optimizer
