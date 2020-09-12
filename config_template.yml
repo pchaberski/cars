@@ -53,7 +53,7 @@ lr_scheduler_params:  # scheduler parameters to be passed as '**dict'
   gamma: 0.1
 
 # Loss function settings
-loss: CrossEntropyLoss  # valid loss function from 'torch.nn' or custom LabelSmoothingCrossEntropy
+loss_function: CrossEntropyLoss  # valid loss function from 'torch.nn' or custom LabelSmoothingCrossEntropy
 loss_params:  # loss parameters to be passed as '**dict'
 
 # Output settings
