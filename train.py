@@ -190,9 +190,6 @@ def run_training():
     LOGGER.info(f'Running training...')
     trainer.fit(model, data_module)
 
-    # Test
-    if not CFG['validate_on_test']:
-        trainer.test(model, datamodule=data_module)
 
     LOGGER.info('All done.')
 
