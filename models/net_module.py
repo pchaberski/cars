@@ -15,8 +15,7 @@ class NetModule(pl.LightningModule):
         base_model,
         loss,
         optimizer, optimizer_params={'lr': 0.001},
-        lr_scheduler=None, lr_scheduler_params=None,
-        validate_on_test=False
+        lr_scheduler=None, lr_scheduler_params=None
     ):
         super().__init__()
         self.base_model = base_model
@@ -25,7 +24,6 @@ class NetModule(pl.LightningModule):
         self.optimizer_params = optimizer_params
         self.lr_scheduler = lr_scheduler
         self.lr_scheduler_params = lr_scheduler_params
-        self.validate_on_test = validate_on_test
 
     def forward(self, input):
         return self.base_model(input)
