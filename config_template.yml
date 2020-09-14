@@ -10,6 +10,9 @@ neptune_api_token: '<neptune.ai API token>'
 stanford_raw_data_path: '<path to the folder containing: car_ims.tgz, cars_annos.mat, car_devkit.tgz>'
 stanford_data_path: 'input/stanford'
 
+# Output settings
+output_path: 'output'
+
 # General data preprocessinng settings
 image_size: [227, 227]
 convert_to_grayscale: False
@@ -31,6 +34,11 @@ image_augmentations:  # to be applied consecutively
     translate: [0.1, 0.1]
     scale: [0.9, 1.1]
     shear: 8
+  ColorJitter:
+    brightness: 0.2
+    contrast: 0.2
+    saturation: 0.2
+    hue: 0.1
 augment_tensors: True
 tensor_augmentations:  # to be applied consecutively
   RandomErasing:
@@ -38,23 +46,25 @@ tensor_augmentations:  # to be applied consecutively
     scale: [0.02, 0.25]
 
 # Network and training settings
-architecture: 'sq_10'  # Possible options in 'models.arch_dict'
-batch_size: 16
-num_epochs: 100
+architecture: 'ghost'  # Possible options in 'models.arch_dict'
+batch_size: 64
+num_epochs: 200
+
+# Architecture modifications (right now GhostNet only!)
+dropout: 0.2  # droupout rate before the last Linear layer
+output_channels: 1280  # output channels to be mapped to number_of classes
 
 # Optimizer settings
-optimizer: Adam  # valid optimizer from 'torch.optim'
+optimizer: AdamW  # valid optimizer from 'torch.optim'
 optimizer_params:
   lr: 0.001
-  weight_decay: 0
-lr_scheduler: MultiStepLR  # # valid lr_scheduler from 'torch.optim' or None
+  weight_decay: 0.6
+lr_scheduler: ReduceLROnPlateau  # # valid lr_scheduler from 'torch.optim' or None
 lr_scheduler_params:  # scheduler parameters to be passed as '**dict'
-  milestones: [15, 30, 45, 60, 75]
-  gamma: 0.1
+  factor: 0.1
+  patience: 5
+  threshold: 0.001
 
 # Loss function settings
-loss_function: CrossEntropyLoss  # valid loss function from 'torch.nn' or custom LabelSmoothingCrossEntropy
+loss_function: LabelSmoothingCrossEntropy  # valid loss function from 'torch.nn' or custom LabelSmoothingCrossEntropy
 loss_params:  # loss parameters to be passed as '**dict'
-
-# Output settings
-output_path: 'output'

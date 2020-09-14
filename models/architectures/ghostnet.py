@@ -103,10 +103,12 @@ class GhostBottleneck(nn.Module):
 
 
 class GhostNet(nn.Module):
-    def __init__(self, num_classes, img_channels, width_mult=1.):
+    def __init__(self, num_classes=1000, img_channels=3, dropout=0.2, out_channels=1280, width_mult=1.):
         super().__init__()
         self.num_classes = num_classes
         self.img_channels = img_channels
+        self.dropout = dropout
+        self.out_channels = out_channels
 
         # setting of inverted residual blocks
         self.cfgs = [
@@ -157,12 +159,12 @@ class GhostNet(nn.Module):
         )
         input_channel = output_channel
 
-        output_channel = 1280
+        output_channel = self.out_channels
         self.classifier = nn.Sequential(
             nn.Linear(input_channel, output_channel, bias=False),
             nn.BatchNorm1d(output_channel),
             nn.ReLU(inplace=True),
-            nn.Dropout(0.2),
+            nn.Dropout(self.dropout),
             nn.Linear(output_channel, self.num_classes),
         )
 

@@ -96,7 +96,15 @@ def run_training():
     )
 
     LOGGER.info(f'Setting architecture to {arch_dict[arch].__name__}')
-    base_model = arch_dict[arch](num_classes=196, img_channels=IMG_CHANNELS)
+    if arch == 'ghost':
+        base_model = arch_dict[arch](
+            num_classes=196,
+            img_channels=IMG_CHANNELS,
+            dropout=CFG['dropout'],
+            out_channels=CFG['out_channels']
+        )
+    else:
+        base_model = arch_dict[arch](num_classes=196, img_channels=IMG_CHANNELS)
 
     # Init Stanford Cars Dataset Lightning Module
     data_module = StanfordCarsDataModule(
@@ -156,10 +164,13 @@ def run_training():
             'tensor_augmentations': CFG['tensor_augmentations'] if CFG['augment_tensors'] else None,
             'batch_size': CFG['batch_size'],
             'max_num_epochs': CFG['num_epochs'],
+            'dropout': CFG['dropout'],
+            'out_channels': CFG['out_channels'],
             'loss_function': _LOSS.__name__,
             'loss_params': CFG['loss_params'],
             'optimizer': OPTIMIZER.__name__,
             'learning_rate': OPTIMIZER_PARAMS['lr'],
+            'weight_decay': OPTIMIZER_PARAMS['weight_decay'] if OPTIMIZER_PARAMS.get('weight_decay') is not None else None,
             'all_optimizer_params': OPTIMIZER_PARAMS,
             'lr_scheduler': LR_SCHEDULER.__name__ if LR_SCHEDULER is not None else None,
             'lr_scheduler_params': LR_SCHEDULER_PARAMS
