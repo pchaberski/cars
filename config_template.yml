@@ -15,11 +15,11 @@ image_size: [227, 227]
 convert_to_grayscale: False
 normalize: True  
 normalization_params_rgb:  # Applied when 'convert_to_grayscale==False'
-  mean: [0.485, 0.456, 0.406]
-  std: [0.229, 0.224, 0.225]
+  mean: [0.4707, 0.4602, 0.4550]
+  std: [0.2594, 0.2585, 0.2635]
 normalization_params_grayscale:  # Applied when 'convert_to_grayscale==True'
-  mean: [0.5]
-  std: [0.5]
+  mean: [0.4627]
+  std: [0.2545]
 
 # Training data augmentation settings
 augment_images: True

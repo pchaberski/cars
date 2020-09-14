@@ -9,7 +9,8 @@ __pycache__
 /lightning_logs/**
 /.vscode/**
 notebooks/*
-!notebooks/.gitkeep 
+!notebooks/normalization_coeffs.ipynb 
 config.yml
 cars_vscws.code-workspace
-Kopia train_colab.ipynb
+train_colab_copy1.ipynb
+train_colab_copy2.ipynb
