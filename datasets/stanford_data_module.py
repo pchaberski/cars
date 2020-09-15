@@ -18,6 +18,8 @@ class StanfordCarsDataModule(pl.LightningDataModule):
         image_size=[227, 227],
         convert_to_grayscale=False, normalize=False,
         normalization_params={'mean': None, 'std': None},
+        crop_to_bboxes=False,
+        erase_background=False,
         augment_images=False,
         image_augmentations=None,
         augment_tensors=False,
@@ -30,6 +32,8 @@ class StanfordCarsDataModule(pl.LightningDataModule):
         self.convert_to_grayscale = convert_to_grayscale
         self.normalize = normalize
         self.normalization_params = normalization_params
+        self.crop_to_bboxes = crop_to_bboxes
+        self.erase_background = erase_background
         self.augment_images = augment_images
         self.image_augmentations = image_augmentations
         self.augment_tensors = augment_tensors
@@ -44,6 +48,7 @@ class StanfordCarsDataModule(pl.LightningDataModule):
             convert_to_grayscale=self.convert_to_grayscale,
             normalize=self.normalize,
             normalization_params=self.normalization_params,
+            crop_to_bboxes=self.crop_to_bboxes,
             augment_images=self.augment_images,
             image_augmentations=self.image_augmentations,
             augment_tensors=self.augment_tensors,
@@ -57,6 +62,7 @@ class StanfordCarsDataModule(pl.LightningDataModule):
             convert_to_grayscale=self.convert_to_grayscale,
             normalize=self.normalize,
             normalization_params=self.normalization_params,
+            crop_to_bboxes=False,
             augment_images=False,
             augment_tensors=False
         )

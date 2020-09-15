@@ -5,6 +5,7 @@ from torch.utils.data import Dataset
 from torchvision import transforms
 from PIL import Image
 import pandas as pd
+import numpy as np
 import os
 import torch
 from importlib import import_module
@@ -19,6 +20,8 @@ class StanfordCarsDataset(Dataset):
         convert_to_grayscale=False,
         normalize=False,
         normalization_params={'mean': None, 'std': None},
+        crop_to_bboxes=False,
+        erase_background=False,
         augment_images=False,
         image_augmentations=None,
         augment_tensors=False,
@@ -31,6 +34,8 @@ class StanfordCarsDataset(Dataset):
         self.convert_to_grayscale = convert_to_grayscale
         self.normalize = normalize
         self.normalization_params = normalization_params
+        self.crop_to_bboxes = crop_to_bboxes
+        self.erase_background = erase_background
         self.augment_images = augment_images
         self.image_augmentations = image_augmentations
         self.augment_tensors = augment_tensors
@@ -98,6 +103,26 @@ class StanfordCarsDataset(Dataset):
 
         return _transf_list
 
+    def _apply_bbox_cropping(self, image, idx):
+        df_bboxes = pd.read_csv(self.labels_fpath)
+
+        bb_left = df_bboxes['bbox_x1'][idx]
+        bb_right = df_bboxes['bbox_x2'][idx]
+        bb_top = df_bboxes['bbox_y1'][idx]
+        bb_down = df_bboxes['bbox_y2'][idx]
+
+        image_cropped = image.crop((bb_left, bb_top, bb_right, bb_down))
+
+        if self.erase_background:
+            img_w, img_h = image_cropped.size
+            background = Image.new('RGB', image.size, (255, 255, 255, 255))
+            bg_w, bg_h = background.size
+            offset = ((bg_w - img_w) // 2, (bg_h - img_h) // 2)
+            background.paste(image_cropped, offset)
+            image_cropped = background
+
+        return image_cropped
+
     def __len__(self):
         return len(self.image_fnames)
 
@@ -105,6 +130,8 @@ class StanfordCarsDataset(Dataset):
         image_fname = self.image_fnames[idx]
         image_fpath = os.path.join(self.data_path, image_fname)
         image = Image.open(image_fpath).convert('RGB')
+        if self.crop_to_bboxes:
+            image = self._apply_bbox_cropping(image, idx)
         image = self._transform(image)
         """This returns class indexes from range [0, C-1]
         as accepted during loss calculation, real class ids are from [1, C]"""

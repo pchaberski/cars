@@ -114,6 +114,8 @@ def run_training():
         convert_to_grayscale=CFG['convert_to_grayscale'],
         normalize=CFG['normalize'],
         normalization_params=CFG['normalization_params_grayscale'] if CFG['convert_to_grayscale'] else CFG['normalization_params_rgb'],
+        crop_to_bboxes=CFG['crop_to_bboxes'],
+        erase_background=CFG['erase_background'],
         augment_images=CFG['augment_images'],
         image_augmentations=CFG['image_augmentations'],
         augment_tensors=CFG['augment_tensors'],
@@ -158,6 +160,8 @@ def run_training():
             'normalize': CFG['normalize'],
             'norm_params_rgb': CFG['normalization_params_rgb'] if CFG['normalize'] and not CFG['convert_to_grayscale'] else None,
             'norm_params_gray': CFG['normalization_params_grayscale'] if CFG['normalize'] and CFG['convert_to_grayscale'] else None,
+            'crop_to_bboxes': CFG['crop_to_bboxes'],
+            'erase_background': CFG['erase_background'],
             'augment_images': CFG['augment_images'],
             'image_augmentations': CFG['image_augmentations'] if CFG['augment_images'] else None,
             'augment_tensors': CFG['augment_tensors'],
@@ -200,7 +204,6 @@ def run_training():
 
     LOGGER.info(f'Running training...')
     trainer.fit(model, data_module)
-
 
     LOGGER.info('All done.')
 

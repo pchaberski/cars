@@ -25,6 +25,8 @@ normalization_params_grayscale:  # Applied when 'convert_to_grayscale==True'
   std: [0.2545]
 
 # Training data augmentation settings
+crop_to_bboxes: True  # crop training images using bounding boxes
+erase_background: True  # erase background outside bboxes to preserve ratios (only if 'crop_to_bboxes==True') 
 augment_images: True
 image_augmentations:  # to be applied consecutively
   RandomHorizontalFlip:  # has to be a valid transformation from 'torchvision.transforms'
