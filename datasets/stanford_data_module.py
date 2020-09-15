@@ -49,6 +49,7 @@ class StanfordCarsDataModule(pl.LightningDataModule):
             normalize=self.normalize,
             normalization_params=self.normalization_params,
             crop_to_bboxes=self.crop_to_bboxes,
+            erase_background=self.erase_background,
             augment_images=self.augment_images,
             image_augmentations=self.image_augmentations,
             augment_tensors=self.augment_tensors,
