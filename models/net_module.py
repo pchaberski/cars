@@ -52,7 +52,7 @@ class NetModule(pl.LightningModule):
         loss = self.loss(preds, labels)
         acc = accuracy(pred_classes, labels, num_classes=self.base_model.num_classes)
 
-        result = pl.EvalResult(checkpoint_on=loss)
+        result = pl.EvalResult(checkpoint_on=loss, early_stop_on=loss)
         result.log_dict({
             'valid_loss': loss,
             'valid_acc': acc

@@ -178,7 +178,6 @@ class GhostNet(nn.Module):
                 m.weight.data.fill_(1)
                 m.bias.data.zero_()
 
-
     def forward(self, input):
         output = self.features(input)
         output = self.squeeze(output)

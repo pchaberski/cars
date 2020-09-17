@@ -132,23 +132,6 @@ def run_training():
         lr_scheduler_params=LR_SCHEDULER_PARAMS
     )
 
-    # Callbacks
-    early_stop_callback = pl.callbacks.early_stopping.EarlyStopping(
-        monitor='val_loss',
-        min_delta=0.0,
-        patience=10,
-        verbose=False,
-        mode='min'
-    )
-    checkpoint_callback = pl.callbacks.ModelCheckpoint(
-        filepath=OUTPUT_PATH,
-        save_top_k=1,
-        verbose=True,
-        monitor='val_loss',
-        mode='min',
-        prefix=CFG['architecture'] + '_' + RUN_TIMESTAMP + '_'
-    )
-
     # Neptune logger
     if CFG['log_to_neptune']:
         neptune_parameters = {
@@ -188,6 +171,32 @@ def run_training():
         )
     else:
         neptune_logger = None
+
+    # Callbacks
+    if LR_SCHEDULER.__name__ == 'ReduceLROnPlateau' and LR_SCHEDULER_PARAMS.get('threshold') is not None:
+        min_delta = LR_SCHEDULER_PARAMS['threshold']
+    else:
+        min_delta = 0.001
+
+    if LR_SCHEDULER.__name__ == 'ReduceLROnPlateau' and LR_SCHEDULER_PARAMS.get('patience') is not None:
+        patience = LR_SCHEDULER_PARAMS['patience'] * 2
+    else:
+        patience = 10
+
+    early_stop_callback = pl.callbacks.early_stopping.EarlyStopping(
+        min_delta=min_delta,
+        patience=patience,
+        verbose=True,
+        mode='min'
+    )
+
+    checkpoint_callback = pl.callbacks.ModelCheckpoint(
+        filepath=OUTPUT_PATH,
+        save_top_k=1,
+        verbose=True,
+        mode='min',
+        prefix=CFG['architecture'] + '_' + RUN_TIMESTAMP + '_'
+    )
 
     lr_monitor = pl.callbacks.LearningRateLogger()
 

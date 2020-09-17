@@ -66,6 +66,7 @@ lr_scheduler_params:  # scheduler parameters to be passed as '**dict'
   factor: 0.1
   patience: 5
   threshold: 0.001
+  min_lr: 0.0000001
 
 # Loss function settings
 loss_function: LabelSmoothingCrossEntropy  # valid loss function from 'torch.nn' or custom LabelSmoothingCrossEntropy
