@@ -157,7 +157,7 @@ def run_training():
             'loss_params': CFG['loss_params'],
             'optimizer': OPTIMIZER.__name__,
             'learning_rate': OPTIMIZER_PARAMS['lr'],
-            'weight_decay': OPTIMIZER_PARAMS['weight_decay'] if OPTIMIZER_PARAMS.get('weight_decay') is not None else None,
+            'weight_decay': OPTIMIZER_PARAMS['weight_decay'] if OPTIMIZER_PARAMS.get('weight_decay') is not None else 0.0,
             'all_optimizer_params': OPTIMIZER_PARAMS,
             'lr_scheduler': LR_SCHEDULER.__name__ if LR_SCHEDULER is not None else None,
             'lr_scheduler_params': LR_SCHEDULER_PARAMS
