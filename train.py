@@ -173,10 +173,10 @@ def run_training():
         neptune_logger = None
 
     # Callbacks
-    if LR_SCHEDULER.__name__ == 'ReduceLROnPlateau' and LR_SCHEDULER_PARAMS.get('patience') is not None:
-        early_stop_patience = LR_SCHEDULER_PARAMS['patience'] * 3
-    else:
-        early_stop_patience = 15
+    early_stop_patience = 15
+    if LR_SCHEDULER is not None:
+        if LR_SCHEDULER.__name__ == 'ReduceLROnPlateau' and LR_SCHEDULER_PARAMS.get('patience') is not None:
+            early_stop_patience = LR_SCHEDULER_PARAMS['patience'] * 3
 
     early_stop_callback = pl.callbacks.early_stopping.EarlyStopping(
         min_delta=0.0,
