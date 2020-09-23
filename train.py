@@ -16,6 +16,7 @@ import getopt
 import neptune
 from pytorch_lightning.loggers import NeptuneLogger
 from importlib import import_module
+from copy import copy
 
 
 CFG = load_config('config.yml')
@@ -74,7 +75,9 @@ LOGGER.info(f'Setting optimizer to {OPTIMIZER.__name__}')
 
 try:
     LR_SCHEDULER = getattr(import_module('torch.optim.lr_scheduler'), CFG['lr_scheduler'])
-    LR_SCHEDULER_PARAMS = CFG['lr_scheduler_params']
+    LR_SCHEDULER_PARAMS = copy(CFG['lr_scheduler_params'])
+    if LR_SCHEDULER.__name__ in ['LambdaLR', 'MultiplicativeLR']:
+        LR_SCHEDULER_PARAMS['lr_lambda'] = eval(LR_SCHEDULER_PARAMS['lr_lambda'])
 except:
     LR_SCHEDULER = None
     LR_SCHEDULER_PARAMS = None
@@ -160,12 +163,12 @@ def run_training():
             'weight_decay': OPTIMIZER_PARAMS['weight_decay'] if OPTIMIZER_PARAMS.get('weight_decay') is not None else 0.0,
             'all_optimizer_params': OPTIMIZER_PARAMS,
             'lr_scheduler': LR_SCHEDULER.__name__ if LR_SCHEDULER is not None else None,
-            'lr_scheduler_params': LR_SCHEDULER_PARAMS
+            'lr_scheduler_params': CFG['lr_scheduler_params']
         }
 
         neptune_logger = NeptuneLogger(
             api_key=CFG['neptune_api_token'],
-            project_name='pchaberski/cars',
+            project_name=CFG['neptune_username'] + '/' + CFG['neptune_project_name'],
             experiment_name=CFG['architecture'] + '_' + RUN_TIMESTAMP,
             params=neptune_parameters
         )

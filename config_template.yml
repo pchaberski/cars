@@ -14,7 +14,7 @@ stanford_data_path: 'input/stanford'
 output_path: 'output'
 
 # General data preprocessinng settings
-image_size: [227, 227]
+image_size: &img_size [227, 227]  # Anchor to use in augmentations if needed
 convert_to_grayscale: False
 normalize: True  
 normalization_params_rgb:  # Applied when 'convert_to_grayscale==False'
@@ -54,7 +54,7 @@ num_epochs: 200
 
 # Architecture modifications (right now GhostNet only!)
 dropout: 0.2  # droupout rate before the last Linear layer
-output_channels: 1280  # output channels to be mapped to number_of classes
+output_channels: 320  # output channels to be mapped to the number of classes
 
 # Optimizer settings
 optimizer: AdamW  # valid optimizer from 'torch.optim'
