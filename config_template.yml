@@ -41,7 +41,7 @@ image_augmentations:  # to be applied consecutively
     contrast: 0.2
     saturation: 0.2
     hue: 0.1
-augment_tensors: True
+augment_tensors: False
 tensor_augmentations:  # to be applied consecutively
   RandomErasing:
     p: 0.5
@@ -61,12 +61,10 @@ optimizer: AdamW  # valid optimizer from 'torch.optim'
 optimizer_params:
   lr: 0.001
   weight_decay: 0.6
-lr_scheduler: ReduceLROnPlateau  # # valid lr_scheduler from 'torch.optim' or None
+lr_scheduler: MultiStepLR  # valid lr_scheduler from 'torch.optim' or None
 lr_scheduler_params:  # scheduler parameters to be passed as '**dict'
-  factor: 0.1
-  patience: 5
-  threshold: 0.001
-  min_lr: 0.0000001
+  gamma: 0.1
+  milestones: [67, 82, 95, 107]
 
 # Loss function settings
 loss_function: LabelSmoothingCrossEntropy  # valid loss function from 'torch.nn' or custom LabelSmoothingCrossEntropy
