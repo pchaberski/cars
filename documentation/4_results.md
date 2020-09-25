@@ -26,7 +26,7 @@
 |C-18|Dropout rate tests: dropout = 0.1                            |99.11%   |66.90%   |
 |C-19|Dropout rate tests: dropout = 0.3                            |98.62%   |67.81%   |
 |C-20|Dropout rate tests: dropout = 0.4                            |96.52%   |64.88%   |
-|C-21|Dropout rate tests: dropout = 0.4                            |96.28%   |66.75%   |
+|C-21|Dropout rate tests: dropout = 0.5                            |96.28%   |66.75%   |
 |C-22|Last layer size tests: out channels = 320                    |97.13%   |68.93%   |
 |C-23|Last layer size tests: out channels = 640                    |96.13%   |63.13%   |
 |C-24|Last layer size tests: out channels = 960                    |98.23%   |64.96%   |
