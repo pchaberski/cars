@@ -2,10 +2,10 @@
 
 asdasdasd
 
-![cat](img/sample_img.png "This is cat")
+![cat](img/sample_img.png)
 
 
-Table:  
+## 2.1 The chapter about table <a name="ch21"></a>
 
 |ID  |train_loss       |valid_loss      |train_acc      |valid_acc        |
 |----|-----------------|----------------|---------------|-----------------|
@@ -65,3 +65,84 @@ Table:
 |C-3 |1.07505440711975 |4.79199552536011|0.9945068359375|0.119604140520096|
 |C-2 |1.13285481929779 |4.87297534942627|0.9888916015625|0.091230519115925|
 |C-1 |0.296121209859848|4.84898328781128|0.9249267578125|0.081503458321095|
+
+
+## 2.2 Config chapter <a name="ch22"></a>
+
+This is `yaml` config:
+
+```yaml
+# Logging settings:
+loglevel: 'INFO'
+logging_dir: 'logs'
+log_to_neptune: False
+neptune_username: '<neptune.ai username>'
+neptune_project_name: '<neptune.ai project name>'
+neptune_api_token: '<neptune.ai API token>'
+
+# Train/test dataset and devkit location
+stanford_raw_data_path: '<path to the folder containing: car_ims.tgz, cars_annos.mat, car_devkit.tgz>'
+stanford_data_path: 'input/stanford'
+
+# Output settings
+output_path: 'output'
+
+# General data preprocessinng settings
+image_size: &img_size [227, 227]  # Anchor to use in augmentations if needed
+convert_to_grayscale: False
+normalize: True  
+normalization_params_rgb:  # Applied when 'convert_to_grayscale==False'
+  mean: [0.4707, 0.4602, 0.4550]
+  std: [0.2594, 0.2585, 0.2635]
+normalization_params_grayscale:  # Applied when 'convert_to_grayscale==True'
+  mean: [0.4627]
+  std: [0.2545]
+
+# Training data augmentation settings
+crop_to_bboxes: True  # crop training images using bounding boxes
+erase_background: True  # erase background outside bboxes to preserve ratios (only if 'crop_to_bboxes==True') 
+augment_images: True
+image_augmentations:  # to be applied consecutively
+  RandomHorizontalFlip:  # has to be a valid transformation from 'torchvision.transforms'
+    p: 0.5  # transformation parameters to be passed as '**dict'
+  RandomAffine:
+    degrees: 25
+    translate: [0.1, 0.1]
+    scale: [0.9, 1.1]
+    shear: 8
+  ColorJitter:
+    brightness: 0.2
+    contrast: 0.2
+    saturation: 0.2
+    hue: 0.1
+augment_tensors: True
+tensor_augmentations:  # to be applied consecutively
+  RandomErasing:
+    p: 0.5
+    scale: [0.02, 0.25]
+
+# Network and training settings
+architecture: 'ghost'  # Possible options in 'models.arch_dict'
+batch_size: 64
+num_epochs: 200
+
+# Architecture modifications (right now GhostNet only!)
+dropout: 0.2  # droupout rate before the last Linear layer
+output_channels: 320  # output channels to be mapped to the number of classes
+
+# Optimizer settings
+optimizer: AdamW  # valid optimizer from 'torch.optim'
+optimizer_params:
+  lr: 0.001
+  weight_decay: 0.6
+lr_scheduler: ReduceLROnPlateau  # # valid lr_scheduler from 'torch.optim' or None
+lr_scheduler_params:  # scheduler parameters to be passed as '**dict'
+  factor: 0.1
+  patience: 5
+  threshold: 0.001
+  min_lr: 0.0000001
+
+# Loss function settings
+loss_function: LabelSmoothingCrossEntropy  # valid loss function from 'torch.nn' or custom LabelSmoothingCrossEntropy
+loss_params:  # loss parameters to be passed as '**dict'
+```
