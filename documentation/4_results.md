@@ -4,64 +4,64 @@
 
 ## 4.2. Experiments step-by-step <a name="experiments-step-by-step"></a>
 
-|#  |Experiment description                                                       |Training loss (min)|Validation loss (min)|Training accuracy (max)|Validation accuracy (max)|
-|---|-----------------------------------------------------------------------------|-------------------|---------------------|-----------------------|-------------------------|
-|1  |Baseline (Cross Entropy Loss)                                                |0.2961             |4.849                |92.49%                 |8.15%                    |
-|2  |Loss function change (Label Smoothing Cross Entropy)                         |1.1329             |4.873                |98.89%                 |9.12%                    |
-|3  |Augmentations: RandomHorizontalFlip, RandomAffine                            |1.0751             |4.792                |99.45%                 |11.96%                   |
-|4  |Augmentations: RandomHorizontalFlip, RandomAffine, RandomErasing             |0.9897             |2.8108               |99.76%                 |51.92%                   |
-|5  |Augmentations: RandomHorizontalFlip, RandomErasing, ColorJitter              |1.1223             |3.3386               |98.12%                 |38.08%                   |
-|6  |Augmentations: RandomHorizontalFlip, RandomAffine, RandomErasing, ColorJitter|1.3148             |3.4524               |93.68%                 |38.68%                   |
-|7  |Augmentations: RandomHorizontalFlip, RandomAffine, ColorJitter               |1.0034             |2.7444               |99.73%                 |54.28%                   |
-|8  |Grayscale conversion: no normalization, no augmentations                     |1.0891             |5.0804               |99.49%                 |6.58%                    |
-|9  |Grayscale conversion: with normalization, no augmentations                   |1.2071             |4.7456               |97.13%                 |8.68%                    |
-|10 |Grayscale conversion: with normalization, best augmentations from RGB tests  |4.5697             |5.142                |7.58%                  |3.91%                    |
-|11 |Training set cropping with bounding boxes                                    |4.8223             |5.1957               |4.36%                  |3.07%                    |
-|12 |Training set cropping + background erasing                                   |1.0169             |2.8432               |99.67%                 |50.51%                   |
-|13 |L2 regularization with AdamW: weight decay = 0.1                             |1.0234             |2.3146               |99.44%                 |63.39%                   |
-|14 |L2 regularization with AdamW: weight decay = 0.2                             |1.0706             |2.0888               |98.84%                 |68.50%                   |
-|15 |L2 regularization with AdamW: weight decay = 0.3                             |1.2132             |2.2845               |95.83%                 |61.84%                   |
-|16 |L2 regularization with AdamW: weight decay = 0.4                             |1.1928             |2.1737               |95.95%                 |65.14%                   |
-|17 |L2 regularization with AdamW: weight decay = 0.5                             |1.3783             |2.3015               |90.38%                 |59.95%                   |
-|18 |Dropout rate tests: dropout = 0.1                                            |1.039              |2.1793               |99.11%                 |66.90%                   |
-|19 |Dropout rate tests: dropout = 0.3                                            |1.0867             |2.1076               |98.62%                 |67.81%                   |
-|20 |Dropout rate tests: dropout = 0.4                                            |1.1732             |2.1635               |96.52%                 |64.88%                   |
-|21 |Dropout rate tests: dropout = 0.4                                            |1.1911             |2.0956               |96.28%                 |66.75%                   |
-|22 |Last layer size tests: out channels = 320                                    |1.1396             |2.0546               |97.13%                 |68.93%                   |
-|23 |Last layer size tests: out channels = 640                                    |1.1958             |2.2503               |96.13%                 |63.13%                   |
-|24 |Last layer size tests: out channels = 960                                    |1.1082             |2.2023               |98.23%                 |64.96%                   |
-|25 |Last layer size tests: out channels = 1600                                   |1.0709             |2.2937               |98.99%                 |63.11%                   |
-|26 |Automatic LR scheduling: take #1                                             |0.9948             |1.9026               |99.82%                 |74.60%                   |
-|27 |Automatic LR scheduling: take #2                                             |1.014              |1.8357               |99.78%                 |76.20%                   |
-|28 |Automatic LR scheduling: take #3                                             |0.9878             |1.8881               |99.83%                 |75.14%                   |
-|29 |Automatic LR scheduling: take #4                                             |1.0056             |1.8743               |99.78%                 |74.82%                   |
-|30 |Controlled LR scheduling: milestones = [28, 48, 68, 88]                      |1.7492             |2.3638               |80.66%                 |57.82%                   |
-|31 |Controlled LR scheduling: milestones = [36, 56, 76, 96]                      |1.3213             |2.1303               |95.03%                 |64.93%                   |
-|32 |Controlled LR scheduling: milestones = [44, 64, 84, 104]                     |1.1425             |2.0221               |98.68%                 |68.79%                   |
-|33 |Controlled LR scheduling: milestones = [52, 72, 92, 112]                     |1.0585             |1.9705               |99.60%                 |71.59%                   |
-|36 |Weight decay adjustment: weight decay = 0.5                                  |1.1026             |1.6685               |98.84%                 |79.40%                   |
-|37 |Weight decay adjustment: weight decay = 0.3                                  |1.0431             |1.8583               |99.57%                 |74.44%                   |
-|38 |Weight decay adjustment: weight decay = 0.4                                  |1.0483             |1.6952               |99.37%                 |78.82%                   |
-|39 |Weight decay adjustment: weight decay = 0.6                                  |1.0898             |1.5635               |98.67%                 |82.55%                   |
-|40 |Weight decay adjustment: weight decay = 0.7                                  |1.089              |1.8018               |99.24%                 |75.12%                   |
-|41 |Dropout rate verification: dropout = 0.3                                     |1.1107             |1.571                |98.49%                 |82.08%                   |
-|42 |Dropout rate verification: dropout = 0.4                                     |1.2701             |1.6464               |95.34%                 |79.57%                   |
-|43 |Dropout rate verification: dropout = 0.5                                     |1.2695             |1.6918               |96.08%                 |77.87%                   |
-|44 |Dropout rate verification: dropout = 0.25                                    |1.0871             |1.5615               |98.79%                 |82.45%                   |
-|45 |Additional augmentations test: RandomResizedCrop                             |1.1619             |1.6991               |97.56%                 |78.73%                   |
-|46 |Additional augmentations test: RandomRotation                                |1.2029             |1.7207               |97.03%                 |78.25%                   |
-|47 |Additional augmentations test: RandomPerpective                              |1.1691             |1.6295               |97.42%                 |80.22%                   |
-|48 |Additional augmentations test: RandomErasing                                 |1.3032             |1.633                |93.68%                 |80.56%                   |
-|**50** |**Learning rate scheduler adjustment: milestones = [67, 82, 95, 107]**           |**1.0641**             |**1.5208**               |**98.94%**                 |**83.79%**                   |
-|51 |Learning rate scheduler adjustment: milestones = [63, 78, 91, 103]           |1.0766             |1.5719               |98.86%                 |82.54%                   |
-|53 |Learning rate scheduler adjustment: milestones = [66, 81, 94, 106]           |1.0735             |1.5298               |98.96%                 |83.02%                   |
-|55 |Learning rate scheduler adjustment: milestones = [68, 83, 96, 108]           |1.0701             |1.5258               |98.78%                 |83.72%                   |
-|56 |Learning rate scheduler adjustment: milestones = [64, 79, 92, 104]           |1.0661             |1.5597               |98.99%                 |82.79%                   |
-|58 |Last layer size sanity check: out channels = 1280                            |1.0495             |1.7201               |99.44%                 |78.83%                   |
-|63 |Learning rate annealing test: LR geometric sequence based on best LR drop    |0.9938             |2.0385               |99.80%                 |70.51%                   |
-|64 |Learning rate annealing test: exponentiation base = 0.955                    |1.1694             |2.3141               |98.49%                 |60.70%                   |
-|65 |Learning rate annealing test: exponentiation base = 0.975                    |0.9751             |1.9074               |99.66%                 |73.07%                   |
-|66 |Learning rate annealing test: exponentiation base = 0.98                     |1.0571             |1.9423               |98.72%                 |70.46%                   |
+|      |experiment description                                       |train_acc|valid_acc|
+|------|-------------------------------------------------------------|---------|---------|
+|C-1 |Baseline (Cross Entropy Loss)                                |92.49%   |8.15%    |
+|C-2 |Loss function change (Label Smoothing Cross Entropy)         |98.89%   |9.12%    |
+|C-3 |Augmentations: horizontal flip, affine                       |99.45%   |11.96%   |
+|C-4 |Augmentations: horizontal flip, affine, erasing              |99.76%   |51.92%   |
+|C-5 |Augmentations: horizontal flip, erasing, color jitter        |98.12%   |38.08%   |
+|C-6 |Augmentations: horizontal flip, affine, erasing, color jitter|93.68%   |38.68%   |
+|C-7 |Augmentations: horizontal flip, affine, color jitter         |99.73%   |54.28%   |
+|C-8 |Grayscale: no normalization, no augmentations                |99.49%   |6.58%    |
+|C-9 |Grayscale: with normalization, no augmentations              |97.13%   |8.68%    |
+|C-10|Grayscale: normalization, best RGB augmentations             |7.58%    |3.91%    |
+|C-11|Training set cropping with bounding boxes                    |4.36%    |3.07%    |
+|C-12|Training set cropping + background erasing                   |99.67%   |50.51%   |
+|C-13|L2 regularization with AdamW: weight decay = 0.1             |99.44%   |63.39%   |
+|C-14|L2 regularization with AdamW: weight decay = 0.2             |98.84%   |68.50%   |
+|C-15|L2 regularization with AdamW: weight decay = 0.3             |95.83%   |61.84%   |
+|C-16|L2 regularization with AdamW: weight decay = 0.4             |95.95%   |65.14%   |
+|C-17|L2 regularization with AdamW: weight decay = 0.5             |90.38%   |59.95%   |
+|C-18|Dropout rate tests: dropout = 0.1                            |99.11%   |66.90%   |
+|C-19|Dropout rate tests: dropout = 0.3                            |98.62%   |67.81%   |
+|C-20|Dropout rate tests: dropout = 0.4                            |96.52%   |64.88%   |
+|C-21|Dropout rate tests: dropout = 0.4                            |96.28%   |66.75%   |
+|C-22|Last layer size tests: out channels = 320                    |97.13%   |68.93%   |
+|C-23|Last layer size tests: out channels = 640                    |96.13%   |63.13%   |
+|C-24|Last layer size tests: out channels = 960                    |98.23%   |64.96%   |
+|C-25|Last layer size tests: out channels = 1600                   |98.99%   |63.11%   |
+|C-26|Automatic LR scheduling: take #1                             |99.82%   |74.60%   |
+|C-27|Automatic LR scheduling: take #2                             |99.78%   |76.20%   |
+|C-28|Automatic LR scheduling: take #3                             |99.83%   |75.14%   |
+|C-29|Automatic LR scheduling: take #4                             |99.78%   |74.82%   |
+|C-30|Controlled LR scheduling: milestones = [28, 48, 68, 88]      |80.66%   |57.82%   |
+|C-31|Controlled LR scheduling: milestones = [36, 56, 76, 96]      |95.03%   |64.93%   |
+|C-32|Controlled LR scheduling: milestones = [44, 64, 84, 104]     |98.68%   |68.79%   |
+|C-33|Controlled LR scheduling: milestones = [52, 72, 92, 112]     |99.60%   |71.59%   |
+|C-36|Weight decay adjustment: weight decay = 0.5                  |98.84%   |79.40%   |
+|C-37|Weight decay adjustment: weight decay = 0.3                  |99.57%   |74.44%   |
+|C-38|Weight decay adjustment: weight decay = 0.4                  |99.37%   |78.82%   |
+|C-39|Weight decay adjustment: weight decay = 0.6                  |98.67%   |82.55%   |
+|C-40|Weight decay adjustment: weight decay = 0.7                  |99.24%   |75.12%   |
+|C-41|Dropout rate verification: dropout = 0.3                     |98.49%   |82.08%   |
+|C-42|Dropout rate verification: dropout = 0.4                     |95.34%   |79.57%   |
+|C-43|Dropout rate verification: dropout = 0.5                     |96.08%   |77.87%   |
+|C-44|Dropout rate verification: dropout = 0.25                    |98.79%   |82.45%   |
+|C-45|Additional augmentations test: resized crop                  |97.56%   |78.73%   |
+|C-46|Additional augmentations test: rotation                      |97.03%   |78.25%   |
+|C-47|Additional augmentations test: perspective                   |97.42%   |80.22%   |
+|C-48|Additional augmentations test: erasing                       |93.68%   |80.56%   |
+|**C-50**|**LR scheduler adjustment: milestones = [67, 82, 95, 107]**      |**98.94%**   |**83.79%**   |
+|C-51|LR scheduler adjustment: milestones = [63, 78, 91, 103]      |98.86%   |82.54%   |
+|C-53|LR scheduler adjustment: milestones = [66, 81, 94, 106]      |98.96%   |83.02%   |
+|C-55|LR scheduler adjustment: milestones = [68, 83, 96, 108]      |98.78%   |83.72%   |
+|C-56|LR scheduler adjustment: milestones = [64, 79, 92, 104]      |98.99%   |82.79%   |
+|C-58|Last layer size sanity check: out channels = 1280            |99.44%   |78.83%   |
+|C-63|LR annealing test: LR geometric sequence                     |99.80%   |70.51%   |
+|C-64|LR annealing test: exponentiation base = 0.955               |98.49%   |60.70%   |
+|C-65|LR annealing test: exponentiation base = 0.975               |99.66%   |73.07%   |
+|C-66|LR annealing test: exponentiation base = 0.98                |98.72%   |70.46%   |
 
 
 ### 4.2.1. Loss function <a name="loss-function"></a>
