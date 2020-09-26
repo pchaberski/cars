@@ -32,3 +32,4 @@
 #### 4.2.14. [Learning rate scheduler adjustment](4_results.md#learning-rate-scheduler-adjustment)
 #### 4.2.15. [Last layer size sanity check](4_results.md#last-layer-size-sanity-check)
 #### 4.2.16. [Learning rate annealing tests](4_results.md#learning-rate-annealing-tests)
+## [References](5_references.md)
