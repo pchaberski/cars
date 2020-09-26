@@ -6,7 +6,7 @@ Stanford Cars Dataset [[12]](5_references.md#KrauseStarkDengFei-Fei_3DRR2013) is
 
 ![Example images from Stanford Cars Dataset](img/21_1_stanford_cars_examples.png "Example images from Stanford Cars Dataset")  
 
-The dataset contains 16,185 images of 196 classes of car models (precisely, class contains the information about make, model and production year). Dataset has been splitted with stratification into two parts:  
+The dataset contains 16,185 images of 196 classes of car models (precisely, class label contains information about make, model and production year of a car). Dataset has been splitted with stratification into two parts:  
 
 - 8,144 images as a training set  
 - 8,041 images as a test set  
