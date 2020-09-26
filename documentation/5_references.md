@@ -172,3 +172,17 @@ K.&nbsp;Han, Y.&nbsp;Wang, Q.&nbsp;Tian, J.&nbsp;Guo, C.&nbsp;Xu, and C.&nbsp;Xu
  Ghostnet: More features from cheap operations.
  <em>2020 IEEE/CVF Conference on Computer Vision and Pattern
   Recognition (CVPR)</em>, Jun 2020.
+[&nbsp;<a href="http://dx.doi.org/10.1109/cvpr42600.2020.00165">DOI</a>&nbsp;| 
+<a href="http://dx.doi.org/10.1109/cvpr42600.2020.00165">http</a>&nbsp;]
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a name="KrauseStarkDengFei-Fei_3DRR2013">12</a>]
+</td>
+<td class="bibtexitem">
+J.&nbsp;Krause, M.&nbsp;Stark, J.&nbsp;Deng, and L.&nbsp;Fei-Fei.
+ 3d object representations for fine-grained categorization.
