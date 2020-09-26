@@ -1,4 +1,6 @@
-# Table of Contents
+# Lightweight neural architectures by example - car model classification using GhostNet
+
+## Table of Contents
 
 ## 1. [Introduction](1_introduction.md)
 ### 1.1. [Problem background](1_introduction.md#problem-background)
