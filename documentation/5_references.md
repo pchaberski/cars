@@ -16,7 +16,7 @@
 M.&nbsp;Hollemans.
  New mobile neural network architectures.
  Accessed 2020-09-26:
-  <a href="https://machinethink.net/blog/mobile-architectures/">https://machinethink.net/blog/mobile-architectures/</a>, 2020.
+  <a href="https://machinethink.net/blog/mobile-architectures">https://machinethink.net/blog/mobile-architectures</a>, 2020.
 
 </td>
 </tr>
@@ -186,3 +186,34 @@ K.&nbsp;Han, Y.&nbsp;Wang, Q.&nbsp;Tian, J.&nbsp;Guo, C.&nbsp;Xu, and C.&nbsp;Xu
 <td class="bibtexitem">
 J.&nbsp;Krause, M.&nbsp;Stark, J.&nbsp;Deng, and L.&nbsp;Fei-Fei.
  3d object representations for fine-grained categorization.
+ In <em>4th International IEEE Workshop on 3D Representation and
+  Recognition (3dRR-13)</em>, Sydney, Australia, 2013.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a name="pandey2018">13</a>]
+</td>
+<td class="bibtexitem">
+A.&nbsp;Pandey.
+ Depth-wise convolution and depth-wise separable convolution.
+ Accessed 2020-09-26:
+  <a href="https://medium.com/@zurister/depth-wise-convolution-and-depth-wise-separable-convolution-37346565d4ec">https://medium.com/@zurister/depth-wise-convolution-and-depth-wise-separable-convolution-37346565d4ec</a>,
+  2018.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a name="Hu_2018">14</a>]
+</td>
+<td class="bibtexitem">
+J.&nbsp;Hu, L.&nbsp;Shen, and G.&nbsp;Sun.
+ Squeeze-and-excitation networks.
+ <em>2018 IEEE/CVF Conference on Computer Vision and Pattern
+  Recognition</em>, Jun 2018.

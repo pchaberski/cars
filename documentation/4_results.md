@@ -94,4 +94,5 @@
 
 ### 4.2.15. Last layer size sanity check <a name="last-layer-size-sanity-check"></a>
 
-### 4.2.16. Learning rate annealing tests <a name="learning-rate-annealing-tests"></a>
+### 4.2.16. Learning rate annealing tests <a name="learning-rate-annealing-tests"></a>  
+
