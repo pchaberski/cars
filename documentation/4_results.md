@@ -1,11 +1,113 @@
 # 4. Results
 
+For the experiments, entire training subset from Stanford Cars Dataset was used for training, and *test* subset was used for validation. There is no additional hold-out testing set so it has to be taken into account that the final accuracy estimate might be somehow biased.
+
+To limit hyperparameter space for best model search, some assumptions were made at the beginning:
+
+- network is trained from scratch, without using any pretrained weights
+- input image size is 227x277 (this assumption results from initial tests on SqueezeNext [[6]](5_references.md#Gholami_2018) where this is a minimum image size and all other architectures available in [`arch_dict.py`](https://github.com/pchaberski/cars/blob/documentation/models/arch_dict.py) can handle such image size. For GhostNet, minimum image size is 224x224)
+- batch size is fixed at 64 mostly because of local GPU memory limitations, however some tests during development phase showed no gain with smaller or larger batch sizes
+- Adam with initial learning rate value of 0.001 is chosen as a default optimizer, and may be changed to AdamW [[16]](5_references.md#loshchilov2017decoupled) when applying weight decay (although SGD was also tested at the development phase, but was leading to severe overfitting)
+- early stopping is triggered when there is no decrease in validation loss for 15 epochs
+
+During experiments, several techniques were used to increase validation accuracy and reduce overfitting, which turned out te be the major issue in training process:
+
+- different loss functions
+- pixel value normalization
+- various image augmentations
+- grayscale conversion
+- utilization of bounding boxes
+- L2 regularization using weight decay
+- dropout rate changing in the classifier module
+- last layer size changing
+- learning rate scheduling
+
+The search for the best settings was performed in a greedy manner: some arbitrary order of applying different techniques and hyperparameter values was established and after each step the best settings were further augmented using other techniques in order, however a few step-backs and sanity checks were made in the process.
+
+The entire process of obtaining the best model is described step-by-step in section [4.2](#experiments-step-by-step).
+
 ## 4.1. Best model <a name="best-model"></a>
+
+The best model that was obtained during the process achieved 83.79 % top-1 accuracy on the validation set after training for 129 epochs and Label Smoothing Cross Entropy function. Best metrics scores for that model are:  
+
+| Metric                 | Value          |
+|------------------------|----------------|
+|Min. training loss      |1.064           |
+|Min. validation loss    |1.521           |
+|Max. training accuracy  |98.93%          |
+|Max. validation accuracy|83.79%          |
+
+The best model still shows significant overfitting so there might be some space for further improvement. However, taking into account that the same model achieves 73.98% on ImageNet dataset suggests that the score of almost 83.79% on the Stanford Cars Dataset is quite decent. While Stanford Cars Dataset contains much less classes (196 in comparison to 1000 in ImageNet), but those classes seem harder to distinguish and the dataset itself is much smaller.
+
+It is also important to notice, that due to lesser number of classes, The size of the last layer was reduced during tests - instead of passing 1280-channel input to the classifier, only 320 channels are passed, which results in the total reduction of parameter count from 4.2 million to slightly over 3 millions.
+
+![Training and validation loss for the best model (C-50)](img/41_1_loss.png "Training and validation loss for the best model (C-50)")
+
+![Training and validation accuracy for the best model (C-50)](img/41_2_acc.png "Training and validation accuracy for the best model (C-50)")
+
+![Learning rates for the best model (C-50)](img/41_3_lr.png "Learning rates for the best model (C-50)")
+
+The full set of settings and hyperparameters used to train the best performing model is listed below:
+
+* runtime:
+   * `colab`
+* architecture:
+   * `GhostNet`
+* num_params:
+   * `3041412.0`
+* img_size:
+   * `[227, 227]`
+* grayscale:
+   * `False`
+* normalize:
+   * `True`
+* norm_params_rgb:
+   * `{'mean': [0.4707, 0.4602, 0.455], 'std': [0.2594, 0.2585, 0.2635]}`
+* norm_params_gray:
+   * `None`
+* crop_to_bboxes:
+   * `False`
+* erase_background:
+   * `False`
+* augment_images:
+   * `True`
+* image_augmentations:
+   * `{'RandomHorizontalFlip': {'p': 0.5}, 'RandomAffine': {'degrees': 25, 'translate': [0.1, 0.1], 'scale': [0.9, 1.1], 'shear': 8}, 'ColorJitter': {'brightness': 0.2, 'contrast': 0.2, 'saturation': 0.2, 'hue': 0.1}}`
+* augment_tensors:
+   * `False`
+* tensor_augmentations:
+   * `None`
+* batch_size:
+   * `64.0`
+* max_num_epochs:
+   * `200.0`
+* dropout:
+   * `0.2`
+* out_channels:
+   * `320.0`
+* loss_function:
+   * `LabelSmoothingCrossEntropy`
+* loss_params:
+   * `None`
+* optimizer:
+   * `AdamW`
+* learning_rate:
+   * `0.001`
+* weight_decay:
+   * `0.6`
+* all_optimizer_params:
+   * `{'lr': 0.001, 'weight_decay': 0.6}`
+* lr_scheduler:
+   * `MultiStepLR`
+* lr_scheduler_params:
+   * `{'gamma': 0.1, 'milestones': [67, 82, 95, 107]}`
 
 ## 4.2. Experiments step-by-step <a name="experiments-step-by-step"></a>
 
+The table below presents the summary of model accuracy scores for all experiments along with a brief information of techniques used in training. Full and interactive comparison is available through [Neptune dashboard](https://ui.neptune.ai/pchaberski/cars/experiments?viewId=ae19164c-ee09-4209-8798-a424142d2082).
+
 |      |experiment description                                       |train_acc|valid_acc|
-|------|-------------------------------------------------------------|---------|---------|
+|------|-------------------------------------------------------------|:-------:|:-------:|
 |C-1 |Baseline (Cross Entropy Loss)                                |92.49%   |8.15%    |
 |C-2 |Loss function change (Label Smoothing Cross Entropy)         |98.89%   |9.12%    |
 |C-3 |Augmentations: horizontal flip, affine                       |99.45%   |11.96%   |
