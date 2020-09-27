@@ -217,3 +217,30 @@ J.&nbsp;Hu, L.&nbsp;Shen, and G.&nbsp;Sun.
  Squeeze-and-excitation networks.
  <em>2018 IEEE/CVF Conference on Computer Vision and Pattern
   Recognition</em>, Jun 2018.
+[&nbsp;<a href="http://dx.doi.org/10.1109/cvpr.2018.00745">DOI</a>&nbsp;| 
+<a href="http://dx.doi.org/10.1109/CVPR.2018.00745">http</a>&nbsp;]
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a name="Poulopoulos2020">15</a>]
+</td>
+<td class="bibtexitem">
+D.&nbsp;Poulopoulos.
+ How to use label smoothing for regularization.
+ Accessed 2020-09-27:
+  <a href="https://medium.com/towards-artificial-intelligence/how-to-use-label-smoothing-for-regularization-aa349f7f1dbb">https://medium.com/towards-artificial-intelligence/how-to-use-label-smoothing-for-regularization-aa349f7f1dbb</a>,
+  2020.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a name="PLACEHOLDER">16</a>]
+</td>
+<td class="bibtexitem">
