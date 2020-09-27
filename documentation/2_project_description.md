@@ -73,27 +73,27 @@ GhostNet architecture based on paper:
 
 |   Input               |   Operator          |   #exp   |   #out   |   SE   |   Stride   |
 |-----------------------|---------------------|----------|----------|--------|------------|
-|224<sup>2</sup> x 3    |     Conv2d 3x3      |     -    |   16     |   -    |     2      |
-|112<sup>2</sup> x 16   |       G-bneck       |     16   |   16     |   -    |     1      |
-|112<sup>2</sup> x 16   |       G-bneck       |     48   |   24     |   -    |     2      |
-|56<sup>2</sup> x 24    |       G-bneck       |     72   |   24     |   -    |     1      |
-|56<sup>2</sup> x 24    |       G-bneck       |     72   |   40     |   1    |     2      |
-|28<sup>2</sup> x 40    |       G-bneck       |     120  |   40     |   1    |     1      |
-|28<sup>2</sup> x 40    |       G-bneck       |     240  |   80     |   -    |     2      |
-|14<sup>2</sup> x 80    |       G-bneck       |     200  |   80     |   -    |     1      |
-|14<sup>2</sup> x 80    |       G-bneck       |     184  |   80     |   -    |     1      |
-|14<sup>2</sup> x 80    |       G-bneck       |     184  |   80     |   -    |     1      |
-|14<sup>2</sup> x 80    |       G-bneck       |     480  |   112    |   1    |     1      |
-|14<sup>2</sup> x 112   |       G-bneck       |     672  |   112    |   1    |     1      |
-|14<sup>2</sup> x 112   |       G-bneck       |     672  |   160    |   1    |     2      |
-|7<sup>2</sup> x 160    |       G-bneck       |     960  |   160    |   -    |     1      |
-|7<sup>2</sup> x 160    |       G-bneck       |     960  |   160    |   1    |     1      |
-|7<sup>2</sup> x 160    |       G-bneck       |     960  |   160    |   -    |     1      |
-|7<sup>2</sup> x 160    |       G-bneck       |     960  |   160    |   1    |     1      |
-|7<sup>2</sup> x 160    |       Conv2d 1x1    |     -    |   960    |   -    |     1      |
-|7<sup>2</sup> x 960    |       AvgPool 7x7   |     -    |   -      |   -    |     -      |
-|1<sup>2</sup> x 960    |       Conv2d 1x1    |     -    |   1280   |   -    |     1      |
-|1<sup>2</sup> x 1280   |       FC            |     -    |   1000   |   -    |     -      |
+|224 x 224 x 3          |     Conv2d 3x3      |     -    |   16     |   -    |     2      |
+|112 x 112 x 16         |       G-bneck       |     16   |   16     |   -    |     1      |
+|112 x 112 x 16         |       G-bneck       |     48   |   24     |   -    |     2      |
+|56 x 56 x 24           |       G-bneck       |     72   |   24     |   -    |     1      |
+|56 x 56 x 24           |       G-bneck       |     72   |   40     |   1    |     2      |
+|28 x 28 x 40           |       G-bneck       |     120  |   40     |   1    |     1      |
+|28 x 28 x 40           |       G-bneck       |     240  |   80     |   -    |     2      |
+|14 x 14 x 80           |       G-bneck       |     200  |   80     |   -    |     1      |
+|14 x 14 x 80           |       G-bneck       |     184  |   80     |   -    |     1      |
+|14 x 14 x 80           |       G-bneck       |     184  |   80     |   -    |     1      |
+|14 x 14 x 80           |       G-bneck       |     480  |   112    |   1    |     1      |
+|14 x 14 x 112          |       G-bneck       |     672  |   112    |   1    |     1      |
+|14 x 14 x 112          |       G-bneck       |     672  |   160    |   1    |     2      |
+|7 x 7 x 160            |       G-bneck       |     960  |   160    |   -    |     1      |
+|7 x 7 x 160            |       G-bneck       |     960  |   160    |   1    |     1      |
+|7 x 7 x 160            |       G-bneck       |     960  |   160    |   -    |     1      |
+|7 x 7 x 160            |       G-bneck       |     960  |   160    |   1    |     1      |
+|7 x 7 x 160            |       Conv2d 1x1    |     -    |   960    |   -    |     1      |
+|7 x 7 x 960            |       AvgPool 7x7   |     -    |   -      |   -    |     -      |
+|1 x 1 x 960            |       Conv2d 1x1    |     -    |   1280   |   -    |     1      |
+|1 x 1 x 1280           |       FC            |     -    |   1000   |   -    |     -      |
 
 GhostNet architecture described above (and in original paper as well) is the basic setup which can be modified by structuring GhostBottlenecks in different sequences. This basic setup, as mentioned before, gets 73.98% accuracy on ImageNet with 4.1 M parameters and requires only 0.142 GFLOPS to process 224x224 RGB image. Other more complex variations, as presented in paper, show superiority over previous designs like MobileNet or ShuffleNet getting better accuracy with less FLOPS and latency.
 
