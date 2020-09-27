@@ -243,9 +243,11 @@ The main dashboard table is configured to summarize all most important informati
 
 ![Part of a Neptune main dashboard](img/34_1_neptune_dashboard.png "Part of a Neptune main dashboard")  
 
-After clicking on a particular experiment ID it is possible to check detailed logs, metrics and experiment parameters.
+After clicking on a particular experiment ID it is possible to check detailed logs and metrics.
 
 ![Loss and accuracy plots for particular experiment](img/34_2_loss_and_acc.png "Loss and accuracy plots for particular experiment")
+
+In Parameters tab all experiment parameters that are passed through `config.yml` can be checked.
 
 ![Detailed experiment parameters](img/34_3_parameters.png "Detailed experiment parameters")  
 
