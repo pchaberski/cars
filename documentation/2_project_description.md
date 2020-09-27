@@ -17,7 +17,7 @@ Images are originally of different sizes, mostly in RGB, but there are some gray
 
 ## 2.2. GhostNet architecture <a name="ghostnet-architecture"></a>
 
-GhostNet [[11]](5_references.md#Han_2020) is an architecture designed and first implemented by the research team Huawei Noah's Ark Lab (http://www.noahlab.com.hk/). It is based on the observation, that standard convolutional layers with many filters are large in terms of number of parameters and computationally expensive, while often producing redundant feature maps that are very much alike each other (they might be considered as "ghosts" of the original feature map). The goal of the GhostNet design is not to get rid of those redundant feature maps, because they often help the network to comprehensively understand all the features of the input data. Instead of that, the focus is on obtaining those redundant feature maps in a cost-efficient way.
+GhostNet [[11]](5_references.md#Han_2020) is the architecture designed and first implemented by the research team at Huawei Noah's Ark Lab (http://www.noahlab.com.hk/). It is based on the observation, that standard convolutional layers with many filters are large in terms of number of parameters and computationally expensive, while often producing redundant feature maps that are very much alike each other (they might be considered as "ghosts" of the original feature map). The goal of the GhostNet design is not to get rid of those redundant feature maps, because they often help the network to comprehensively understand all the features of the input data. Instead of that, the focus is on obtaining those redundant feature maps in a cost-efficient way.
 
 ![Redundant feature maps from ResNet-50 (picture from paper)](img/22_1_redundant_feature_maps.png "Redundant feature maps from ResNet-50 (picture from paper)")
 
@@ -63,11 +63,11 @@ class GhostModule(nn.Module):
         return output[:, :self.oup, :, :]
 ```  
 
-Two GhostModules combine for a basic building block of the GhostNet - the GhostBottleneck, which is based on the concept taken from MobileNet-V3 design [[5]](5_references.md#Howard_2019) (also in some GhostBottlenecks, similarly to MobileNet-V3, Squeeze-and-Excitation modules are used [[14]](5_references.md#Hu_2018)). The first GhostModule in a GhostBottleneck expands the number of channels, while the second one, after ReLU, reduces them again. There is also a residual connection over the two GhostModules. GhostBottleneck has also strided version (with `stride=2` depthwise convolution between GhostModules) which is applied at the end of each stage of GhostNet.
+Two GhostModules combine for a basic building block of GhostNet - the GhostBottleneck, which is based on the concept taken from MobileNet-V3 design [[5]](5_references.md#Howard_2019) (additionally, in some GhostBottlenecks, similarly to MobileNet-V3, Squeeze-and-Excitation modules are used [[14]](5_references.md#Hu_2018)). The first GhostModule in a GhostBottleneck expands the number of channels, while the second one, after ReLU, reduces them again. There is also a residual connection over the two GhostModules. GhostBottleneck has also strided version (with `stride=2` depthwise convolution between GhostModules) which is applied at the end of each stage of GhostNet.
 
 ![GhostBottleneck (picture from paper)](img/22_3_ghost_bottleneck.png "GhostBottleneck (picture from paper)")
 
-To form up the entire GhostNet architecture several GhostBottlenecks are combined in a sequence which is followed by global average pooling and a convolution which transforms feature maps to the feature vector of length 1280. This feature vector, after dropout layer, is then transformed with fully connected layer to the size of final number of classes.
+To form up the entire GhostNet architecture several GhostBottlenecks are combined in a sequence which is followed by global average pooling and a convolution which transforms feature maps to the feature vector of length 1280. This feature vector, after dropout layer, is then transformed with a fully connected layer to the size of output number of classes.
 
 GhostNet architecture based on paper:  
 
@@ -90,10 +90,10 @@ GhostNet architecture based on paper:
 |7<sup>2</sup> x 160    |       G-bneck       |     960  |   160    |   1    |     1      |
 |7<sup>2</sup> x 160    |       G-bneck       |     960  |   160    |   -    |     1      |
 |7<sup>2</sup> x 160    |       G-bneck       |     960  |   160    |   1    |     1      |
-|7<sup>2</sup> x 160    |       G-bneck       |     -    |   960    |   -    |     1      |
-|7<sup>2</sup> x 960    |       G-bneck       |     -    |   -      |   -    |     -      |
-|1<sup>2</sup> x 960    |       G-bneck       |     -    |   1280   |   -    |     1      |
-|1<sup>2</sup> x 1280   |       G-bneck       |     -    |   1000   |   -    |     -      |
+|7<sup>2</sup> x 160    |       Conv2d 1x1    |     -    |   960    |   -    |     1      |
+|7<sup>2</sup> x 960    |       AvgPool 7x7   |     -    |   -      |   -    |     -      |
+|1<sup>2</sup> x 960    |       Conv2d 1x1    |     -    |   1280   |   -    |     1      |
+|1<sup>2</sup> x 1280   |       FC            |     -    |   1000   |   -    |     -      |
 
 GhostNet architecture described above (and in original paper as well) is the basic setup which can be modified by structuring GhostBottlenecks in different sequences. This basic setup, as mentioned before, gets 73.98% accuracy on ImageNet with 4.1 M parameters and requires only 0.142 GFLOPS to process 224x224 RGB image. Other more complex variations, as presented in paper, show superiority over previous designs like MobileNet or ShuffleNet getting better accuracy with less FLOPS and latency.
 

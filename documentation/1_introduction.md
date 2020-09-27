@@ -22,7 +22,7 @@ The above-mentioned architectures are capable of achieving good accuracy scores 
 
 This project is a part of a broader conception to create a mobile application to recognize car models from pictures taken by the users. The initial idea was to:
 
-1. Pick some of the efficient mobile architectures (the project was intendet to be carried out in a group), train them on a open dataset of car images and compare in terms of accuracy, model size and FLOPS.
+1. Pick some of the efficient mobile architectures (the project was intended to be carried out in a group), train them on a open dataset of car images and compare in terms of accuracy, model size and FLOPS.
 2. Prepare custom dataset of images taken and labelled personally, finetune the best model from step 1 to reflect car models distribution on the streets of Poland.
 3. Prepare model for deployment, create a simple Android application that allow to take a picture and recognize a car model.
 
