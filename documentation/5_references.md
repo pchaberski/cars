@@ -241,6 +241,9 @@ D.&nbsp;Poulopoulos.
 
 <tr valign="top">
 <td align="right" class="bibtexnumber">
-[<a name="PLACEHOLDER">16</a>]
+[<a name="loshchilov2017decoupled">16</a>]
 </td>
 <td class="bibtexitem">
+I.&nbsp;Loshchilov and F.&nbsp;Hutter.
+ Decoupled weight decay regularization, 2017.
+[&nbsp;<a href="http://arxiv.org/abs/1711.05101">arXiv</a>&nbsp;]

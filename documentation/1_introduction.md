@@ -26,5 +26,5 @@ This project is a part of a broader conception to create a mobile application to
 2. Prepare custom dataset of images taken and labelled personally, finetune the best model from step 1 to reflect car models distribution on the streets of Poland.
 3. Prepare model for deployment, create a simple Android application that allow to take a picture and recognize a car model.
 
-This work focuses only on step one with selected architecture. Specifically, it describes the process of training and optimizing hyperparameters of GhostNet [[11]](5_references.md#Han_2020) model using Stanford Cars Dataset [[12]](5_references.md#KrauseStarkDengFei-Fei_3DRR2013) (https://ai.stanford.edu/~jkrause/cars/car_dataset.html) to check the performance of this particular novel mobile architecture in a car model recognition task.  
+This work focuses only on step one with selected architecture. Specifically, it describes the process of training and optimizing hyperparameters of GhostNet [[11]](5_references.md#Han_2020) model using [Stanford Cars Dataset](https://ai.stanford.edu/~jkrause/cars/car_dataset.html) [[12]](5_references.md#KrauseStarkDengFei-Fei_3DRR2013) to check the performance of this particular novel mobile architecture in a car model recognition task.  
 

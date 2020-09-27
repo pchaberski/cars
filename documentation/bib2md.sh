@@ -6,4 +6,4 @@ echo "# References" >> 5_references.md
 
 bibtex2html -o - -s abbrv -q -nodoc references.bib >> 5_references.md
 
-ex -snc '$-6,$d|x' 5_references.md
+ex -snc '$-4,$d|x' 5_references.md
