@@ -17,6 +17,7 @@ Source code for the project is available in GitHub repository: https://github.co
     * `net_module.py` - module containing main `LightningModule` used for network training and evaluation
     * `label_smoothing_ce.py` - implementation of Label Smoothing Cross Entropy loss function [[15]](5_references.md#Poulopoulos2020)
 * `utils` - Python packages with utilities for configuration parsing, logging and execution time measurement
+* `notebooks` - folder containing additional Jupyter notebooks (e.g. for normalization parameters calculation)
 * `config_template.yml` - YAML configuration file template; it is supposed to be filled and saved as `config.yml` to allow controlling training settings (mostly data preprocessing settings and model hyperparameters) without interference with source code
 * `prod_requirements.txt` - list of external PyPI Python packages to be included in `virtual env` to run the training
 * `dev_requirements.txt` - list of additional PyPI Python packages that were used during development and results postprocessing
@@ -202,4 +203,53 @@ loss_params:  # loss parameters to be passed as '**dict'
 ```
 
 ## 3.4. Experiment tracking <a name="experiment-tracking"></a>  
+
+Experiment tracking is set up using [Neptune](https://neptune.ai/) experiment management tool. The tool has some useful features like:  
+
+- Python API and PyTorch Lightning integration
+- Customizable logging of training metrics and model hyperparameters, as well as the storage and versioning of model artifacts
+- Customizable plots and experiment comparison dashboards live-updated as the training proceeds
+- Easy results sharing via HTTP links
+
+Neptune logging can be easily enabled by passing a set of parameters through project `config.yml` file:
+
+```yaml
+log_to_neptune: False
+neptune_username: '<neptune.ai username>'
+neptune_project_name: '<neptune.ai project name>'
+neptune_api_token: '<neptune.ai API token>'
+```
+
+Results of performed experiments are available under the following link:
+
+[**<Neptune `cars` project dashboard>**](https://ui.neptune.ai/pchaberski/cars/experiments?viewId=ae19164c-ee09-4209-8798-a424142d2082)
+
+The main dashboard table is configured to summarize all most important information about each experiment:
+
+- Experiment ID
+- Experiment state, running time and runtime utilized (`local` or `colab`)
+- Architecture name
+- Image and batch size
+- Number of parameters of the network
+- Image preprocessing settings: grayscale conversion, normalization, usage of image or tensor augmentations, usage of bounding boxes
+- Loss function used
+- Optimizer type and its most important settings (learning rate and weight decay)
+- Learning rate scheduler type
+- Network hyperparameters: dropout rate in classifier, last layer size
+- Number of epochs before early stopping was triggered
+- Best (minimum) training and validation loss and best (maximum) training and validation accuracy
+- Tags linking the experiment to sections of documentation
+- Additional experiment description  
+
+![Part of a Neptune main dashboard](img/34_1_neptune_dashboard.png "Part of a Neptune main dashboard")  
+
+After clicking on a particular experiment ID it is possible to check detailed logs, metrics and experiment parameters.
+
+![Loss and accuracy plots for particular experiment](img/34_2_loss_and_acc.png "Loss and accuracy plots for particular experiment")
+
+![Detailed experiment parameters](img/34_3_parameters.png "Detailed experiment parameters")  
+
+It is also possible to check multiple experiments and make a comparison between their metrics.  
+
+![Multiple experiments comparison](img/34_5_comparison.png "Multiple experiments comparison")
 
