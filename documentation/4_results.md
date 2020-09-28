@@ -28,6 +28,8 @@ The entire process of obtaining the best model is described step-by-step in sect
 
 ## 4.1. Best model <a name="best-model"></a>
 
+[**[Neptune charts]**](https://ui.neptune.ai/pchaberski/cars/e/C-50/charts)
+
 The best model that was obtained during the process achieved 83.79 % top-1 accuracy on the validation set after training for 129 epochs and Label Smoothing Cross Entropy function. Best metrics scores for that model are:  
 
 | Metric                 | Value          |
@@ -102,8 +104,6 @@ The full set of settings and hyperparameters used to train the best performing m
 * lr_scheduler_params:
    * `{'gamma': 0.1, 'milestones': [67, 82, 95, 107]}`  
 
-[**[Neptune charts]**](https://ui.neptune.ai/pchaberski/cars/e/C-50/charts)
-
 ## 4.2. Experiments step-by-step <a name="experiments-step-by-step"></a>
 
 The table below presents the summary of model accuracy scores for all experiments along with a brief information of techniques used in training. Full and interactive comparison is available through [Neptune dashboard](https://ui.neptune.ai/pchaberski/cars/experiments?viewId=ae19164c-ee09-4209-8798-a424142d2082). Also, all experiments results (parameters and logged metrics) are archived in a text file [on GitHub](https://github.com/pchaberski/cars/blob/documentation/documentation/results/all_experiments.txt).
@@ -167,9 +167,9 @@ The table below presents the summary of model accuracy scores for all experiment
 |C-65|LR annealing test: exponentiation base = 0.975               |99.66%   |73.07%   |
 |C-66|LR annealing test: exponentiation base = 0.98                |98.72%   |70.46%   |
 
-[**[Neptune summary dashboard]**](https://ui.neptune.ai/pchaberski/cars/experiments?viewId=ae19164c-ee09-4209-8798-a424142d2082)
-
 ### 4.2.1. Loss function <a name="loss-function"></a>
+
+[**[Neptune comparison]**](https://ui.neptune.ai/pchaberski/cars/compare?shortId=%5B%22C-1%22%2C%22C-2%22%5D&viewId=ae19164c-ee09-4209-8798-a424142d2082&legendFields=%5B%22shortId%22%5D&legendFieldTypes=%5B%22native%22%5D)
 
 The first comparison was between standard Cross Entropy loss function and Label Smoothing Cross Entropy. Label smoothing in classification tasks shows some regularization capability [[15]](5_references.md#Poulopoulos2020) resulting from a change in a standard Cross Entropy loss definition.
 
@@ -184,30 +184,31 @@ The comparison shows that indeed with all other hyperparameters fixed, label smo
 |Min. training loss      |  0.296         | 1.133           |
 |Min. validation loss    |  4.849         | 4.873           |
 |Max. training accuracy  | 92.49%         | 98.89%          |
-|Max. validation accuracy| 8.15%          | 9.12%           |
+|Max. validation accuracy| 8.15%          | 9.12%           |  
 
 ![Training loss values for CE Loss (C-1) and LSCE Loss (C-2)](img/421_2_train_loss.png "Training loss values for CE Loss (C-1) and LSCE Loss (C-2)")
 
-[**[Neptune comparison]**](https://ui.neptune.ai/pchaberski/cars/compare?shortId=%5B%22C-1%22%2C%22C-2%22%5D&viewId=ae19164c-ee09-4209-8798-a424142d2082&legendFields=%5B%22shortId%22%5D&legendFieldTypes=%5B%22native%22%5D)
-
 ### 4.2.2. Normalization <a name="normalization"></a>
+
+[**[Neptune comparison]**](https://ui.neptune.ai/pchaberski/cars/compare?shortId=%5B%22C-2%22%2C%22C-3%22%5D&viewId=ae19164c-ee09-4209-8798-a424142d2082&legendFields=%5B%22shortId%22%5D&legendFieldTypes=%5B%22native%22%5D)
 
 The next step in the process was adding normalization to the data using mean and standard deviation calculated on the training set (see [`normalization_coeffs.ipynb`](https://github.com/pchaberski/cars/blob/documentation/notebooks/normalization_coeffs.ipynb) notebook). Centering the data gave a 3 percentage points in validation accuracy, however faster convergence resulted in even faster training loss drop.
 
-![Original (a) and normalized (b) image](img/422_1_normalization.png "Original (a) and normalized (b) image")
+![Original (a) and normalized (b) image](img/422_1_normalization.png "Original (a) and normalized (b) image")  
 
 | Metric                 | No normalization (C-2)  | RGB normalization (C-3) |
 |------------------------|:-----------------------:|:-----------------------:|
 |Min. training loss      |1.133                    | 1.075                   |
 |Min. validation loss    |4.873                    | 4.792                   |
 |Max. training accuracy  |98.89%                   | 99.45%                  |
-|Max. validation accuracy|9.12%                    | 11.95%                  |
+|Max. validation accuracy|9.12%                    | 11.95%                  |  
 
-[**[Neptune comparison]**](https://ui.neptune.ai/pchaberski/cars/compare?shortId=%5B%22C-2%22%2C%22C-3%22%5D&viewId=ae19164c-ee09-4209-8798-a424142d2082&legendFields=%5B%22shortId%22%5D&legendFieldTypes=%5B%22native%22%5D)
 
 ### 4.2.3. Augmentations <a name="augmentations"></a>
 
-The first milestone experiment series was achieved thanks to adding training data augmentations to the model from C-3 experiment. The transformations that were tested were:
+[**[Neptune comparison]**](https://ui.neptune.ai/pchaberski/cars/compare?shortId=%5B%22C-3%22%2C%22C-4%22%2C%22C-5%22%2C%22C-6%22%2C%22C-7%22%5D&viewId=ae19164c-ee09-4209-8798-a424142d2082&legendFields=%5B%22shortId%22%5D&legendFieldTypes=%5B%22native%22%5D)
+
+The first milestone experiment series was achieved thanks to adding training data augmentations to the model from C-3 experiment. The transformations that were tested were:  
 
 - Random horizontal flip
 - Random affine transform
@@ -216,7 +217,7 @@ The first milestone experiment series was achieved thanks to adding training dat
 
 ![Original normalized image (a); Images with: RandomAffine (b), RandomErasing (c), ColorJitter (d)](img/423_1_augmentations.png "Original normalized image (a); Images with: RandomAffine (b), RandomErasing (c), ColorJitter (d)") 
 
-With C-3 experiment as a baseline, four combinations of the above-mentioned transformations were tested:
+With C-3 experiment as a baseline, four combinations of the above-mentioned transformations were tested:  
 
 - C-4: `RandomHorizontalFlip` + `RandomAffine`
 - C-5: `RandomHorizontalFlip` + `RandomAffine` + `RandomErasing`
@@ -232,13 +233,14 @@ The results showed that the augmentations in general helped to achieve a very la
 |Max. training accuracy  |99.45%  |99.76% |98.12% |93.68% |99.73% |
 |Max. validation accuracy|11.95%  |51.92% |38.08% |38.68% |54.28% |
 
+
 ![Training accuracy with different augmentations](img/423_2_train_acc.png "Training accuracy with different augmentations")
 
 ![Validation accuracy with different augmentations](img/423_3_valid_acc.png "Validation accuracy with different augmentations")
 
-[**[Neptune comparison]**](https://ui.neptune.ai/pchaberski/cars/compare?shortId=%5B%22C-3%22%2C%22C-4%22%2C%22C-5%22%2C%22C-6%22%2C%22C-7%22%5D&viewId=ae19164c-ee09-4209-8798-a424142d2082&legendFields=%5B%22shortId%22%5D&legendFieldTypes=%5B%22native%22%5D)
-
 ### 4.2.4. Grayscale conversion <a name="grayscale-conversion"></a>
+
+[**[Neptune comparison]**](https://ui.neptune.ai/pchaberski/cars/compare?shortId=%5B%22C-2%22%2C%22C-3%22%2C%22C-8%22%2C%22C-9%22%2C%22C-7%22%2C%22C-12%22%5D&viewId=ae19164c-ee09-4209-8798-a424142d2082&legendFields=%5B%22shortId%22%5D&legendFieldTypes=%5B%22native%22%5D)
 
 Testing how the network will behave after converting input images to grayscale before the training came from the idea, that we want the model to distinguish car models only by the details of design, and obviously not to focus on irrelevant differences such as body color. To adapt the original GhostNet architecture to be able to process also 1-channel images, a small customization was made to the first layer of the network by adding `img_channels` parameters, so that the initial convolution could work on any number of channels in general:  
 
@@ -287,9 +289,27 @@ The results of these tests clearly show, that probably due to the network design
 | Max. training accuracy   | 98.89% | 99.49% | 99.45% | 97.13% | 99.73% | 99.67% |
 | Max. validation accuracy | 9.12%  | 6.58%  | 11.96% | 8.68%  | 54.28% | 50.51% |
 
-[**[Neptune comparison]**](https://ui.neptune.ai/pchaberski/cars/compare?shortId=%5B%22C-2%22%2C%22C-3%22%2C%22C-8%22%2C%22C-9%22%2C%22C-7%22%2C%22C-12%22%5D&viewId=ae19164c-ee09-4209-8798-a424142d2082&legendFields=%5B%22shortId%22%5D&legendFieldTypes=%5B%22native%22%5D)
-
 ### 4.2.5. Bounding boxes utilization <a name="bounding-boxes-utilization"></a>
+
+[**[Neptune comparison]**](https://ui.neptune.ai/pchaberski/cars/compare?shortId=%5B%22C-7%22%2C%22C-10%22%2C%22C-11%22%5D&viewId=ae19164c-ee09-4209-8798-a424142d2082&legendFields=%5B%22shortId%22%5D&legendFieldTypes=%5B%22native%22%5D)
+
+Another idea was to try to somehow utilize car bounding boxes coordinates that are available in Stanford Cars Dataset along with the class labels. The goal of the project was however to get possibly unbiased benchmark on original test set (despite it was used for model validation), so any operations using bounding box information could be used only on training subset. Another reason for that is that the ultimate objective is to deploy trained model on a mobile device so it cannot use any information that is unavailable during inference to estimate the performance. Using bounding boxes in performance estimation and eventually during real-life prediction would require to stack the discussed classification model with some kind of detector, which would firstly estimate the location of bounding boxes.
+
+Two approaches of utilizing bounding boxes on training set were consecutively tested, taking so far the best C-7 experiment as a baseline:
+
+- C-10: only cropping images to bounding box coordinates before resize
+- C-11: cropping mages to bounding boxes and then putting them on the white background of original image size to preserve ratios before resize
+
+Both transformations were intended to get rid of the image background to try to force the network to focus only on relevant image parts and to prevent it from fitting to background elements.
+
+It turned out that this idea was totally wrong - in the first case (C-10), after crop and resize, all proportions were strongly distorted, which caused large discrepancy between training and validation data and prevented optimizer from converging. The divergence was even stronger in the second case (C-10), because despite preserving original proportions, the network started to focus only on fitting to the white background instead of car details.
+
+| Metric                   | C-7    | C-10  | C-11  |
+|--------------------------|:------:|:-----:|:-----:|
+| Min. training loss       | 1.003  | 4.570 | 4.822 |
+| Min. validation loss     | 2.744  | 5.142 | 5.196 |
+| Max. training accuracy   | 99.73% | 7.58% | 4.36% |
+| Max. validation accuracy | 54.28% | 3.91% | 3.07% |
 
 ### 4.2.6. Optimizer change and L2 regularization <a name="optimizer-change-and-l2-regularization"></a>
 
