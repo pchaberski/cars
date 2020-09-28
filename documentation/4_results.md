@@ -313,6 +313,32 @@ It turned out that this idea was totally wrong - in the first case (C-10), after
 
 ### 4.2.6. Optimizer change and L2 regularization <a name="optimizer-change-and-l2-regularization"></a>
 
+[**[Neptune comparison]**](https://ui.neptune.ai/pchaberski/cars/compare?shortId=%5B%22C-7%22%2C%22C-13%22%2C%22C-14%22%2C%22C-15%22%2C%22C-16%22%2C%22C-17%22%5D&viewId=ae19164c-ee09-4209-8798-a424142d2082&legendFields=%5B%22shortId%22%5D&legendFieldTypes=%5B%22native%22%5D)
+
+For the further attempts to reduce overfitting and in consequence increase validation accuracy, one of the most commonly used in parametric machine-learning models techniques was applied - L2 regularization. Optimizers in PyTorch allow for passing `weight_decay` parameter, which represents the strength of penalty added for the too hight model weights. However, as empirical study shows [[16]](5_references.md#loshchilov2017decoupled), this kind of regularization requires decoupling application of weight decay from optimization steps taken with respect to the loss function when using adaptive algorithms like Adam. So to be able to successfully apply this technique in discussed problem, Adam optimized was replaced by its variation utilizing decoupled weight decay - AdamW.
+
+With C-7 as a baseline, 5 different `weight_decay` values were tested with AdamW optimizer:  
+
+- C-13: `weight_dacay = 0.1`
+- C-14: `weight_dacay = 0.2`
+- C-15: `weight_dacay = 0.3`
+- C-16: `weight_dacay = 0.4`
+- C-17: `weight_dacay = 0.5`
+
+| Metric                   | C-7    | C-13   | C-14   | C-15   | C-16   | C-17   |
+|--------------------------|:------:|:------:|:------:|:------:|:------:|:------:|
+| Min. training loss       | 1.003  | 1.023  | 1.071  | 1.213  | 1.193  | 1.378  |
+| Min. validation loss     | 2.744  | 2.315  | 2.089  | 2.285  | 2.174  | 2.301  |
+| Max. training accuracy   | 99.73% | 99.44% | 98.84% | 95.83% | 95.95% | 90.38% |
+| Max. validation accuracy | 54.28% | 63.39% | 68.50% | 61.84% | 65.14% | 59.95% |
+
+It can be observed that adding larger penalty by increasing `weight_decay` in fact reduces overfitting, but at some point the weights become too constrained preventing the model to fit well to training data and therefore limiting validation accuracy increase. However with all tested values regularized version managed to improve the score without weight decay.
+
+![Training accuracy with different values of weight decay](img/426_1_train_acc.png "Training accuracy with different values of weight decay")
+
+![Validation accuracy with different values of weight decay](img/426_2_valid_acc.png "![Validation accuracy with different values of weight decay](img/426_1_train_acc.png "Training accuracy with different values of weight decay")
+ accuracy with different values of weight decay")
+
 ### 4.2.7. Dropout rate tests <a name="dropout-rate-tests"></a>
 
 ### 4.2.8. Last layer size tests <a name="last-layer-size-tests"></a>
