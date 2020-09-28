@@ -325,6 +325,8 @@ With C-7 as a baseline, 5 different `weight_decay` values were tested with AdamW
 - C-16: `weight_dacay = 0.4`
 - C-17: `weight_dacay = 0.5`
 
+The results:
+
 | Metric                   | C-7    | C-13   | C-14   | C-15   | C-16   | C-17   |
 |--------------------------|:------:|:------:|:------:|:------:|:------:|:------:|
 | Min. training loss       | 1.003  | 1.023  | 1.071  | 1.213  | 1.193  | 1.378  |
@@ -339,6 +341,26 @@ It can be observed that adding larger penalty by increasing `weight_decay` in fa
 ![Validation accuracy with different values of weight decay](img/426_2_valid_acc.png "Validation accuracy with different values of weight decay")
 
 ### 4.2.7. Dropout rate tests <a name="dropout-rate-tests"></a>
+
+[**[Neptune comparison]**](https://ui.neptune.ai/pchaberski/cars/compare?shortId=%5B%22C-14%22%2C%22C-18%22%2C%22C-19%22%2C%22C-20%22%2C%22C-21%22%5D&viewId=ae19164c-ee09-4209-8798-a424142d2082&legendFields=%5B%22shortId%22%5D&legendFieldTypes=%5B%22native%22%5D)
+
+Basic GhostNet design has dropout rate before last linear layer fixed at 0.2. As mentioned in [4.2.4](#grayscale-conversion) the original design was customized to allow for passing different dropout values. Some other than default (especially larger, hoping to further reduce overfitting) values were checked.
+
+Dropout rate values that were tested with baseline of 0.2 from C-14 experiment setup were:  
+
+- C-18: `dropout = 0.1`
+- C-19: `dropout = 0.3`
+- C-20: `dropout = 0.4`
+- C-21: `dropout = 0.5`
+
+The above mentioned experiments show no improvement using values different from default.
+
+| Metric                   | C-14   | C-18   | C-19   | C-20   | C-21   |
+|--------------------------|:------:|:------:|:------:|:------:|:------:|
+| Min. training loss       | 1.071  | 1.039  | 1.087  | 1.173  | 1.191  |
+| Min. validation loss     | 2.089  | 2.179  | 2.108  | 2.164  | 2.096  |
+| Max. training accuracy   | 98.84% | 99.11% | 98.62% | 96.52% | 96.28% |
+| Max. validation accuracy | 68.50% | 66.90% | 67.81% | 64.88% | 66.75% |
 
 ### 4.2.8. Last layer size tests <a name="last-layer-size-tests"></a>
 
