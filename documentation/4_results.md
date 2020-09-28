@@ -5,9 +5,9 @@ For the experiments, entire training subset from Stanford Cars Dataset was used 
 To limit hyperparameter space for best model search, some assumptions were made at the beginning:
 
 - network is trained from scratch, without using any pretrained weights
-- input image size is 227x277 (this assumption results from initial tests on SqueezeNext [[6]](5_references.md#Gholami_2018) where this is a minimum image size and all other architectures available in [`arch_dict.py`](https://github.com/pchaberski/cars/blob/documentation/models/arch_dict.py) can handle such image size. For GhostNet, minimum image size is 224x224)
+- input image size is 227x227 (this assumption results from initial tests on SqueezeNext [[6]](5_references.md#Gholami_2018) where this is a minimum image size and all other architectures available in [`arch_dict.py`](https://github.com/pchaberski/cars/blob/documentation/models/arch_dict.py) can handle such image size. For GhostNet, minimum image size is 224x224)
 - batch size is fixed at 64 mostly because of local GPU memory limitations, however some tests during development phase showed no gain with smaller or larger batch sizes
-- Adam with initial learning rate value of 0.001 is chosen as a default optimizer, and may be changed to AdamW [[16]](5_references.md#loshchilov2017decoupled) when applying weight decay (although SGD was also tested at the development phase, but was leading to severe overfitting)
+- Adam with initial learning rate value of 0.001 is chosen as a default optimizer, and may be changed to AdamW [[16]](5_references.md#loshchilov2017decoupled) when applying weight decay (however SGD was also tested at the development phase, but it was leading to severe overfitting)
 - early stopping is triggered when there is no decrease in validation loss for 15 epochs
 
 During experiments, several techniques were used to increase validation accuracy and reduce overfitting, which turned out te be the major issue in training process:
@@ -41,9 +41,9 @@ The best model still shows significant overfitting so there might be some space 
 
 It is also important to notice, that due to lesser number of classes, The size of the last layer was reduced during tests - instead of passing 1280-channel input to the classifier, only 320 channels are passed, which results in the total reduction of parameter count from 4.2 million to slightly over 3 millions.
 
-![Training and validation loss for the best model (C-50)](img/41_1_loss.png "Training and validation loss for the best model (C-50)")
+![Training and validation loss of the best model (C-50)](img/41_1_loss.png "Training and validation loss of the best model (C-50)")
 
-![Training and validation accuracy for the best model (C-50)](img/41_2_acc.png "Training and validation accuracy for the best model (C-50)")
+![Training and validation accuracy of the best model (C-50)](img/41_2_acc.png "Training and validation accuracy of the best model (C-50)")
 
 ![Learning rates for the best model (C-50)](img/41_3_lr.png "Learning rates for the best model (C-50)")
 
@@ -104,7 +104,7 @@ The full set of settings and hyperparameters used to train the best performing m
 
 ## 4.2. Experiments step-by-step <a name="experiments-step-by-step"></a>
 
-The table below presents the summary of model accuracy scores for all experiments along with a brief information of techniques used in training. Full and interactive comparison is available through [Neptune dashboard](https://ui.neptune.ai/pchaberski/cars/experiments?viewId=ae19164c-ee09-4209-8798-a424142d2082). Also, all experiments results (parameters and logged metrics) are archived in a text file [on GitHub](https://github.com/pchaberski/cars/blob/documentation/documentation/results/all_experiments.txt)
+The table below presents the summary of model accuracy scores for all experiments along with a brief information of techniques used in training. Full and interactive comparison is available through [Neptune dashboard](https://ui.neptune.ai/pchaberski/cars/experiments?viewId=ae19164c-ee09-4209-8798-a424142d2082). Also, all experiments results (parameters and logged metrics) are archived in a text file [on GitHub](https://github.com/pchaberski/cars/blob/documentation/documentation/results/all_experiments.txt).
 
 |      |experiment description                                       |train_acc|valid_acc|
 |------|-------------------------------------------------------------|:-------:|:-------:|
@@ -183,7 +183,7 @@ The comparison shows that indeed with all other hyperparameters fixed, label smo
 |Max. training accuracy  | 92.49%         | 98.89%          |
 |Max. validation accuracy| 8.15%          | 9.12%           |
 
-![Training loss values for CE Loss (C-1) and LSCE Loss (C-2)](img/421_1_train_loss.png "Training loss values for CE Loss (C-1) and LSCE Loss (C-2)")
+![Training loss values for CE Loss (C-1) and LSCE Loss (C-2)](img/421_2_train_loss.png "Training loss values for CE Loss (C-1) and LSCE Loss (C-2)")
 
 ### 4.2.2. Normalization <a name="normalization"></a>
 
@@ -216,7 +216,7 @@ With C-3 experiment as a baseline, four combinations of the above-mentioned tran
 - C-6: `RandomHorizontalFlip` + `RandomAffine` + `RandomErasing` + `ColorJitter`
 - C-7: `RandomHorizontalFlip` + `RandomAffine` + `ColorJitter`
 
-The results showed that the augmentations in general helped to achieve a very large increase in validation accuracy (from 11.96% to 54.28%) and while reducing overfitting significantly. As for the particular transformations, it turned out that in the tested setup `RandomErasing` did not help, probably introducing too much variance in the training set combined with other augmentations.
+The results showed that the augmentations in general helped to achieve a very large increase in validation accuracy (from 11.96% to 54.28%) while reducing overfitting significantly. As for the particular transformations, it turned out that in the tested setup `RandomErasing` did not help, probably introducing too much variance in the training set combined with other augmentations.
 
 | Metric                 |  C-3   |  C-4  |  C-5  |  C-6  |  C-7  |
 |------------------------|:------:|:-----:|:-----:|:-----:|:-----:|
@@ -225,11 +225,58 @@ The results showed that the augmentations in general helped to achieve a very la
 |Max. training accuracy  |99.45%  |99.76% |98.12% |93.68% |99.73% |
 |Max. validation accuracy|11.95%  |51.92% |38.08% |38.68% |54.28% |
 
-![Training accuracy with different augmentations](img/423_1_train_acc.png "Training accuracy with different augmentations")
+![Training accuracy with different augmentations](img/423_2_train_acc.png "Training accuracy with different augmentations")
 
-![Validation accuracy with different augmentations](img/423_2_valid_acc.png "Validation accuracy with different augmentations")
+![Validation accuracy with different augmentations](img/423_3_valid_acc.png "Validation accuracy with different augmentations")
 
 ### 4.2.4. Grayscale conversion <a name="grayscale-conversion"></a>
+
+Testing how the network will behave after converting input images to grayscale before the training came from the idea, that we want the model to distinguish car models only by the details of design, and obviously not to focus on irrelevant differences such as body color. To adapt the original GhostNet architecture to be able to process also 1-channel images, a small customization was made to the first layer of the network by adding `img_channels` parameters, so that the initial convolution could work on any number of channels in general:  
+
+```python
+class GhostNet(nn.Module):
+    def __init__(
+        self,
+        num_classes=1000, img_channels=3, dropout=0.2, out_channels=1280,
+        width_mult=1.
+    ):
+        super().__init__()
+        self.num_classes = num_classes
+        self.img_channels = img_channels
+        self.dropout = dropout
+        self.out_channels = out_channels
+
+# ...
+
+        # building first layer
+        output_channel = _make_divisible(16 * width_mult, 4)
+        layers = [nn.Sequential(
+            nn.Conv2d(self.img_channels, output_channel, 3, 2, 1, bias=False),
+            nn.BatchNorm2d(output_channel),
+            nn.ReLU(inplace=True)
+        )]
+        input_channel = output_channel
+
+# ...
+```
+
+Also some other customizations were made as can be seen above, namely with introducing customizable dropout rate in classifier and last layer size by adding `dropout` and `out_channels` parameters. Those will be discussed in sections [4.2.7](#dropout-rate-tests) and [4.2.8](#last-layer-size-tests), respectively.
+
+Three comparisons were made taking as a baselines identical setups that were previously using 3-channel input:  
+
+- experiment C-8, being a reflection of C-2 (no normalization and no augmentations)
+- experiment C-9, being a reflection of C-3 (normalization added, no augmentations)
+- experiment C-12, being a reflection of C-7 (normalization + best augmentations)
+
+The results of these tests clearly show, that probably due to the network design, grayscale conversion brings no gain in model performance (in fact, all comparisons are in favor of RGB variants):
+
+
+|Metric                  |  C-2 (RGB)  |  C-8 (Gr.)  |  C-3 (RGB) |  C-9 (Gr.)  |  C-7 (RGB)  | C-12 (Gr.) |
+|------------------------|:------:|:-----:|:-----:|:-----:|:-----:|:-----:|
+| Min. training loss       | 1.133  | 1.089  | 1.075  | 1.207  | 1.003  | 1.017  |
+| Min. validation loss     | 4.873  | 5.080  | 4.792  | 4.746  | 2.744  | 2.843  |
+| Max. training accuracy   | 98.89% | 99.49% | 99.45% | 97.13% | 99.73% | 99.67% |
+| Max. validation accuracy | 9.12%  | 6.58%  | 11.96% | 8.68%  | 54.28% | 50.51% |
 
 ### 4.2.5. Bounding boxes utilization <a name="bounding-boxes-utilization"></a>
 
