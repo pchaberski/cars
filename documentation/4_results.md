@@ -282,12 +282,12 @@ Three comparisons were made taking as a baselines identical setups that were pre
 The results of these tests clearly show, that probably due to the network design, grayscale conversion brings no gain in model performance (in fact, all comparisons are in favor of RGB variants):
 
 
-|Metric                  |  C-2 (RGB)  |  C-8 (Gr.)  |  C-3 (RGB) |  C-9 (Gr.)  |  C-7 (RGB)  | C-12 (Gr.) |
-|------------------------|:------:|:-----:|:-----:|:-----:|:-----:|:-----:|
-| Min. training loss       | 1.133  | 1.089  | 1.075  | 1.207  | 1.003  | 1.017  |
-| Min. validation loss     | 4.873  | 5.080  | 4.792  | 4.746  | 2.744  | 2.843  |
-| Max. training accuracy   | 98.89% | 99.49% | 99.45% | 97.13% | 99.73% | 99.67% |
-| Max. validation accuracy | 9.12%  | 6.58%  | 11.96% | 8.68%  | 54.28% | 50.51% |
+|Metric        |  C-2 (RGB)  |  C-8 (Gr.)  |  C-3 (RGB) |  C-9 (Gr.)  |  C-7 (RGB)  | C-12 (Gr.)|
+|--------------|:------:|:-----:|:-----:|:-----:|:-----:|:-----:|
+| Min. tr. loss       | 1.133  | 1.089  | 1.075  | 1.207  | 1.003  | 1.017  |
+| Min. val. loss     | 4.873  | 5.080  | 4.792  | 4.746  | 2.744  | 2.843  |
+| Max. tr. accuracy   | 98.89% | 99.49% | 99.45% | 97.13% | 99.73% | 99.67% |
+| Max. val. accuracy | 9.12%  | 6.58%  | 11.96% | 8.68%  | 54.28% | 50.51% |
 
 ### 4.2.5. Bounding boxes utilization <a name="bounding-boxes-utilization"></a>
 
@@ -301,6 +301,8 @@ Two approaches of utilizing bounding boxes on training set were consecutively te
 - C-11: cropping mages to bounding boxes and then putting them on the white background of original image size to preserve ratios before resize
 
 Both transformations were intended to get rid of the image background to try to force the network to focus only on relevant image parts and to prevent it from fitting to background elements.
+
+![Original normalized image (a); Image cropped to b-boxes (b); Image with background erased (c)](img/425_1_bboxes.png "Original normalized image (a); Image cropped to b-boxes (b); Image with background erased (c)")
 
 It turned out that this idea was totally wrong - in the first case (C-10), after crop and resize, all proportions were strongly distorted, which caused large discrepancy between training and validation data and prevented optimizer from converging. The divergence was even stronger in the second case (C-10), because despite preserving original proportions, the network started to focus only on fitting to the white background instead of car details.
 
@@ -407,7 +409,7 @@ The first round of experiments with learning rate schedulers were done using `Re
 - C-28
 - C-29
 
-![Different learning rate decrease moments with the same setup and automatic scheduler](img/429_1_lr.png "Different learning rate decrease moments with the same setup and automatic scheduler")
+![Different LR decrease moments with automatic scheduler](img/429_1_lr.png "Different LR decrease moments with automatic scheduler")
 
 The results are that the learning rate decrease at the right point of training procedure can give a significant benefit, and the choice of that particular moment based on variability in training data feed is also not without significance.
 
@@ -418,7 +420,7 @@ The results are that the learning rate decrease at the right point of training p
 | Max. training accuracy   | 97.13% | 99.82% | 99.78% | 99.83% | 99.78% |
 | Max. validation accuracy | 68.93% | 74.60% | 76.20% | 75.14% | 74.82% |
 
-![Influence of different moments of learning rate drop with automatic scheduler (from epoch 50)](img/429_2_valid_acc.png "Influence of different moments of learning rate drop with automatic scheduler (from epoch 50)")
+![Validation accuracy with different LR drops (from epoch 50)](img/429_2_valid_acc.png "Validation accuracy with different LR drops (from epoch 50)")
 
 ### 4.2.10. Controlled learning rate scheduling <a name="controlled-learning-rate-scheduling"></a>
 
@@ -444,13 +446,60 @@ Looking at the results and comparing with the baseline it is obvious, that all l
 
 ![Learning rate drops with manual LR scheduling](img/4210_1_lr.png "Learning rate drops with manual LR scheduling")
 
-![Validation accuracy with manual scheduling](img/4210_2_valid_acc.png "Validation accuracy with manual scheduling")
+![Validation accuracy with manual LR  scheduling](img/4210_2_valid_acc.png "Validation accuracy with manual LR scheduling")
 
 ### 4.2.11. Weight decay adjustment <a name="weight-decay-adjustment"></a>
 
+[**[Neptune comparison]**](https://ui.neptune.ai/pchaberski/cars/compare?shortId=%5B%22C-27%22%2C%22C-36%22%2C%22C-37%22%2C%22C-38%22%2C%22C-39%22%2C%22C-40%22%5D&viewId=ae19164c-ee09-4209-8798-a424142d2082&legendFields=%5B%22shortId%22%5D&legendFieldTypes=%5B%22native%22%5D)
+
+After all experiments with learning rates it seemed reasonable to revisit the most important decisions related to regularization. Especially the optimal weight decay value is strictly dependent on the learning rate used, therefore once again some other values than so-far-best 0.2 were checked at this point. Comparing to C-27, new weight decay values tested were:
+
+- C-36: `weight_decay = 0.5`
+- C-37: `weight_decay = 0.3`
+- C-38: `weight_decay = 0.4`
+- C-39: `weight_decay = 0.6`
+- C-40: `weight_decay = 0.7`
+
+Similarly to [4.2.6](#optimizer-change-and-l2-regularization), some values were to small to prevent overfitting enough while after some point the penalty was to large to let the model fit the data properly (and also triggering learning rate drop too early), but the optimal value from the set tested was much larger than before with fixed learning rate. The best validation accuracy was achieved with weight decay of 0.6.
+
+| Metric                   | C-27   | C-36   | C-37   | C-38   | C-39   | C-40   |
+|--------------------------|--------|--------|--------|--------|--------|--------|
+| Min. training loss       | 1.014  | 1.103  | 1.043  | 1.048  | 1.090  | 1.089  |
+| Min. validation loss     | 1.836  | 1.669  | 1.858  | 1.695  | 1.563  | 1.802  |
+| Max. training accuracy   | 99.78% | 98.84% | 99.57% | 99.37% | 98.67% | 99.24% |
+| Max. validation accuracy | 76.20% | 79.40% | 74.44% | 78.82% | 82.55% | 75.12% |
+
+Also it has to be noticed, that due to different course of learning rate process due to different regularization automatic `ReduceLROnPlateau` has been reestablished.
+
+![Training accuracy with different weight decay ant auto-scheduling](img/4211_1_train_acc.png "Training accuracy with different weight decay ant auto-scheduling")
+
+![Validation accuracy with different weight decay and auto-scheduling](img/4211_2_valid_acc.png "Validation accuracy with different weight decay and auto-scheduling") 
+
 ### 4.2.12. Dropout rate verification <a name="dropout-rate-verification"></a>
 
+[**[Neptune comparison]**](https://ui.neptune.ai/pchaberski/cars/compare?shortId=%5B%22C-39%22%2C%22C-41%22%2C%22C-42%22%2C%22C-43%22%2C%22C-44%22%5D&viewId=ae19164c-ee09-4209-8798-a424142d2082&legendFields=%5B%22shortId%22%5D&legendFieldTypes=%5B%22native%22%5D)
+
+Another step-back after introducing learning rate scheduling was to verify the dropout rate that was fixed before. With the C-39 experiment as a baseline, the values re-checked were:
+
+- C-41: `dropout == 0.3`
+- C-42: `dropout == 0.4`
+- C-43: `dropout == 0.5`
+- C-44: `dropout == 0.25`
+
+The tests confirmed that the default value seems to be optimal, since all experiments fared worse than the 0.2 baseline, moreover the closer the default value, the higher the validation accuracy.
+
+| Metric                   | C-39   | C-41   | C-42   | C-43   | C-44   |
+|--------------------------|:------:|:------:|:------:|:------:|:------:|
+| Min. training loss       | 1.090  | 1.111  | 1.270  | 1.270  | 1.087  |
+| Min. validation loss     | 1.563  | 1.571  | 1.646  | 1.692  | 1.562  |
+| Max. training accuracy   | 98.67% | 98.49% | 95.34% | 96.08% | 98.79% |
+| Max. validation accuracy | 82.55% | 82.08% | 79.57% | 77.87% | 82.45% |
+
 ### 4.2.13. Additional augmentations tests <a name="additional-augmentations-tests"></a>
+
+[**[Neptune comparison]**](https://ui.neptune.ai/pchaberski/cars/compare?shortId=%5B%22C-39%22%2C%22C-45%22%2C%22C-46%22%2C%22C-47%22%2C%22C-48%22%5D&viewId=ae19164c-ee09-4209-8798-a424142d2082&legendFields=%5B%22shortId%22%5D&legendFieldTypes=%5B%22native%22%5D)
+
+
 
 ### 4.2.14. Learning rate scheduler adjustment <a name="learning-rate-scheduler-adjustment"></a>
 
