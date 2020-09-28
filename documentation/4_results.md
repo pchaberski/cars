@@ -104,7 +104,7 @@ The full set of settings and hyperparameters used to train the best performing m
 
 ## 4.2. Experiments step-by-step <a name="experiments-step-by-step"></a>
 
-The table below presents the summary of model accuracy scores for all experiments along with a brief information of techniques used in training. Full and interactive comparison is available through [Neptune dashboard](https://ui.neptune.ai/pchaberski/cars/experiments?viewId=ae19164c-ee09-4209-8798-a424142d2082).
+The table below presents the summary of model accuracy scores for all experiments along with a brief information of techniques used in training. Full and interactive comparison is available through [Neptune dashboard](https://ui.neptune.ai/pchaberski/cars/experiments?viewId=ae19164c-ee09-4209-8798-a424142d2082). Also, all experiments results (parameters and logged metrics) are archived in a text file [on GitHub](https://github.com/pchaberski/cars/blob/documentation/results/all_experiments.txt)
 
 |      |experiment description                                       |train_acc|valid_acc|
 |------|-------------------------------------------------------------|:-------:|:-------:|
