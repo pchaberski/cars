@@ -364,6 +364,36 @@ The above mentioned experiments show no improvement using values different from 
 
 ### 4.2.8. Last layer size tests <a name="last-layer-size-tests"></a>
 
+[**[Neptune comparison]**](https://ui.neptune.ai/pchaberski/cars/compare?shortId=%5B%22C-14%22%2C%22C-22%22%2C%22C-23%22%2C%22C-24%22%2C%22C-25%22%5D&viewId=ae19164c-ee09-4209-8798-a424142d2082&legendFields=%5B%22shortId%22%5D&legendFieldTypes=%5B%22native%22%5D)
+
+By default in GhostNet architecture the number of channels in the feature vector passed into the classifier module is fixed on value 1280 and those channels are finally mapped on the number of classes by the fully connected layer. As mentioned in [4.2.4](#grayscale-conversion), this value was parametrized based on the assumption, that it could be strictly associated with the specific output number of classes and the architecture was optimized for 1000-class ImageNet, while Stanford Cars Dataset consists of 196 classes.
+
+The values that were tested with respect to 1280 baseline from experiment C-14:
+
+- C-22: `out_channels = 320`
+- C-23: `out_channels = 640`
+- C-24: `out_channels = 960`
+- C-25: `out_channels = 1600`
+
+It is important to notice, that changing the output channels value strongly affects the total parameter count of the network:
+
+|      | output channels | number of parameters |
+|------|:---------------:|:--------------------:|
+| C-14 | 1280            | 4153090              |
+| C-22 | 320             | 3041410              |
+| C-23 | 640             | 3411970              |
+| C-24 | 960             | 3782530              |
+| C-25 | 1600            | 4523650              |
+
+The analysis of results shows no straightforward relationship between the number of output channels and network's performance on the particular dataset that was used, however the lowest number of channels testes (320) turned out to give slightly better validation accuracy that default with less overfitting, while reducing the number of parameters from 4.15 million to 3.04 million.
+
+| Metric                   | C-14   | C-22   | C-23   | C-24   | C-25   |
+|--------------------------|:------:|:------:|:------:|:------:|:------:|
+| Min. training loss       | 1.071  | 1.140  | 1.196  | 1.108  | 1.071  |
+| Min. validation loss     | 2.089  | 2.055  | 2.250  | 2.202  | 2.294  |
+| Max. training accuracy   | 98.84% | 97.13% | 96.13% | 98.23% | 98.99% |
+| Max. validation accuracy | 68.50% | 68.93% | 63.13% | 64.96% | 63.11% |
+
 ### 4.2.9. Automatic learning rate scheduling <a name="automatic-learning-rate-scheduling"></a>
 
 ### 4.2.10. Controlled learning rate scheduling <a name="controlled-learning-rate-scheduling"></a>
