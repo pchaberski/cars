@@ -222,7 +222,7 @@ neptune_api_token: '<neptune.ai API token>'
 
 Results of performed experiments are available under the following link:
 
-[**<Neptune `cars` project dashboard>**](https://ui.neptune.ai/pchaberski/cars/experiments?viewId=ae19164c-ee09-4209-8798-a424142d2082)
+[**[Neptune `cars` project dashboard]**](https://ui.neptune.ai/pchaberski/cars/experiments?viewId=ae19164c-ee09-4209-8798-a424142d2082)
 
 The main dashboard table is configured to summarize all most important information about each experiment:
 

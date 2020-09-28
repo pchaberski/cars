@@ -100,7 +100,9 @@ The full set of settings and hyperparameters used to train the best performing m
 * lr_scheduler:
    * `MultiStepLR`
 * lr_scheduler_params:
-   * `{'gamma': 0.1, 'milestones': [67, 82, 95, 107]}`
+   * `{'gamma': 0.1, 'milestones': [67, 82, 95, 107]}`  
+
+[**[Neptune charts]**](https://ui.neptune.ai/pchaberski/cars/e/C-50/charts)
 
 ## 4.2. Experiments step-by-step <a name="experiments-step-by-step"></a>
 
@@ -165,6 +167,7 @@ The table below presents the summary of model accuracy scores for all experiment
 |C-65|LR annealing test: exponentiation base = 0.975               |99.66%   |73.07%   |
 |C-66|LR annealing test: exponentiation base = 0.98                |98.72%   |70.46%   |
 
+[**[Neptune summary dashboard]**](https://ui.neptune.ai/pchaberski/cars/experiments?viewId=ae19164c-ee09-4209-8798-a424142d2082)
 
 ### 4.2.1. Loss function <a name="loss-function"></a>
 
@@ -185,6 +188,8 @@ The comparison shows that indeed with all other hyperparameters fixed, label smo
 
 ![Training loss values for CE Loss (C-1) and LSCE Loss (C-2)](img/421_2_train_loss.png "Training loss values for CE Loss (C-1) and LSCE Loss (C-2)")
 
+[**[Neptune comparison]**](https://ui.neptune.ai/pchaberski/cars/compare?shortId=%5B%22C-1%22%2C%22C-2%22%5D&viewId=ae19164c-ee09-4209-8798-a424142d2082&legendFields=%5B%22shortId%22%5D&legendFieldTypes=%5B%22native%22%5D)
+
 ### 4.2.2. Normalization <a name="normalization"></a>
 
 The next step in the process was adding normalization to the data using mean and standard deviation calculated on the training set (see [`normalization_coeffs.ipynb`](https://github.com/pchaberski/cars/blob/documentation/notebooks/normalization_coeffs.ipynb) notebook). Centering the data gave a 3 percentage points in validation accuracy, however faster convergence resulted in even faster training loss drop.
@@ -197,6 +202,8 @@ The next step in the process was adding normalization to the data using mean and
 |Min. validation loss    |4.873                    | 4.792                   |
 |Max. training accuracy  |98.89%                   | 99.45%                  |
 |Max. validation accuracy|9.12%                    | 11.95%                  |
+
+[**[Neptune comparison]**](https://ui.neptune.ai/pchaberski/cars/compare?shortId=%5B%22C-2%22%2C%22C-3%22%5D&viewId=ae19164c-ee09-4209-8798-a424142d2082&legendFields=%5B%22shortId%22%5D&legendFieldTypes=%5B%22native%22%5D)
 
 ### 4.2.3. Augmentations <a name="augmentations"></a>
 
@@ -228,6 +235,8 @@ The results showed that the augmentations in general helped to achieve a very la
 ![Training accuracy with different augmentations](img/423_2_train_acc.png "Training accuracy with different augmentations")
 
 ![Validation accuracy with different augmentations](img/423_3_valid_acc.png "Validation accuracy with different augmentations")
+
+[**[Neptune comparison]**](https://ui.neptune.ai/pchaberski/cars/compare?shortId=%5B%22C-3%22%2C%22C-4%22%2C%22C-5%22%2C%22C-6%22%2C%22C-7%22%5D&viewId=ae19164c-ee09-4209-8798-a424142d2082&legendFields=%5B%22shortId%22%5D&legendFieldTypes=%5B%22native%22%5D)
 
 ### 4.2.4. Grayscale conversion <a name="grayscale-conversion"></a>
 
@@ -277,6 +286,8 @@ The results of these tests clearly show, that probably due to the network design
 | Min. validation loss     | 4.873  | 5.080  | 4.792  | 4.746  | 2.744  | 2.843  |
 | Max. training accuracy   | 98.89% | 99.49% | 99.45% | 97.13% | 99.73% | 99.67% |
 | Max. validation accuracy | 9.12%  | 6.58%  | 11.96% | 8.68%  | 54.28% | 50.51% |
+
+[**[Neptune comparison]**](https://ui.neptune.ai/pchaberski/cars/compare?shortId=%5B%22C-2%22%2C%22C-3%22%2C%22C-8%22%2C%22C-9%22%2C%22C-7%22%2C%22C-12%22%5D&viewId=ae19164c-ee09-4209-8798-a424142d2082&legendFields=%5B%22shortId%22%5D&legendFieldTypes=%5B%22native%22%5D)
 
 ### 4.2.5. Bounding boxes utilization <a name="bounding-boxes-utilization"></a>
 
