@@ -115,7 +115,7 @@ The table below presents the summary of model accuracy scores for all experiment
 |C-3 |Augmentations: horizontal flip, affine                       |99.45%   |11.96%   |
 |C-4 |Augmentations: horizontal flip, affine, erasing              |99.76%   |51.92%   |
 |C-5 |Augmentations: horizontal flip, erasing, color jitter        |98.12%   |38.08%   |
-|C-6 |Augmentations: horizontal flip, affine, erasing, color jitter|93.68%   |38.68%   |
+|C-6 |Augmentations: horiz. flip, affine, erasing, color jitter    |93.68%   |38.68%   |
 |C-7 |Augmentations: horizontal flip, affine, color jitter         |99.73%   |54.28%   |
 |C-8 |Grayscale: no normalization, no augmentations                |99.49%   |6.58%    |
 |C-9 |Grayscale: with normalization, no augmentations              |97.13%   |8.68%    |
@@ -421,6 +421,30 @@ The results are that the learning rate decrease at the right point of training p
 ![Influence of different moments of learning rate drop with automatic scheduler (from epoch 50)](img/429_2_valid_acc.png "Influence of different moments of learning rate drop with automatic scheduler (from epoch 50)")
 
 ### 4.2.10. Controlled learning rate scheduling <a name="controlled-learning-rate-scheduling"></a>
+
+[**[Neptune comparison]**](https://ui.neptune.ai/pchaberski/cars/compare?shortId=%5B%22C-27%22%2C%22C-30%22%2C%22C-31%22%2C%22C-32%22%2C%22C-33%22%5D&viewId=ae19164c-ee09-4209-8798-a424142d2082&legendFields=%5B%22shortId%22%5D&legendFieldTypes=%5B%22native%22%5D)
+
+For further investigation of the influence of learning rate drop timing (especially the first drop from 0.001 to 0.0001) on the final validation accuracy, some more experiments with manually set milestones for learning rate decrease were made using `MultiStepLR` scheduler with the same factor of 0.1. Also it was noticed that [4.2.9](#automatic-learning-rate-scheduling) the best results were obtained when the scheduler was triggered the earliest, so milestones were set to push further in this direction:
+
+With the best take from [4.2.9](#automatic-learning-rate-scheduling) (C-27) as the baseline, where automatically triggered milestones were checked to be `[61, 82, 93, 104]`, the experiments were:
+
+- C-30: `milestones = [28, 48, 68, 88]`
+- C-31: `milestones = [36, 56, 76, 96]`
+- C-32: `milestones = [44, 64, 84, 104]`
+- C-33: `milestones = [52, 72, 92, 112]`
+
+Looking at the results and comparing with the baseline it is obvious, that all learning rate drops were triggered too early.
+
+| Metric                   | C-27   | C-30   | C-31   | C-32   | C-33   |
+|--------------------------|--------|--------|--------|--------|--------|
+| Min. training loss       | 1.014  | 1.749  | 1.321  | 1.142  | 1.059  |
+| Min. validation loss     | 1.836  | 2.364  | 2.130  | 2.022  | 1.971  |
+| Max. training accuracy   | 99.78% | 80.66% | 95.03% | 98.68% | 99.60% |
+| Max. validation accuracy | 76.20% | 57.82% | 64.93% | 68.79% | 71.59% |
+
+![Learning rate drops with manual LR scheduling](img/4210_1_lr.png "Learning rate drops with manual LR scheduling")
+
+![Validation accuracy with manual scheduling](img/4210_2_valid_acc.png "Validation accuracy with manual scheduling")
 
 ### 4.2.11. Weight decay adjustment <a name="weight-decay-adjustment"></a>
 
