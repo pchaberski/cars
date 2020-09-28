@@ -177,7 +177,7 @@ In the Label Smoothing Cross Entropy definition `ce(i)` denotes standard Cross E
 The comparison shows that indeed with all other hyperparameters fixed, label smoothing allows to achieve a slightly better validation accuracy with the training loss decreasing slower, however the overfitting effect is still very large and in assumed setup results in triggering early stopping after only 26 epochs. 
 
 | Metric                 | CE Loss (C-1)  | LSCE Loss (C-2) |
-|------------------------|----------------|-----------------|
+|------------------------|:--------------:|:---------------:|
 |Min. training loss      |  0.296         | 1.133           |
 |Min. validation loss    |  4.849         | 4.873           |
 |Max. training accuracy  | 92.49%         | 98.89%          |
@@ -189,14 +189,45 @@ The comparison shows that indeed with all other hyperparameters fixed, label smo
 
 The next step in the process was adding normalization to the data using mean and standard deviation calculated on the training set (see [`normalization_coeffs.ipynb`](https://github.com/pchaberski/cars/blob/documentation/notebooks/normalization_coeffs.ipynb) notebook). Centering the data gave a 3 percentage points in validation accuracy, however faster convergence resulted in even faster training loss drop.
 
-| Metric                 | No normalization (C-2)  | RGB normalization (C-2) |
-|------------------------|-------------------------|-------------------------|
-|Min. training loss      |1.133           | 1.075  |
-|Min. validation loss    |4.873           | 4.792  |
-|Max. training accuracy  |98.89%          | 99.45% |
-|Max. validation accuracy|9.12%           | 11.95% |
+![Original (a) and normalized (b) image](img/422_1_normalization.png "Original (a) and normalized (b) image")
+
+| Metric                 | No normalization (C-2)  | RGB normalization (C-3) |
+|------------------------|:-----------------------:|:-----------------------:|
+|Min. training loss      |1.133                    | 1.075                   |
+|Min. validation loss    |4.873                    | 4.792                   |
+|Max. training accuracy  |98.89%                   | 99.45%                  |
+|Max. validation accuracy|9.12%                    | 11.95%                  |
 
 ### 4.2.3. Augmentations <a name="augmentations"></a>
+
+The first milestone experiment series was achieved thanks to adding training data augmentations to the model from C-3 experiment. The transformations that were tested were:
+
+- Random horizontal flip
+- Random affine transform
+- Color jittering
+- Random erasing
+
+![Original normalized image (a); Images with: RandomAffine (b), RandomErasing (c), ColorJitter (d)](img/423_1_augmentations.png "Original normalized image (a); Images with: RandomAffine (b), RandomErasing (c), ColorJitter (d)") 
+
+With C-3 experiment as a baseline, four combinations of the above-mentioned transformations were tested:
+
+- C-4: `RandomHorizontalFlip` + `RandomAffine`
+- C-5: `RandomHorizontalFlip` + `RandomAffine` + `RandomErasing`
+- C-6: `RandomHorizontalFlip` + `RandomAffine` + `RandomErasing` + `ColorJitter`
+- C-7: `RandomHorizontalFlip` + `RandomAffine` + `ColorJitter`
+
+The results showed that the augmentations in general helped to achieve a very large increase in validation accuracy (from 11.96% to 54.28%) and while reducing overfitting significantly. As for the particular transformations, it turned out that in the tested setup `RandomErasing` did not help, probably introducing too much variance in the training set combined with other augmentations.
+
+| Metric                 |  C-3   |  C-4  |  C-5  |  C-6  |  C-7  |
+|------------------------|:------:|:-----:|:-----:|:-----:|:-----:|
+|Min. training loss      |1.075   |0.990  |1.122  |1.315  |1.003  |
+|Min. validation loss    |4.792   |2.813  |3.339  |3.452  |2.744  |
+|Max. training accuracy  |99.45%  |99.76% |98.12% |93.68% |99.73% |
+|Max. validation accuracy|11.95%  |51.92% |38.08% |38.68% |54.28% |
+
+![Training accuracy with different augmentations](img/423_1_train_acc.png "Training accuracy with different augmentations")
+
+![Validation accuracy with different augmentations](img/423_2_valid_acc.png "Validation accuracy with different augmentations")
 
 ### 4.2.4. Grayscale conversion <a name="grayscale-conversion"></a>
 
