@@ -336,8 +336,7 @@ It can be observed that adding larger penalty by increasing `weight_decay` in fa
 
 ![Training accuracy with different values of weight decay](img/426_1_train_acc.png "Training accuracy with different values of weight decay")
 
-![Validation accuracy with different values of weight decay](img/426_2_valid_acc.png "![Validation accuracy with different values of weight decay](img/426_1_train_acc.png "Training accuracy with different values of weight decay")
- accuracy with different values of weight decay")
+![Validation accuracy with different values of weight decay](img/426_2_valid_acc.png "Validation accuracy with different values of weight decay")
 
 ### 4.2.7. Dropout rate tests <a name="dropout-rate-tests"></a>
 
