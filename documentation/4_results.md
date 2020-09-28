@@ -37,7 +37,7 @@ The best model that was obtained during the process achieved 83.79 % top-1 accur
 |Max. training accuracy  |98.93%          |
 |Max. validation accuracy|83.79%          |
 
-The best model still shows significant overfitting so there might be some space for further improvement. However, taking into account that the same model achieves 73.98% on ImageNet dataset suggests that the score of almost 83.79% on the Stanford Cars Dataset is quite decent. While Stanford Cars Dataset contains much less classes (196 in comparison to 1000 in ImageNet), but those classes seem harder to distinguish and the dataset itself is much smaller.
+The best model still shows significant overfitting so there might be some space for further improvement. However, taking into account that the same model achieves 73.98% on ImageNet dataset suggests that the score of 83.79% on the Stanford Cars Dataset is quite decent. While Stanford Cars Dataset contains much less classes (196 in comparison to 1000 in ImageNet), those classes seem harder to distinguish and the dataset itself is much smaller.
 
 It is also important to notice, that due to lesser number of classes, The size of the last layer was reduced during tests - instead of passing 1280-channel input to the classifier, only 320 channels are passed, which results in the total reduction of parameter count from 4.2 million to slightly over 3 millions.
 
@@ -168,7 +168,33 @@ The table below presents the summary of model accuracy scores for all experiment
 
 ### 4.2.1. Loss function <a name="loss-function"></a>
 
+The first comparison was between standard Cross Entropy loss function and Label Smoothing Cross Entropy. Label smoothing in classification tasks shows some regularization capability [[15]](5_references.md#Poulopoulos2020) resulting from a change in a standard Cross Entropy loss definition.
+
+![Label Smoothing Cross Entropy definition](img/421_1_lsce.png "Label Smoothing Cross Entropy definition")
+
+In the Label Smoothing Cross Entropy definition `ce(i)` denotes standard Cross Entropy loss, `epsilon` stands for a label smoothing coefficient being a small positive number, and `N` is a number of classes. This modification results in forcing the model to predict not exactly `1` for correct class and `0` for other classes, but instead somehow *smoothed* values of `1 - epsilon` for correct class and `epsilon` for others.
+
+The comparison shows that indeed with all other hyperparameters fixed, label smoothing allows to achieve a slightly better validation accuracy with the training loss decreasing slower, however the overfitting effect is still very large and in assumed setup results in triggering early stopping after only 26 epochs. 
+
+| Metric                 | CE Loss (C-1)  | LSCE Loss (C-2) |
+|------------------------|----------------|-----------------|
+|Min. training loss      |  0.296         | 1.133           |
+|Min. validation loss    |  4.849         | 4.873           |
+|Max. training accuracy  | 92.49%         | 98.89%          |
+|Max. validation accuracy| 8.15%          | 9.12%           |
+
+![Training loss values for CE Loss (C-1) and LSCE Loss (C-2)](img/421_1_train_loss.png "Training loss values for CE Loss (C-1) and LSCE Loss (C-2)")
+
 ### 4.2.2. Normalization <a name="normalization"></a>
+
+The next step in the process was adding normalization to the data using mean and standard deviation calculated on the training set (see [`normalization_coeffs.ipynb`](https://github.com/pchaberski/cars/blob/documentation/notebooks/normalization_coeffs.ipynb) notebook). Centering the data gave a 3 percentage points in validation accuracy, however faster convergence resulted in even faster training loss drop.
+
+| Metric                 | No normalization (C-2)  | RGB normalization (C-2) |
+|------------------------|-------------------------|-------------------------|
+|Min. training loss      |1.133           | 1.075  |
+|Min. validation loss    |4.873           | 4.792  |
+|Max. training accuracy  |98.89%          | 99.45% |
+|Max. validation accuracy|9.12%           | 11.95% |
 
 ### 4.2.3. Augmentations <a name="augmentations"></a>
 
