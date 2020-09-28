@@ -396,6 +396,30 @@ The analysis of results shows no straightforward relationship between the number
 
 ### 4.2.9. Automatic learning rate scheduling <a name="automatic-learning-rate-scheduling"></a>
 
+[**[Neptune comparison]**](https://ui.neptune.ai/pchaberski/cars/compare?shortId=%5B%22C-22%22%2C%22C-26%22%2C%22C-27%22%2C%22C-28%22%2C%22C-29%22%5D&viewId=ae19164c-ee09-4209-8798-a424142d2082&legendFields=%5B%22shortId%22%5D&legendFieldTypes=%5B%22native%22%5D)
+
+The more regularization added, the more difficult it is for optimizer to find the optimal solution with a fixed learning rate which is reflected by a more and more jumpy learning curves after certain number of epochs. A natural step in this case is to try to decrease the learning rate after some stagnation starts to show in loss decrease.
+
+The first round of experiments with learning rate schedulers were done using `ReduceLROnPlateau` scheduler from PyTorch, which was set to decrease the learning rate by a factor 0.1 after no decrease in validation loss is observed for 5 consecutive epochs. During the early development phase it was it was observed that randomness in contents of training batches that results in slightly different learning curves even with the same experiment setup each time may also result in triggering learning rate decrease at different epochs, and this in turn may affect the final validation accuracy achieved. To test the scale of this phenomenon, 4 attempts of the same experiment were taken and compared with the results obtained without scheduler (C-22):
+
+- C-26
+- C-27
+- C-28
+- C-29
+
+![Different learning rate decrease moments with the same setup and automatic scheduler](img/429_1_lr.png "Different learning rate decrease moments with the same setup and automatic scheduler")
+
+The results are that the learning rate decrease at the right point of training procedure can give a significant benefit, and the choice of that particular moment based on variability in training data feed is also not without significance.
+
+| Metric                   | C-22   | C-26   | C-27   | C-28   | C-29   |
+|--------------------------|:------:|:------:|:------:|:------:|:------:|
+| Min. training loss       | 1.140  | 0.995  | 1.014  | 0.988  | 1.006  |
+| Min. validation loss     | 2.055  | 1.903  | 1.836  | 1.888  | 1.874  |
+| Max. training accuracy   | 97.13% | 99.82% | 99.78% | 99.83% | 99.78% |
+| Max. validation accuracy | 68.93% | 74.60% | 76.20% | 75.14% | 74.82% |
+
+![Influence of different moments of learning rate drop with automatic scheduler (from epoch 50)](img/429_2_valid_acc.png "Influence of different moments of learning rate drop with automatic scheduler (from epoch 50)")
+
 ### 4.2.10. Controlled learning rate scheduling <a name="controlled-learning-rate-scheduling"></a>
 
 ### 4.2.11. Weight decay adjustment <a name="weight-decay-adjustment"></a>
