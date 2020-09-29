@@ -2,7 +2,7 @@
 
 ## 2.1. Stanford Cars Dataset <a name="stanford-cars-dataset"></a>
 
-Stanford Cars Dataset [[12]](5_references.md#KrauseStarkDengFei-Fei_3DRR2013) is a dataset published by Jonathan Krause of Stanford University and is publicly available at https://ai.stanford.edu/~jkrause/cars/car_dataset.html.
+Stanford Cars Dataset [[12]](5_references.md#KrauseStarkDengFei-Fei_3DRR2013) is a dataset published by Jonathan Krause of Stanford University and is publicly available at [https://ai.stanford.edu/~jkrause/cars/car_dataset.html](https://ai.stanford.edu/~jkrause/cars/car_dataset.html).
 
 ![Example images from Stanford Cars Dataset](img/21_1_stanford_cars_examples.png "Example images from Stanford Cars Dataset")
 
@@ -11,13 +11,13 @@ The dataset contains 16,185 images of 196 classes of car models (precisely, clas
 - 8,144 images as a training set
 - 8,041 images as a test set
 
-In addition to class labels, both subsets have also bounding boxes (as 4 coordinates in metadata files).
+In addition to class labels, both subsets have also bounding boxes attached (as 4 coordinates in metadata files).
 
-Images are originally of different sizes, mostly in RGB, but there are some grayscale images which has to be taken into account during preprocessing. Another thing to be aware of is that the dataset has been updated at some point - the images and the split did not change, but the file names were reordered and metadata was reorganized for the ease of use.  
+Images are originally of different sizes, mostly in RGB, but there are some grayscale images which has to be taken into account during preprocessing. Another thing to be aware of is that the dataset has been updated at some point - images and split did not change, but the file names were reordered and metadata was reorganized for the ease of use.  
 
 ## 2.2. GhostNet architecture <a name="ghostnet-architecture"></a>
 
-GhostNet [[11]](5_references.md#Han_2020) is the architecture designed and first implemented by the research team at Huawei Noah's Ark Lab (http://www.noahlab.com.hk/). It is based on the observation, that standard convolutional layers with many filters are large in terms of number of parameters and computationally expensive, while often producing redundant feature maps that are very much alike each other (they might be considered as "ghosts" of the original feature map). The goal of the GhostNet design is not to get rid of those redundant feature maps, because they often help the network to comprehensively understand all the features of the input data. Instead of that, the focus is on obtaining those redundant feature maps in a cost-efficient way.
+GhostNet [[11]](5_references.md#Han_2020) is the architecture designed and first implemented by the research team at Huawei Noah's Ark Lab ([http://www.noahlab.com.hk](http://www.noahlab.com.hk)). It is based on the observation, that standard convolutional layers with many filters are large in terms of number of parameters and computationally expensive, while often producing redundant feature maps that are very much alike each other (they might be considered as "ghosts" of the original feature map). The goal of the GhostNet design is not to get rid of those redundant feature maps, because they often help the network to comprehensively understand all the features in the input data. Instead of that, the focus is on obtaining those redundant feature maps in a cost-efficient way.
 
 ![Redundant feature maps from ResNet-50 (picture from paper)](img/22_1_redundant_feature_maps.png "Redundant feature maps from ResNet-50 (picture from paper)")
 
@@ -95,9 +95,9 @@ GhostNet architecture based on paper:
 |1 x 1 x 960            |       Conv2d 1x1    |     -    |   1280   |   -    |     1      |
 |1 x 1 x 1280           |       FC            |     -    |   1000   |   -    |     -      |
 
-GhostNet architecture described above (and in original paper as well) is the basic setup which can be modified by structuring GhostBottlenecks in different sequences. This basic setup, as mentioned before, gets 73.98% accuracy on ImageNet with 4.1 M parameters and requires only 0.142 GFLOPS to process 224x224 RGB image. Other more complex variations, as presented in paper, show superiority over previous designs like MobileNet or ShuffleNet getting better accuracy with less FLOPS and latency.
+GhostNet architecture described above (and in original paper as well) is the basic setup which can be modified by structuring GhostBottlenecks in different sequences. This basic setup, as mentioned before, gets 73.98% accuracy on ImageNet with 4.1 M parameters and requires only 0.142 GFLOPS to process 224x224 RGB image. Other more complex variations, as presented in paper, show superiority over previous popular designs like MobileNet or ShuffleNet getting better accuracy with less FLOPS and latency.
 
 ![GhostNet comparison with some other mobile architectures (pictures from paper)](img/22_4_ghostnet_comparison.png "GhostNet comparison with some other mobile architectures (pictures from paper)")
 
-Full PyTorch implementation of GhostNet that was used in this work is available at [GitHub](https://github.com/pchaberski/cars/blob/master/models/architectures/ghostnet.py) repository of the project.  
+Full PyTorch implementation of GhostNet that was used in this work is available at [GitHub repository](https://github.com/pchaberski/cars/blob/master/models/architectures/ghostnet.py) of the project.  
 

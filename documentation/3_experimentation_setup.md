@@ -4,15 +4,15 @@ The experimentation setup is entirely based on Python. GhostNet (and some [other
 
 ## 3.1. Project structure <a name="project-structure"></a>
 
-Source code for the project is available in GitHub repository: https://github.com/pchaberski/cars. Repository contains the following elements:
+Source code for the project is available in GitHub repository: [https://github.com/pchaberski/cars](https://github.com/pchaberski/cars). The repository contains following elements:
 
 * `documentation` - folder containing markdown files with project documentation, images, bibliography as a `.bib` file and some tools for document conversion
 * `datasets` - Python package containing:
-    * `stanford_data.py` module implementing class for Stanford Cars data loading and preprocessing
+    * `stanford_data.py` - module implementing class for Stanford Cars data loading and preprocessing
     * `stanford_data_module.py` - module implementing `LightningDataModule` defining data loaders for main training `LightnigModule`
     * `stanford_utils.py` - utility to process raw files downloaded from dataset webpage to be suitable for training and validation
 * `models` - Python package containing:  
-    * `architectures` - folder with modules implementing `GhostNet` and several other architectures that were briefly tested during initial stage of the project (`SqueezeNet`, `SqueezeNext`, `EfficientNet`, `MobileNet-V2`, `ShuffleNet`, `HarDNet`)
+    * `architectures` - folder with modules implementing `GhostNet` and several other architectures that were briefly tested during the initial stage of the project (`SqueezeNet`, `SqueezeNext`, `EfficientNet`, `MobileNet-V2`, `ShuffleNet`, `HarDNet`)
     * `arch_dict.py` - module with a dictionary of architectures that can be used in experiments
     * `net_module.py` - module containing main `LightningModule` used for network training and evaluation
     * `label_smoothing_ce.py` - implementation of Label Smoothing Cross Entropy loss function [[15]](5_references.md#Poulopoulos2020)
@@ -32,7 +32,7 @@ Project structure allows to run experiments in two modes, also simultaneously:
  - locally on a machine with GPU and CUDA drivers
  - remotely on Google Colab
 
-Local setup was tested on Windows laptop (although experimentation environment should be also reproducible on Linux with no changes in the project) with mobile GeForce RTX 2060 and Python 3.7.6. Google Colab setup recreates the environment to mirror all local package versions and runs on Python 3.6.9, however no compatibility issues were observed.
+Local setup was tested on Windows laptop (although experimentation environment should be also reproducible on Linux with no changes to the project) with mobile GeForce RTX 2060 and Python 3.7.6. Google Colab setup recreates the environment to mirror all local package versions and runs on Python 3.6.9, however no compatibility issues were observed.
 
 The first step to prepare for running experiments is to **clone the project GitHub repository**. If the training is to be performed on Colab, project folder should be cloned into `Google Drive` folder that is synchronized with remote Google Drive directory. This will allow to to sync all local changes on the fly and run Colab training without the need of pushing all changes made locally to git remote origin each time and then pulling them on Colab drive.
 
@@ -86,7 +86,7 @@ The script processes the above-mentioned raw files to obtain:
 - `train` and `test` folders with images used for training and validation, separated for the ease of data loaders implementation
 - `train_labels.csv` and `test_labels.csv` files with image names and class numbers associated with them, as well as bounding box coordinates and class names. It is important to notice, that in raw data class are numbered within range of 1 to 196, while PyTorch Lightning requires classes to be represented by numbers starting from 0. This issue is handled internally within [`StanfordCarsDataset`](https://github.com/pchaberski/cars/blob/master/datasets/stanford_data.py) class and has to be taken into account during interpretation of model predictions.
 
-Preprocessed images and metadata are saved within the directory pointed by `stanford_data_path` configuration parameter (by default, `input/stanford` folder is created within project folder). **If the training is supposed to be run on Colab** it is strongly advisable to prepare also a `.tar.gz` archive (e.g. `stanford.tar.gz`) from `train`, `test`, `train_labels.csv` and `test_labels.csv` and put it on Google Drive. This will allow to quickly copy and unpack the the data from Google Drive to Colab drive before training which will speed up data loading, and therefore training multiple times, as reading image by image from Google Drive takes incomparably more time than reading directly from Colab drive.
+Preprocessed images and metadata are saved within the directory pointed by `stanford_data_path` configuration parameter (by default, `input/stanford` folder is created within project folder). **If the training is supposed to be run on Colab** it is strongly advisable to prepare also a `.tar.gz` archive (e.g. `stanford.tar.gz`) from `train`, `test`, `train_labels.csv` and `test_labels.csv` and put it on Google Drive. This will allow to quickly copy and unpack the the data from Google Drive to Colab drive before training which will speed up data loading (and therefore training) multiple times, as reading image by image from Google Drive takes incomparably more time than reading directly from Colab drive.
 
 After cloning the repository and preparing the data (also creating and filling up `config.yml` from `config_template.yml` as described in [3.3](#configuration)) it is possible to run experiments.
 
@@ -102,7 +102,7 @@ After cloning the repository and preparing the data (also creating and filling u
 
 After setting all above paths, the notebook is designed to:
 - check if session is running on Colab runtime
-- recreate local environment by installing packages from `prod_requirements.txt` on Colab (after this step, runtime restart might be needed to reload new versions of packages)
+- if so, recreate local environment by installing packages from `prod_requirements.txt` on Colab (after this step, runtime restart and imports re-execution might be needed to reload new versions of packages)
 - copy and unpack data from to Google Drive to Colab drive if `DATA_ON_COLAB=True`
 - run `training.py` script on Colab
 
@@ -110,7 +110,7 @@ If project folder is stored on Google Drive, regardless the runtime used (Colab 
 
 ## 3.3. Configuration <a name="configuration"></a>
 
-All experiments are controlled using `config.yml` file stored in `cars` project folder. This allows to change all experiment-related parameters without any interference in the source code. Initially, after cloning, the repository default settings are stored in `config_template.yml` file. This file has to be copied and renamed as `config.yml`. Configuration file contains parameters related to:  
+All experiments are controlled using `config.yml` file stored in `cars` project folder. This allows to change all experiment-related parameters without any interference in the source code. Initially, after cloning the repository, default settings are stored in `config_template.yml` file. This file has to be copied and renamed as `config.yml`. Configuration file contains parameters related to:  
 
 - logging - locally and using Neptune experiment tracking tool (see section [3.4](experiment-tracking))
 - directories where data and outputs (PyTorch lightning model checkpoints) are stored
@@ -118,7 +118,7 @@ All experiments are controlled using `config.yml` file stored in `cars` project 
 - network hyperparameters
 - optimizer and loss function settings
 
-Before running the training all directory-related settings has to be provided. As for the data preprocessing and modelling settings, `config_template.yml` already contains all parameter values that were used during training the best model achieved in experiment series.
+Before running the training, all directory-related settings have to be provided. As for the data preprocessing and modelling settings, `config_template.yml` already contains all parameter values that were used during training the best model achieved in experiment series.
 
 Full contents of `config_template.yml` are listed below:  
 
@@ -210,17 +210,18 @@ Experiment tracking is set up using [Neptune](https://neptune.ai/) experiment ma
 - Customizable logging of training metrics and model hyperparameters, as well as the storage and versioning of model artifacts
 - Customizable plots and experiment comparison dashboards live-updated as the training proceeds
 - Easy results sharing via HTTP links
+- Option to programmatically download experiments results and parameters for postprocessing using API
 
 Neptune logging can be easily enabled by passing a set of parameters through project `config.yml` file:
 
 ```yaml
-log_to_neptune: False
+log_to_neptune: True
 neptune_username: '<neptune.ai username>'
 neptune_project_name: '<neptune.ai project name>'
 neptune_api_token: '<neptune.ai API token>'
 ```
 
-Results of performed experiments are available under the following link:
+Results of the performed experiments in the discussed project are available under the following link:
 
 [**[Neptune `cars` project dashboard]**](https://ui.neptune.ai/pchaberski/cars/experiments?viewId=ae19164c-ee09-4209-8798-a424142d2082)
 
@@ -235,10 +236,10 @@ The main dashboard table is configured to summarize all most important informati
 - Loss function used
 - Optimizer type and its most important settings (learning rate and weight decay)
 - Learning rate scheduler type
-- Network hyperparameters: dropout rate in classifier, last layer size
-- Number of epochs before early stopping was triggered
+- Network hyperparameters: dropout rate in the classifier, last layer size
+- Number of epochs passed before early stopping was triggered
 - Best (minimum) training and validation loss and best (maximum) training and validation accuracy
-- Tags linking the experiment to sections of documentation
+- Tags linking the experiment to specific sections in documentation
 - Additional experiment description  
 
 ![Part of a Neptune main dashboard](img/34_1_neptune_dashboard.png "Part of a Neptune main dashboard")  

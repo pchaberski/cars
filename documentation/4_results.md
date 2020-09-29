@@ -2,7 +2,7 @@
 
 For the experiments, entire training subset from Stanford Cars Dataset was used for training, and *test* subset was used for validation. There is no additional hold-out testing set so it has to be taken into account that the final accuracy estimate might be somehow biased.
 
-To limit hyperparameter space for best model search, some assumptions were made at the beginning:
+To limit hyperparameter space for the best model search, some assumptions were made at the beginning:
 
 - network is trained from scratch, without using any pretrained weights
 - input image size is 227x227 (this assumption results from initial tests on SqueezeNext [[6]](5_references.md#Gholami_2018) where this is a minimum image size and all other architectures available in [`arch_dict.py`](https://github.com/pchaberski/cars/blob/master/models/arch_dict.py) can handle such image size. For GhostNet, minimum image size is 224x224)
@@ -30,10 +30,10 @@ The entire process of obtaining the best model is described step-by-step in sect
 
 [**[Neptune charts]**](https://ui.neptune.ai/pchaberski/cars/e/C-50/charts)
 
-The best model that was obtained during the process achieved 83.79 % top-1 accuracy on the validation set after training for 129 epochs and Label Smoothing Cross Entropy function. Best metrics scores for that model are:  
+The best model that was obtained during the process achieved 83.79 % top-1 accuracy on the validation set after training for 129 epochs with AdamW optimizer and Label Smoothing Cross Entropy function. Best metrics scores for that model are:  
 
 | Metric                 | Value          |
-|------------------------|----------------|
+|------------------------|:--------------:|
 |Min. training loss      |1.064           |
 |Min. validation loss    |1.521           |
 |Max. training accuracy  |98.93%          |
@@ -41,7 +41,7 @@ The best model that was obtained during the process achieved 83.79 % top-1 accur
 
 The best model still shows significant overfitting so there might be some space for further improvement. However, taking into account that the same model achieves 73.98% on ImageNet dataset suggests that the score of 83.79% on the Stanford Cars Dataset is quite decent. While Stanford Cars Dataset contains much less classes (196 in comparison to 1000 in ImageNet), those classes seem harder to distinguish and the dataset itself is much smaller.
 
-It is also important to notice, that due to lesser number of classes, The size of the last layer was reduced during tests - instead of passing 1280-channel input to the classifier, only 320 channels are passed, which results in the total reduction of parameter count from 4.2 million to slightly over 3 millions.
+It is also important to notice, that due to the lesser number of classes, the size of the last layer was reduced during tests - instead of passing 1280-channel input to the classifier, only 320 channels are passed, which results in the total reduction of parameter count from 4.2 million to slightly over 3 millions.
 
 ![Training and validation loss of the best model (C-50)](img/41_1_loss.png "Training and validation loss of the best model (C-50)")
 
@@ -175,7 +175,7 @@ The first comparison was between standard Cross Entropy loss function and Label 
 
 ![Label Smoothing Cross Entropy definition](img/421_1_lsce.png "Label Smoothing Cross Entropy definition")
 
-In the Label Smoothing Cross Entropy definition `ce(i)` denotes standard Cross Entropy loss, `epsilon` stands for a label smoothing coefficient being a small positive number, and `N` is a number of classes. This modification results in forcing the model to predict not exactly `1` for correct class and `0` for other classes, but instead somehow *smoothed* values of `1 - epsilon` for correct class and `epsilon` for others.
+In the Label Smoothing Cross Entropy definition `ce(i)` denotes standard Cross Entropy loss, `epsilon` stands for the label smoothing coefficient being a small positive number, and `N` is the number of classes. This modification results in forcing the model to predict not exactly `1` for correct class and `0` for other classes, but instead somehow *smoothed* values of `1 - epsilon` for correct class and `epsilon` for others.
 
 The comparison shows that indeed with all other hyperparameters fixed, label smoothing allows to achieve a slightly better validation accuracy with the training loss decreasing slower, however the overfitting effect is still very large and in assumed setup results in triggering early stopping after only 26 epochs. 
 
@@ -212,19 +212,19 @@ The first milestone experiment series was achieved thanks to adding training dat
 
 - Random horizontal flip
 - Random affine transform
-- Color jittering
 - Random erasing
+- Color jittering
 
 ![Original normalized image (a); Images with: RandomAffine (b), RandomErasing (c), ColorJitter (d)](img/423_1_augmentations.png "Original normalized image (a); Images with: RandomAffine (b), RandomErasing (c), ColorJitter (d)") 
 
-With C-3 experiment as a baseline, four combinations of the above-mentioned transformations were tested:  
+With C-3 experiment as the baseline, four combinations of the above-mentioned transformations were tested:  
 
 - C-4: `RandomHorizontalFlip` + `RandomAffine`
 - C-5: `RandomHorizontalFlip` + `RandomAffine` + `RandomErasing`
 - C-6: `RandomHorizontalFlip` + `RandomAffine` + `RandomErasing` + `ColorJitter`
 - C-7: `RandomHorizontalFlip` + `RandomAffine` + `ColorJitter`
 
-The results showed that the augmentations in general helped to achieve a very large increase in validation accuracy (from 11.96% to 54.28%) while reducing overfitting significantly. As for the particular transformations, it turned out that in the tested setup `RandomErasing` did not help, probably introducing too much variance in the training set combined with other augmentations.
+The results showed that the augmentations in general helped to achieve a very large increase in validation accuracy (from 11.96% to 54.28% in the best case) while reducing overfitting significantly. As for the particular transformations, it turned out that in the tested setup `RandomErasing` did not help, probably introducing too much variance in the training set combined with other augmentations.
 
 | Metric                 |  C-3   |  C-4  |  C-5  |  C-6  |  C-7  |
 |------------------------|:------:|:-----:|:-----:|:-----:|:-----:|
@@ -271,9 +271,9 @@ class GhostNet(nn.Module):
 # ...
 ```
 
-Also some other customizations were made as can be seen above, namely with introducing customizable dropout rate in classifier and last layer size by adding `dropout` and `out_channels` parameters. Those will be discussed in sections [4.2.7](#dropout-rate-tests) and [4.2.8](#last-layer-size-tests), respectively.
+Also some other customizations were made as can be seen above, namely introducing customizable dropout rate in classifier and last layer size by adding `dropout` and `out_channels` parameters. Those will be discussed in sections [4.2.7](#dropout-rate-tests) and [4.2.8](#last-layer-size-tests), respectively.
 
-Three comparisons were made taking as a baselines identical setups that were previously using 3-channel input:  
+Three comparisons were made taking as baselines identical setups that were previously trained using 3-channel input:  
 
 - experiment C-8, being a reflection of C-2 (no normalization and no augmentations)
 - experiment C-9, being a reflection of C-3 (normalization added, no augmentations)
@@ -293,18 +293,18 @@ The results of these tests clearly show, that probably due to the network design
 
 [**[Neptune comparison]**](https://ui.neptune.ai/pchaberski/cars/compare?shortId=%5B%22C-7%22%2C%22C-10%22%2C%22C-11%22%5D&viewId=ae19164c-ee09-4209-8798-a424142d2082&legendFields=%5B%22shortId%22%5D&legendFieldTypes=%5B%22native%22%5D)
 
-Another idea was to try to somehow utilize car bounding boxes coordinates that are available in Stanford Cars Dataset along with the class labels. The goal of the project was however to get possibly unbiased benchmark on original test set (despite it was used for model validation), so any operations using bounding box information could be used only on training subset. Another reason for that is that the ultimate objective is to deploy trained model on a mobile device so it cannot use any information that is unavailable during inference to estimate the performance. Using bounding boxes in performance estimation and eventually during real-life prediction would require to stack the discussed classification model with some kind of detector, which would firstly estimate the location of bounding boxes.
+Another idea was to try to somehow utilize car bounding boxes coordinates that are available in Stanford Cars Dataset along with the class labels. The goal of the project was however to get possibly unbiased benchmark on the original test set (despite it was used for model validation), so any operations using bounding box information could be used only on training subset. Another reason for that is that the ultimate objective is to deploy trained model on a mobile device so it cannot use any information that is unavailable during inference to estimate the performance. Using bounding boxes in performance estimation and eventually during real-life prediction would require to stack the discussed classification model with some kind of detector, which would firstly estimate the location of bounding boxes.
 
-Two approaches of utilizing bounding boxes on training set were consecutively tested, taking so far the best C-7 experiment as a baseline:
+Two approaches of utilizing bounding boxes on training set were consecutively tested, taking so far the best C-7 experiment as the baseline:
 
 - C-10: only cropping images to bounding box coordinates before resize
 - C-11: cropping mages to bounding boxes and then putting them on the white background of original image size to preserve ratios before resize
 
-Both transformations were intended to get rid of the image background to try to force the network to focus only on relevant image parts and to prevent it from fitting to background elements.
+Both transformations were intended to get rid of the image background and try to force the network to focus only on relevant image parts and to prevent it from fitting to the background elements.
 
 ![Original normalized image (a); Image cropped to b-boxes (b); Image with background erased (c)](img/425_1_bboxes.png "Original normalized image (a); Image cropped to b-boxes (b); Image with background erased (c)")
 
-It turned out that this idea was totally wrong - in the first case (C-10), after crop and resize, all proportions were strongly distorted, which caused large discrepancy between training and validation data and prevented optimizer from converging. The divergence was even stronger in the second case (C-10), because despite preserving original proportions, the network started to focus only on fitting to the white background instead of car details.
+It turned out that this idea was totally wrong - in the first case (C-10), after crop and resize, all proportions were strongly distorted, which caused a large discrepancy between training and validation data and prevented optimizer from converging. The divergence was even stronger in the second case (C-11), because despite preserving original proportions, the network started to focus only on fitting to the white background instead of car details.
 
 | Metric                   | C-7    | C-10  | C-11  |
 |--------------------------|:------:|:-----:|:-----:|
@@ -317,7 +317,7 @@ It turned out that this idea was totally wrong - in the first case (C-10), after
 
 [**[Neptune comparison]**](https://ui.neptune.ai/pchaberski/cars/compare?shortId=%5B%22C-7%22%2C%22C-13%22%2C%22C-14%22%2C%22C-15%22%2C%22C-16%22%2C%22C-17%22%5D&viewId=ae19164c-ee09-4209-8798-a424142d2082&legendFields=%5B%22shortId%22%5D&legendFieldTypes=%5B%22native%22%5D)
 
-For the further attempts to reduce overfitting and in consequence increase validation accuracy, one of the most commonly used in parametric machine-learning models techniques was applied - L2 regularization. Optimizers in PyTorch allow for passing `weight_decay` parameter, which represents the strength of penalty added for the too hight model weights. However, as empirical study shows [[16]](5_references.md#loshchilov2017decoupled), this kind of regularization requires decoupling application of weight decay from optimization steps taken with respect to the loss function when using adaptive algorithms like Adam. So to be able to successfully apply this technique in discussed problem, Adam optimized was replaced by its variation utilizing decoupled weight decay - AdamW.
+For further attempts to reduce overfitting and in consequence increase validation accuracy, one of the most commonly used techniques in parametric machine-learning models training was applied - L2 regularization. Optimizers in PyTorch allow for passing `weight_decay` parameter, which represents the strength of the penalty added for too high model weights. However, as empirical study shows [[16]](5_references.md#loshchilov2017decoupled), this kind of regularization requires decoupling application of weight decay from optimization steps taken with respect to the loss function when using adaptive algorithms like Adam. So to be able to successfully apply this technique in discussed problem, Adam optimizer was replaced by its variation utilizing decoupled weight decay - AdamW.
 
 With C-7 as a baseline, 5 different `weight_decay` values were tested with AdamW optimizer:  
 
@@ -336,7 +336,7 @@ The results:
 | Max. training accuracy   | 99.73% | 99.44% | 98.84% | 95.83% | 95.95% | 90.38% |
 | Max. validation accuracy | 54.28% | 63.39% | 68.50% | 61.84% | 65.14% | 59.95% |
 
-It can be observed that adding larger penalty by increasing `weight_decay` in fact reduces overfitting, but at some point the weights become too constrained preventing the model to fit well to training data and therefore limiting validation accuracy increase. However with all tested values regularized version managed to improve the score without weight decay.
+It can be observed that adding larger penalty by increasing `weight_decay` in fact reduces overfitting, but at some point the weights become too constrained preventing the model to fit well to training data and therefore limiting validation accuracy increase. However, with all tested values, regularized version managed to improve the score obtained without weight decay.
 
 ![Training accuracy with different values of weight decay](img/426_1_train_acc.png "Training accuracy with different values of weight decay")
 
@@ -346,7 +346,7 @@ It can be observed that adding larger penalty by increasing `weight_decay` in fa
 
 [**[Neptune comparison]**](https://ui.neptune.ai/pchaberski/cars/compare?shortId=%5B%22C-14%22%2C%22C-18%22%2C%22C-19%22%2C%22C-20%22%2C%22C-21%22%5D&viewId=ae19164c-ee09-4209-8798-a424142d2082&legendFields=%5B%22shortId%22%5D&legendFieldTypes=%5B%22native%22%5D)
 
-Basic GhostNet design has dropout rate before last linear layer fixed at 0.2. As mentioned in [4.2.4](#grayscale-conversion) the original design was customized to allow for passing different dropout values. Some other than default (especially larger, hoping to further reduce overfitting) values were checked.
+Basic GhostNet design has dropout rate before last linear layer fixed at 0.2. As mentioned in [4.2.4](#grayscale-conversion) the original design was customized to allow for passing different dropout values. Some other than default values (especially larger, hoping to further reduce overfitting) were checked.
 
 Dropout rate values that were tested with baseline of 0.2 from C-14 experiment setup were:  
 
@@ -368,7 +368,7 @@ The above mentioned experiments show no improvement using values different from 
 
 [**[Neptune comparison]**](https://ui.neptune.ai/pchaberski/cars/compare?shortId=%5B%22C-14%22%2C%22C-22%22%2C%22C-23%22%2C%22C-24%22%2C%22C-25%22%5D&viewId=ae19164c-ee09-4209-8798-a424142d2082&legendFields=%5B%22shortId%22%5D&legendFieldTypes=%5B%22native%22%5D)
 
-By default in GhostNet architecture the number of channels in the feature vector passed into the classifier module is fixed on value 1280 and those channels are finally mapped on the number of classes by the fully connected layer. As mentioned in [4.2.4](#grayscale-conversion), this value was parametrized based on the assumption, that it could be strictly associated with the specific output number of classes and the architecture was optimized for 1000-class ImageNet, while Stanford Cars Dataset consists of 196 classes.
+By default, in GhostNet architecture the number of channels in the feature vector passed into the classifier module is fixed at value of 1280 and those channels are finally mapped on the number of classes by the fully connected layer. As mentioned in [4.2.4](#grayscale-conversion), this value was parametrized based on the assumption, that it could be strictly associated with the specific output number of classes and the architecture was optimized for 1000-class ImageNet, while Stanford Cars Dataset consists of 196 classes.
 
 The values that were tested with respect to 1280 baseline from experiment C-14:
 
@@ -387,7 +387,7 @@ It is important to notice, that changing the output channels value strongly affe
 | C-24 | 960             | 3782530              |
 | C-25 | 1600            | 4523650              |
 
-The analysis of results shows no straightforward relationship between the number of output channels and network's performance on the particular dataset that was used, however the lowest number of channels testes (320) turned out to give slightly better validation accuracy that default with less overfitting, while reducing the number of parameters from 4.15 million to 3.04 million.
+Analysis of the results shows no straightforward relationship between the number of output channels and network's performance on the particular dataset that was used, however the lowest number of channels testes (320) turned out to give slightly better validation accuracy that default with less overfitting, while reducing the number of parameters from 4.15 million to 3.04 million.
 
 | Metric                   | C-14   | C-22   | C-23   | C-24   | C-25   |
 |--------------------------|:------:|:------:|:------:|:------:|:------:|
@@ -400,9 +400,9 @@ The analysis of results shows no straightforward relationship between the number
 
 [**[Neptune comparison]**](https://ui.neptune.ai/pchaberski/cars/compare?shortId=%5B%22C-22%22%2C%22C-26%22%2C%22C-27%22%2C%22C-28%22%2C%22C-29%22%5D&viewId=ae19164c-ee09-4209-8798-a424142d2082&legendFields=%5B%22shortId%22%5D&legendFieldTypes=%5B%22native%22%5D)
 
-The more regularization added, the more difficult it is for optimizer to find the optimal solution with a fixed learning rate which is reflected by a more and more jumpy learning curves after certain number of epochs. A natural step in this case is to try to decrease the learning rate after some stagnation starts to show in loss decrease.
+The more regularization added, the more difficult it is for optimizer to find the optimal solution with a fixed learning rate what is reflected by more and more jumpy learning curves after certain number of epochs. A natural step in this case is to try to decrease the learning rate after some stagnation starts to emerge in the loss decrease.
 
-The first round of experiments with learning rate schedulers were done using `ReduceLROnPlateau` scheduler from PyTorch, which was set to decrease the learning rate by a factor 0.1 after no decrease in validation loss is observed for 5 consecutive epochs. During the early development phase it was it was observed that randomness in contents of training batches that results in slightly different learning curves even with the same experiment setup each time may also result in triggering learning rate decrease at different epochs, and this in turn may affect the final validation accuracy achieved. To test the scale of this phenomenon, 4 attempts of the same experiment were taken and compared with the results obtained without scheduler (C-22):
+The first round of experiments with learning rate schedulers were done using `ReduceLROnPlateau` scheduler from PyTorch, which was set to decrease the learning rate by a factor 0.1 after no decrease in validation loss is observed for 5 consecutive epochs. During the early development phase it was observed that randomness in contents of training batches that results in slightly different learning curves even with the same experiment setup each time, may also result in triggering learning rate decrease at different epochs, and this in turn may affect the final validation accuracy achieved. To test the scale of this phenomenon, 4 attempts of the same experiment were taken and compared with the results obtained without scheduler (C-22):
 
 - C-26
 - C-27
@@ -426,7 +426,7 @@ The results are that the learning rate decrease at the right point of training p
 
 [**[Neptune comparison]**](https://ui.neptune.ai/pchaberski/cars/compare?shortId=%5B%22C-27%22%2C%22C-30%22%2C%22C-31%22%2C%22C-32%22%2C%22C-33%22%5D&viewId=ae19164c-ee09-4209-8798-a424142d2082&legendFields=%5B%22shortId%22%5D&legendFieldTypes=%5B%22native%22%5D)
 
-For further investigation of the influence of learning rate drop timing (especially the first drop from 0.001 to 0.0001) on the final validation accuracy, some more experiments with manually set milestones for learning rate decrease were made using `MultiStepLR` scheduler with the same factor of 0.1. Also it was noticed that [4.2.9](#automatic-learning-rate-scheduling) the best results were obtained when the scheduler was triggered the earliest, so milestones were set to push further in this direction:
+For further investigation of the influence of learning rate drop timing (especially the first drop from 0.001 to 0.0001) on the final validation accuracy, some more experiments with manually set milestones for learning rate decrease were made using `MultiStepLR` scheduler with the same factor of 0.1. Also it was noticed that [4.2.9](#automatic-learning-rate-scheduling) the best results were obtained when the scheduler was triggered at the earliest, so the milestones were set to push further in this direction:
 
 With the best take from [4.2.9](#automatic-learning-rate-scheduling) (C-27) as the baseline, where automatically triggered milestones were checked to be `[61, 82, 93, 104]`, the experiments were:
 
@@ -452,7 +452,7 @@ Looking at the results and comparing with the baseline it is obvious, that all l
 
 [**[Neptune comparison]**](https://ui.neptune.ai/pchaberski/cars/compare?shortId=%5B%22C-27%22%2C%22C-36%22%2C%22C-37%22%2C%22C-38%22%2C%22C-39%22%2C%22C-40%22%5D&viewId=ae19164c-ee09-4209-8798-a424142d2082&legendFields=%5B%22shortId%22%5D&legendFieldTypes=%5B%22native%22%5D)
 
-After all experiments with learning rates it seemed reasonable to revisit the most important decisions related to regularization. Especially the optimal weight decay value is strictly dependent on the learning rate used, therefore once again some other values than so-far-best 0.2 were checked at this point. Comparing to C-27, new weight decay values tested were:
+After all experiments with learning rates, it seemed reasonable to revisit the most important decisions related to regularization. Especially the optimal weight decay value is strictly dependend on the learning rate used, therefore once again some other values than so-far-best 0.2 were checked at this point. Comparing to C-27, new weight decay values tested were:
 
 - C-36: `weight_decay = 0.5`
 - C-37: `weight_decay = 0.3`
@@ -469,7 +469,7 @@ Similarly to [4.2.6](#optimizer-change-and-l2-regularization), some values were 
 | Max. training accuracy   | 99.78% | 98.84% | 99.57% | 99.37% | 98.67% | 99.24% |
 | Max. validation accuracy | 76.20% | 79.40% | 74.44% | 78.82% | 82.55% | 75.12% |
 
-Also it has to be noticed, that due to different course of learning rate process due to different regularization automatic `ReduceLROnPlateau` has been reestablished.
+Also it has to be noted, that due to different course of learning process resulting from different regularization, automatic `ReduceLROnPlateau` LR scheduling has been reestablished for the time being.
 
 ![Training accuracy with different weight decay ant auto-scheduling](img/4211_1_train_acc.png "Training accuracy with different weight decay ant auto-scheduling")
 
@@ -479,12 +479,12 @@ Also it has to be noticed, that due to different course of learning rate process
 
 [**[Neptune comparison]**](https://ui.neptune.ai/pchaberski/cars/compare?shortId=%5B%22C-39%22%2C%22C-41%22%2C%22C-42%22%2C%22C-43%22%2C%22C-44%22%5D&viewId=ae19164c-ee09-4209-8798-a424142d2082&legendFields=%5B%22shortId%22%5D&legendFieldTypes=%5B%22native%22%5D)
 
-Another step-back after introducing learning rate scheduling was to verify the dropout rate that was fixed before. With the C-39 experiment as a baseline, the values re-checked were:
+Another step-back after introducing learning rate scheduling was to verify the dropout rate that was fixed before. With the C-39 experiment as the baseline, re-checked values were:
 
-- C-41: `dropout == 0.3`
-- C-42: `dropout == 0.4`
-- C-43: `dropout == 0.5`
-- C-44: `dropout == 0.25`
+- C-41: `dropout = 0.3`
+- C-42: `dropout = 0.4`
+- C-43: `dropout = 0.5`
+- C-44: `dropout = 0.25`
 
 The tests confirmed that the default value seems to be optimal, since all experiments fared worse than the 0.2 baseline, moreover the closer the default value, the higher the validation accuracy.
 
@@ -499,7 +499,7 @@ The tests confirmed that the default value seems to be optimal, since all experi
 
 [**[Neptune comparison]**](https://ui.neptune.ai/pchaberski/cars/compare?shortId=%5B%22C-39%22%2C%22C-45%22%2C%22C-46%22%2C%22C-47%22%2C%22C-48%22%5D&viewId=ae19164c-ee09-4209-8798-a424142d2082&legendFields=%5B%22shortId%22%5D&legendFieldTypes=%5B%22native%22%5D)
 
-In attempt to further decrease overfitting some additional augmentations were tested (and also `RandomErasing` was tried again). Every new transformation was added separately to the existing set:
+In attempt to further decrease overfitting some additional augmentations were tested (and also `RandomErasing` was tried again). Every new transformation was added separately to the existing set of augmentations:
 
 - C-45: `RandomResizedCrop`
 - C-46: `RandomRotation`
@@ -521,7 +521,7 @@ The results show that adding more augmentations make it too hard for the model t
 
 [**[Neptune comparison]**](https://ui.neptune.ai/pchaberski/cars/compare?shortId=%5B%22C-39%22%2C%22C-50%22%2C%22C-51%22%2C%22C-53%22%2C%22C-55%22%2C%22C-56%22%5D&viewId=ae19164c-ee09-4209-8798-a424142d2082&legendFields=%5B%22shortId%22%5D&legendFieldTypes=%5B%22native%22%5D)
 
-Remembering the influence of the exact moment of learning rate drop on the model performance, some additional search for the best milestones was performed in the closest neighborhood of so far the best (from C-39: `[65, 80, 93, 105]`) LR drop milestones using `MultiStepLR` scheduler:
+Remembering the influence of the exact moment of learning rate drop on the model performance, some additional search for the best milestones was performed in the closest neighborhood of so far the best LR drop milestones (from C-39: `[65, 80, 93, 105]`) using `MultiStepLR` scheduler:
 
 - C-50: `milestones = [67, 82, 95, 107]`
 - C-51: `milestones = [63, 78, 91, 103]`
@@ -546,7 +546,7 @@ The validiation accuracy difference range was narrow, however manual scheduler f
 
 [**[Neptune comparison]**](https://ui.neptune.ai/pchaberski/cars/compare?shortId=%5B%22C-50%22%2C%22C-58%22%5D&viewId=ae19164c-ee09-4209-8798-a424142d2082&legendFields=%5B%22shortId%22%5D&legendFieldTypes=%5B%22native%22%5D)
 
-To make sure that previous choice of the output number of channels made in [4.2.8](#last-layer-size-tests) is still valid after learning rate scheduling introduction, a comparison between the best model (C-50) and the model with 1280 output channels (C-58) was made, with `ReduceLROnPlateau` scheduler for the latter. The results confirmed that the reduced number of channels work well applied to the discussed problem, since the model with original `out_channels` showed worse validation accuracy and larger overfitting.
+To make sure that the previous choice of the output number of channels made in [4.2.8](#last-layer-size-tests) is still valid after learning rate scheduling introduction, a comparison between the best model (C-50) and the model with 1280 output channels (C-58) was made, with `ReduceLROnPlateau` scheduler for the latter. The results confirmed that the reduced number of channels work well applied to the discussed problem, since the model with original `out_channels` showed worse validation accuracy and larger overfitting.
 
 | Metric                   | C-50   | C-58   |
 |--------------------------|:------:|:------:|
@@ -559,12 +559,12 @@ To make sure that previous choice of the output number of channels made in [4.2.
 
 [**[Neptune comparison]**](https://ui.neptune.ai/pchaberski/cars/compare?shortId=%5B%22C-50%22%2C%22C-63%22%2C%22C-64%22%2C%22C-65%22%2C%22C-66%22%5D&viewId=ae19164c-ee09-4209-8798-a424142d2082&legendFields=%5B%22shortId%22%5D&legendFieldTypes=%5B%22native%22%5D)
 
-The last series of tests were aimed to check how the learning process will run with learning rate being reduced smoothly using `LambdaLR` scheduler that will decrease LR each epoch by multiplying it by factor `base ** epoch`, where `base` is a number less that `1`, but close to that value. The initial exponentiation base was chosen in way, so that the learning rates will be equal at the epoch when the first LR drop occurs when training the best model (C-50) with standard scheduler. Some other values in the neighborhood were also checked:
+The last series of tests were aimed to check how the learning process will run with learning rate being reduced smoothly using `LambdaLR` scheduler that will decrease LR each epoch by multiplying it by factor `base**epoch`, where `base` is a number less that `1`, but close to that value. The initial exponentiation base was chosen in way, so that the learning rates would be equal at the epoch when the first LR drop occurs during training the best model (C-50) with standard scheduler. Some other values in the neighborhood were also checked:
 
-- C-63: `lr_lambda = lambda epoch: pow(0.0001/0.001, 1/67) ** epoch` (exponentiation base calculated as the common ratio of geometric progression, so that learning rates will *meet* at epoch 67)
-- C-64: `lr_lambda = lambda epoch: 0.955 ** epoch`
-- C-65: `lr_lambda = lambda epoch: 0.975 ** epoch`
-- C-66: `lr_lambda = lambda epoch: 0.98 ** epoch`
+- C-63: `lr_lambda = lambda epoch: pow(0.0001/0.001, 1/67)**epoch` (exponentiation base calculated as the common ratio of geometric progression, so that learning rates will *meet* at epoch 67)
+- C-64: `lr_lambda = lambda epoch: 0.955**epoch`
+- C-65: `lr_lambda = lambda epoch: 0.975**epoch`
+- C-66: `lr_lambda = lambda epoch: 0.98**epoch`
 
 For all experiments the learning curves were much smoother than with using standard scheduler, but the overfitting started much sooner and the validation accuracy was low.
 
