@@ -499,9 +499,27 @@ The tests confirmed that the default value seems to be optimal, since all experi
 
 [**[Neptune comparison]**](https://ui.neptune.ai/pchaberski/cars/compare?shortId=%5B%22C-39%22%2C%22C-45%22%2C%22C-46%22%2C%22C-47%22%2C%22C-48%22%5D&viewId=ae19164c-ee09-4209-8798-a424142d2082&legendFields=%5B%22shortId%22%5D&legendFieldTypes=%5B%22native%22%5D)
 
+In attempt to further decrease overfitting some additional augmentations were tested (and also `RandomErasing` was tried again). Every new transformation was added separately to the existing set:
 
+- C-45: `RandomResizedCrop`
+- C-46: `RandomRotation`
+- C-47: `RandomPerspective`
+- C-48: `RandomErasing`
+
+![Resized crop (a); Rotation (b); Perspective (c)](img/4213_new_augmentations.png "Resized crop (a); Rotation (b); Perspective (c)")
+
+The results show that adding more augmentations make it too hard for the model to fit the data and therefore limits the validation accuracy increase.
+
+| Metric                   | C-39   | C-45   | C-46   | C-47   | C-48   |
+|--------------------------|:------:|:------:|:------:|:------:|:------:|
+| Min. training loss       | 1.090  | 1.162  | 1.203  | 1.169  | 1.303  |
+| Min. validation loss     | 1.563  | 1.699  | 1.721  | 1.630  | 1.633  |
+| Max. training accuracy   | 98.67% | 97.56% | 97.03% | 97.42% | 93.68% |
+| Max. validation accuracy | 82.55% | 78.73% | 78.25% | 80.22% | 80.56% |
 
 ### 4.2.14. Learning rate scheduler adjustment <a name="learning-rate-scheduler-adjustment"></a>
+
+Remembering the influence of the exact moment of learning rate drop on the model performance, some additional search for the best milestones was performed in the closest neighborhood of so far the best LR drop milestones using `MultiStepLR` scheduler.
 
 ### 4.2.15. Last layer size sanity check <a name="last-layer-size-sanity-check"></a>
 
