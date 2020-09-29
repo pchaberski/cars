@@ -179,7 +179,7 @@ In the Label Smoothing Cross Entropy definition `ce(i)` denotes standard Cross E
 
 The comparison shows that indeed with all other hyperparameters fixed, label smoothing allows to achieve a slightly better validation accuracy with the training loss decreasing slower, however the overfitting effect is still very large and in assumed setup results in triggering early stopping after only 26 epochs. 
 
-| Metric                 | CE Loss (C-1)  | LSCE Loss (C-2) |
+| Metric                 | C-1 (CE Loss)  | C-2 (LSCE Loss) |
 |------------------------|:--------------:|:---------------:|
 |Min. training loss      |  0.296         | 1.133           |
 |Min. validation loss    |  4.849         | 4.873           |
@@ -196,7 +196,7 @@ The next step in the process was adding normalization to the data using mean and
 
 ![Original (a) and normalized (b) image](img/422_1_normalization.png "Original (a) and normalized (b) image")  
 
-| Metric                 | No normalization (C-2)  | RGB normalization (C-3) |
+| Metric                 | C-2 (No normalization)  | C-3 (RGB normalization) |
 |------------------------|:-----------------------:|:-----------------------:|
 |Min. training loss      |1.133                    | 1.075                   |
 |Min. validation loss    |4.873                    | 4.792                   |
@@ -519,7 +519,28 @@ The results show that adding more augmentations make it too hard for the model t
 
 ### 4.2.14. Learning rate scheduler adjustment <a name="learning-rate-scheduler-adjustment"></a>
 
-Remembering the influence of the exact moment of learning rate drop on the model performance, some additional search for the best milestones was performed in the closest neighborhood of so far the best LR drop milestones using `MultiStepLR` scheduler.
+[**[Neptune comparison]**](https://ui.neptune.ai/pchaberski/cars/compare?shortId=%5B%22C-39%22%2C%22C-50%22%2C%22C-51%22%2C%22C-53%22%2C%22C-55%22%2C%22C-56%22%5D&viewId=ae19164c-ee09-4209-8798-a424142d2082&legendFields=%5B%22shortId%22%5D&legendFieldTypes=%5B%22native%22%5D)
+
+Remembering the influence of the exact moment of learning rate drop on the model performance, some additional search for the best milestones was performed in the closest neighborhood of so far the best (from C-39: `[65, 80, 93, 105]`) LR drop milestones using `MultiStepLR` scheduler:
+
+- C-50: `[67, 82, 95, 107]`
+- C-51: `[63, 78, 91, 103]`
+- C-53: `[66, 81, 94, 106]`
+- C-55: `[68, 83, 96, 108]`
+- C-56: `[64, 79, 92, 104]`
+
+The validiation accuracy difference range was narrow, however manual scheduler finetuning helped to gain over 1 additional percentage point.
+
+| Metric                   | C-39   | C-50   | C-51   | C-53   | C-55   | C-56   |
+|--------------------------|:------:|:------:|:------:|:------:|:------:|:------:|
+| Min. training loss       | 1.090  | 1.064  | 1.077  | 1.073  | 1.070  | 1.066  |
+| Min. validation loss     | 1.563  | 1.521  | 1.572  | 1.530  | 1.526  | 1.560  |
+| Max. training accuracy   | 98.67% | 98.94% | 98.86% | 98.96% | 98.78% | 98.99% |
+| Max. validation accuracy | 82.55% | 83.79% | 82.54% | 83.02% | 83.72% | 82.79% |
+
+![Learning rate drop comparison after scheduler adjustment (from epoch 60)](img/4214_1_lr.png "Learning rate drop comparison after scheduler adjustment (from epoch 60)")
+
+![Validation accuracy differences after scheduler adjustment (from epoch 70)](img/4214_2_valid_acc.png "Validation accuracy differences after scheduler adjustment (from epoch 70)")
 
 ### 4.2.15. Last layer size sanity check <a name="last-layer-size-sanity-check"></a>
 
