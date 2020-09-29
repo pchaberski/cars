@@ -99,5 +99,5 @@ GhostNet architecture described above (and in original paper as well) is the bas
 
 ![GhostNet comparison with some other mobile architectures (pictures from paper)](img/22_4_ghostnet_comparison.png "GhostNet comparison with some other mobile architectures (pictures from paper)")
 
-Full PyTorch implementation of GhostNet that was used in this work is available at [GitHub](https://github.com/pchaberski/cars/blob/documentation/models/architectures/ghostnet.py) repository of the project.  
+Full PyTorch implementation of GhostNet that was used in this work is available at [GitHub](https://github.com/pchaberski/cars/blob/master/models/architectures/ghostnet.py) repository of the project.  
 

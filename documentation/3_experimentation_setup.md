@@ -1,6 +1,6 @@
 # 3. Experimentation setup
 
-The experimentation setup is entirely based on Python. GhostNet (and some [other networks](https://github.com/pchaberski/cars/tree/documentation/models/architectures), which also can be used) implementation is written in PyTorch. Training process is orchestrated using `pytorch-lightning` package and controlled by parameters passed through YAML config file. Neptune experiment management tool (https://neptune.ai/) was used for experiment tracking. To build an environment for data preparation and model training Python `virtual env` utility was used. In addition to local training setup there is also a possibility to recreate the project environment and run training on Google Colab platform using a prepared Jupyter Notebook.
+The experimentation setup is entirely based on Python. GhostNet (and some [other networks](https://github.com/pchaberski/cars/tree/master/models/architectures), which also can be used) implementation is written in PyTorch. Training process is orchestrated using `pytorch-lightning` package and controlled by parameters passed through YAML config file. Neptune experiment management tool (https://neptune.ai/) was used for experiment tracking. To build an environment for data preparation and model training Python `virtual env` utility was used. In addition to local training setup there is also a possibility to recreate the project environment and run training on Google Colab platform using a prepared Jupyter Notebook.
 
 ## 3.1. Project structure <a name="project-structure"></a>
 
@@ -75,7 +75,7 @@ $ ~/venvs/cars/bin/activate
 (cars) $ pip install -r prod_requirements.txt
 ```
 
-To allow data loaders to process data during training, **raw files have to be preprocessed** using [`prepare_stanford_dataset.py`](https://github.com/pchaberski/cars/blob/documentation/prepare_stanford_dataset.py) script. It takes three files downloaded from Stanford Cars website, assuming they are stored in a directory passed through `stanford_raw_data_path` parameter of the configuration file (please see section [3.3](#configuration) for details):  
+To allow data loaders to process data during training, **raw files have to be preprocessed** using [`prepare_stanford_dataset.py`](https://github.com/pchaberski/cars/blob/master/prepare_stanford_dataset.py) script. It takes three files downloaded from Stanford Cars website, assuming they are stored in a directory passed through `stanford_raw_data_path` parameter of the configuration file (please see section [3.3](#configuration) for details):  
 
 - [`car_ims.tgz`](http://imagenet.stanford.edu/internal/car196/car_ims.tgz) - updated collection of train and test images 
 - [`cars_annos.mat`](http://imagenet.stanford.edu/internal/car196/cars_annos.mat) - updated train and test labels and bounding boxes
@@ -84,15 +84,15 @@ To allow data loaders to process data during training, **raw files have to be pr
 The script processes the above-mentioned raw files to obtain:  
 
 - `train` and `test` folders with images used for training and validation, separated for the ease of data loaders implementation
-- `train_labels.csv` and `test_labels.csv` files with image names and class numbers associated with them, as well as bounding box coordinates and class names. It is important to notice, that in raw data class are numbered within range of 1 to 196, while PyTorch Lightning requires classes to be represented by numbers starting from 0. This issue is handled internally within [`StanfordCarsDataset`](https://github.com/pchaberski/cars/blob/documentation/datasets/stanford_data.py) class and has to be taken into account during interpretation of model predictions.
+- `train_labels.csv` and `test_labels.csv` files with image names and class numbers associated with them, as well as bounding box coordinates and class names. It is important to notice, that in raw data class are numbered within range of 1 to 196, while PyTorch Lightning requires classes to be represented by numbers starting from 0. This issue is handled internally within [`StanfordCarsDataset`](https://github.com/pchaberski/cars/blob/master/datasets/stanford_data.py) class and has to be taken into account during interpretation of model predictions.
 
 Preprocessed images and metadata are saved within the directory pointed by `stanford_data_path` configuration parameter (by default, `input/stanford` folder is created within project folder). **If the training is supposed to be run on Colab** it is strongly advisable to prepare also a `.tar.gz` archive (e.g. `stanford.tar.gz`) from `train`, `test`, `train_labels.csv` and `test_labels.csv` and put it on Google Drive. This will allow to quickly copy and unpack the the data from Google Drive to Colab drive before training which will speed up data loading, and therefore training multiple times, as reading image by image from Google Drive takes incomparably more time than reading directly from Colab drive.
 
 After cloning the repository and preparing the data (also creating and filling up `config.yml` from `config_template.yml` as described in [3.3](#configuration)) it is possible to run experiments.
 
-**To run experiment locally**, after setting all parameters in `config.yml`, `virtual_env` has to be activated and [`train.py`](https://github.com/pchaberski/cars/blob/documentation/train.py) has to be run from command line using `python`.
+**To run experiment locally**, after setting all parameters in `config.yml`, `virtual_env` has to be activated and [`train.py`](https://github.com/pchaberski/cars/blob/master/train.py) has to be run from command line using `python`.
 
-**To run experiment on Colab**, after making sure that project files and data is put on Google Drive, [`train_colab.ipynb`](https://github.com/pchaberski/cars/blob/documentation/train_colab.ipynb) notebook has to be opened. In the first cell there are some additional Colab-specific parameters to be set:  
+**To run experiment on Colab**, after making sure that project files and data is put on Google Drive, [`train_colab.ipynb`](https://github.com/pchaberski/cars/blob/master/train_colab.ipynb) notebook has to be opened. In the first cell there are some additional Colab-specific parameters to be set:  
 
 - `colab_google_drive_mount_point` - where the Google Drive is to be mounted on Colab drive
 - `colab_remote_project_wdir ` - working directory for remote project - should point to `cars` project folder

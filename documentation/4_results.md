@@ -5,7 +5,7 @@ For the experiments, entire training subset from Stanford Cars Dataset was used 
 To limit hyperparameter space for best model search, some assumptions were made at the beginning:
 
 - network is trained from scratch, without using any pretrained weights
-- input image size is 227x227 (this assumption results from initial tests on SqueezeNext [[6]](5_references.md#Gholami_2018) where this is a minimum image size and all other architectures available in [`arch_dict.py`](https://github.com/pchaberski/cars/blob/documentation/models/arch_dict.py) can handle such image size. For GhostNet, minimum image size is 224x224)
+- input image size is 227x227 (this assumption results from initial tests on SqueezeNext [[6]](5_references.md#Gholami_2018) where this is a minimum image size and all other architectures available in [`arch_dict.py`](https://github.com/pchaberski/cars/blob/master/models/arch_dict.py) can handle such image size. For GhostNet, minimum image size is 224x224)
 - batch size is fixed at 64 mostly because of local GPU memory limitations, however some tests during development phase showed no gain with smaller or larger batch sizes
 - Adam with initial learning rate value of 0.001 is chosen as a default optimizer, and may be changed to AdamW [[16]](5_references.md#loshchilov2017decoupled) when applying weight decay (however SGD was also tested at the development phase, but it was leading to severe overfitting)
 - early stopping is triggered when there is no decrease in validation loss for 15 epochs
@@ -106,7 +106,7 @@ The full set of settings and hyperparameters used to train the best performing m
 
 ## 4.2. Experiments step-by-step <a name="experiments-step-by-step"></a>
 
-The table below presents the summary of model accuracy scores for all experiments along with a brief information of techniques used in training. Full and interactive comparison is available through [Neptune dashboard](https://ui.neptune.ai/pchaberski/cars/experiments?viewId=ae19164c-ee09-4209-8798-a424142d2082). Also, all experiments results (parameters and logged metrics) are archived in a text file [on GitHub](https://github.com/pchaberski/cars/blob/documentation/documentation/results/all_experiments.txt).
+The table below presents the summary of model accuracy scores for all experiments along with a brief information of techniques used in training. Full and interactive comparison is available through [Neptune dashboard](https://ui.neptune.ai/pchaberski/cars/experiments?viewId=ae19164c-ee09-4209-8798-a424142d2082). Also, all experiments results (parameters and logged metrics) are archived in a text file [on GitHub](https://github.com/pchaberski/cars/blob/master/documentation/results/all_experiments.txt).
 
 |      |experiment description                                       |train_acc|valid_acc|
 |------|-------------------------------------------------------------|:-------:|:-------:|
@@ -192,7 +192,7 @@ The comparison shows that indeed with all other hyperparameters fixed, label smo
 
 [**[Neptune comparison]**](https://ui.neptune.ai/pchaberski/cars/compare?shortId=%5B%22C-2%22%2C%22C-3%22%5D&viewId=ae19164c-ee09-4209-8798-a424142d2082&legendFields=%5B%22shortId%22%5D&legendFieldTypes=%5B%22native%22%5D)
 
-The next step in the process was adding normalization to the data using mean and standard deviation calculated on the training set (see [`normalization_coeffs.ipynb`](https://github.com/pchaberski/cars/blob/documentation/notebooks/normalization_coeffs.ipynb) notebook). Centering the data gave a 3 percentage points in validation accuracy, however faster convergence resulted in even faster training loss drop.
+The next step in the process was adding normalization to the data using mean and standard deviation calculated on the training set (see [`normalization_coeffs.ipynb`](https://github.com/pchaberski/cars/blob/master/notebooks/normalization_coeffs.ipynb) notebook). Centering the data gave a 3 percentage points in validation accuracy, however faster convergence resulted in even faster training loss drop.
 
 ![Original (a) and normalized (b) image](img/422_1_normalization.png "Original (a) and normalized (b) image")  
 
