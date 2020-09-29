@@ -53,7 +53,7 @@ batch_size: 64
 num_epochs: 200
 
 # Architecture modifications (right now GhostNet only!)
-dropout: 0.2  # droupout rate before the last Linear layer
+dropout: 0.2  # dropout rate before the last Linear layer
 output_channels: 320  # output channels to be mapped to the number of classes
 
 # Optimizer settings
