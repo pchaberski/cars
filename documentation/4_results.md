@@ -523,11 +523,11 @@ The results show that adding more augmentations make it too hard for the model t
 
 Remembering the influence of the exact moment of learning rate drop on the model performance, some additional search for the best milestones was performed in the closest neighborhood of so far the best (from C-39: `[65, 80, 93, 105]`) LR drop milestones using `MultiStepLR` scheduler:
 
-- C-50: `[67, 82, 95, 107]`
-- C-51: `[63, 78, 91, 103]`
-- C-53: `[66, 81, 94, 106]`
-- C-55: `[68, 83, 96, 108]`
-- C-56: `[64, 79, 92, 104]`
+- C-50: `milestones = [67, 82, 95, 107]`
+- C-51: `milestones = [63, 78, 91, 103]`
+- C-53: `milestones = [66, 81, 94, 106]`
+- C-55: `milestones = [68, 83, 96, 108]`
+- C-56: `milestones = [64, 79, 92, 104]`
 
 The validiation accuracy difference range was narrow, however manual scheduler finetuning helped to gain over 1 additional percentage point.
 
@@ -544,5 +544,43 @@ The validiation accuracy difference range was narrow, however manual scheduler f
 
 ### 4.2.15. Last layer size sanity check <a name="last-layer-size-sanity-check"></a>
 
+[**[Neptune comparison]**](https://ui.neptune.ai/pchaberski/cars/compare?shortId=%5B%22C-50%22%2C%22C-58%22%5D&viewId=ae19164c-ee09-4209-8798-a424142d2082&legendFields=%5B%22shortId%22%5D&legendFieldTypes=%5B%22native%22%5D)
+
+To make sure that previous choice of the output number of channels made in [4.2.8](#last-layer-size-tests) is still valid after learning rate scheduling introduction, a comparison between the best model (C-50) and the model with 1280 output channels (C-58) was made, with `ReduceLROnPlateau` scheduler for the latter. The results confirmed that the reduced number of channels work well applied to the discussed problem, since the model with original `out_channels` showed worse validation accuracy and larger overfitting.
+
+| Metric                   | C-50   | C-58   |
+|--------------------------|:------:|:------:|
+| Min. training loss       | 1.064  | 1.050  |
+| Min. validation loss     | 1.521  | 1.720  |
+| Max. training accuracy   | 98.94% | 99.44% |
+| Max. validation accuracy | 83.79% | 78.83% |
+
 ### 4.2.16. Learning rate annealing tests <a name="learning-rate-annealing-tests"></a>  
+
+[**[Neptune comparison]**](https://ui.neptune.ai/pchaberski/cars/compare?shortId=%5B%22C-50%22%2C%22C-63%22%2C%22C-64%22%2C%22C-65%22%2C%22C-66%22%5D&viewId=ae19164c-ee09-4209-8798-a424142d2082&legendFields=%5B%22shortId%22%5D&legendFieldTypes=%5B%22native%22%5D)
+
+The last series of tests were aimed to check how the learning process will run with learning rate being reduced smoothly using `LambdaLR` scheduler that will decrease LR each epoch by multiplying it by factor `base ** epoch`, where `base` is a number less that `1`, but close to that value. The initial exponentiation base was chosen in way, so that the learning rates will be equal at the epoch when the first LR drop occurs when training the best model (C-50) with standard scheduler. Some other values in the neighborhood were also checked:
+
+- C-63: `lr_lambda = lambda epoch: pow(0.0001/0.001, 1/67) ** epoch` (exponentiation base calculated as the common ratio of geometric progression, so that learning rates will *meet* at epoch 67)
+- C-64: `lr_lambda = lambda epoch: 0.955 ** epoch`
+- C-65: `lr_lambda = lambda epoch: 0.975 ** epoch`
+- C-66: `lr_lambda = lambda epoch: 0.98 ** epoch`
+
+For all experiments the learning curves were much smoother than with using standard scheduler, but the overfitting started much sooner and the validation accuracy was low.
+
+| Metric                   | C-50   | C-63   | C-64   | C-65   | C-66   |
+|--------------------------|:------:|:------:|:------:|:------:|:------:|
+| Min. training loss       | 1.064  | 0.994  | 1.169  | 0.975  | 1.057  |
+| Min. validation loss     | 1.521  | 2.039  | 2.314  | 1.907  | 1.942  |
+| Max. training accuracy   | 98.94% | 99.80% | 98.49% | 99.66% | 98.72% |
+| Max. validation accuracy | 83.79% | 70.51% | 60.70% | 73.07% | 70.46% |
+
+![Learning rate annealing (linear scale)](img/4216_1_lr_lin.png "Learning rate annealing (linear scale)")
+
+![Learning rate annealing (log scale)](img/4216_2_lr_log.png "Learning rate annealing (log scale)")
+
+![Training accuracy with LR annealing](img/4216_3_train_acc.png "Training accuracy with LR annealing")
+
+![Validation accuracy with LR annealing](img/4216_4_valid_acc.png "Validation accuracy with LR annealing")  
+
 
