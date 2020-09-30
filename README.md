@@ -2,6 +2,15 @@
 
 Training [GhostNet](https://arxiv.org/abs/1911.11907) on [Stanford Cars Dataset](https://ai.stanford.edu/~jkrause/cars/car_dataset.html).
 
+Best model summary results:
+
+| Metric                            | Value          |
+|-----------------------------------|:--------------:|
+|Min. training LSCE loss            |1.064           |
+|Min. validation LSCE loss          |1.521           |
+|Max. training top-1 accuracy       |98.93%          |
+|Max. validation top-1 accuracy     |83.79%          |
+
 Full project documentation and step-by-step training process description, along with tips to reproduce the experimentation setup either locally (Windows/Linux) or on Google Colab available in [documentation](https://github.com/pchaberski/cars/tree/master/documentation) folder.
 
 Summary slides in PDF available [here](https://github.com/pchaberski/cars/blob/master/documentation/pdf_conversion/slides.pdf).
