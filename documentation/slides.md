@@ -224,7 +224,7 @@ Two GhostModules = GhostBottleneck
 
 <font size="6">
 
-- **environment**: Python 3 + virtutal env or Colab
+- **environment**: Python 3 + virtual env or Colab
 - **framework**: PyTorch
 - **training**: `pytorch-lightning==0.9`
 - **configuration**: external YAML file
