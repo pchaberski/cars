@@ -112,16 +112,16 @@ The table below presents the summary of model accuracy scores for all experiment
 |------|-------------------------------------------------------------|:-------:|:-------:|
 |C-1 |Baseline (Cross Entropy Loss)                                |92.49%   |8.15%    |
 |C-2 |Loss function change (Label Smoothing Cross Entropy)         |98.89%   |9.12%    |
-|C-3 |Augmentations: horizontal flip, affine                       |99.45%   |11.96%   |
+|C-3 |Added RGB normalization                                      |99.45%   |11.96%   |
 |C-4 |Augmentations: horizontal flip, affine, erasing              |99.76%   |51.92%   |
 |C-5 |Augmentations: horizontal flip, erasing, color jitter        |98.12%   |38.08%   |
 |C-6 |Augmentations: horiz. flip, affine, erasing, color jitter    |93.68%   |38.68%   |
 |C-7 |Augmentations: horizontal flip, affine, color jitter         |99.73%   |54.28%   |
-|C-8 |Grayscale: no normalization, no augmentations                |99.49%   |6.58%    |
+|C-8 |Grayscale: with normalization, no augmentations              |99.49%   |6.58%    |
 |C-9 |Grayscale: with normalization, no augmentations              |97.13%   |8.68%    |
-|C-10|Grayscale: normalization, best RGB augmentations             |7.58%    |3.91%    |
-|C-11|Training set cropping with bounding boxes                    |4.36%    |3.07%    |
-|C-12|Training set cropping + background erasing                   |99.67%   |50.51%   |
+|C-10|Training set cropping with bounding boxes                    |7.58%    |3.91%    |
+|C-11|Training set cropping + background erasing                   |4.36%    |3.07%    |
+|C-12|Grayscale: normalization, best RGB augmentations             |99.67%   |50.51%   |
 |C-13|L2 regularization with AdamW: weight decay = 0.1             |99.44%   |63.39%   |
 |C-14|L2 regularization with AdamW: weight decay = 0.2             |98.84%   |68.50%   |
 |C-15|L2 regularization with AdamW: weight decay = 0.3             |95.83%   |61.84%   |
