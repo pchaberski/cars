@@ -9,3 +9,5 @@ Summary slides in PDF available [here](https://github.com/pchaberski/cars/blob/m
 Neptune.ai project with summary dashboard, logs, experiment parameters and interactive plots available [here](https://ui.neptune.ai/pchaberski/cars/experiments?viewId=ae19164c-ee09-4209-8798-a424142d2082).
 
 ![Stanford Cars](documentation/img/21_1_stanford_cars_examples.png)
+
+Additionally, to see the approach to the same problem with another architecture ([EfficientNet](https://arxiv.org/abs/1905.11946)) and the difference between using pretrained and not pretrained networks, check [matkalinowski's repo](https://github.com/matkalinowski/dnn).
