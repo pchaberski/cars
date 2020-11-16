@@ -1,7 +1,6 @@
 """Pytorch Lightning module for modeling."""
 
 
-from utils.configuration import load_config
 import pytorch_lightning as pl
 import torch
 from torch import nn

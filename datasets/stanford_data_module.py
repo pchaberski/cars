@@ -1,7 +1,6 @@
 """Pytorch Lightning module for Stanford Cars Dataset."""
 
 
-from utils.configuration import load_config
 import pytorch_lightning as pl
 from datasets.stanford_data import StanfordCarsDataset
 import numpy as np
